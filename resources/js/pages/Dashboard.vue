@@ -1,121 +1,104 @@
 <template>
-  <div class="page">
-    <div class="topbar">
-      <div>
-        <h1>Dashboard</h1>
-        <p>LineAI Cloud 後台已登入</p>
-      </div>
-
-      <div class="actions">
-        <router-link to="/conversations" class="nav-btn">Conversations</router-link>
-
-        <router-link to="/settings/line-bot" class="nav-btn secondary-link">LINE Bot 設定</router-link>
-
-        <button @click="logout">Logout</button>
-      </div>
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-title">Conversations</div>
+      <div class="stat-value">128</div>
+      <div class="stat-sub">本月累計對話</div>
     </div>
 
-    <div class="card-grid">
-      <div class="card">
-        <h3>客服中心</h3>
-        <p>查看 LINE 對話、人工接手、切回 AI。</p>
-      </div>
+    <div class="stat-card">
+      <div class="stat-title">Unread</div>
+      <div class="stat-value">12</div>
+      <div class="stat-sub">待處理訊息</div>
+    </div>
 
-      <div class="card">
-        <h3>CRM</h3>
-        <p>客戶資料、標籤、互動紀錄。</p>
-      </div>
+    <div class="stat-card">
+      <div class="stat-title">Customers</div>
+      <div class="stat-value">542</div>
+      <div class="stat-sub">累積客戶數</div>
+    </div>
 
-      <div class="card">
-        <h3>AI 回覆</h3>
-        <p>FAQ 優先，未命中再交給 AI。</p>
+    <div class="stat-card">
+      <div class="stat-title">AI Replies</div>
+      <div class="stat-value">3,280</div>
+      <div class="stat-sub">AI 已回覆數</div>
+    </div>
+
+    <div class="panel-card span-2">
+      <h3>系統概覽</h3>
+      <p>你現在可以從左側選單進入 Conversations、Customers、LINE Bot 設定、Knowledge Base 與 Settings。</p>
+    </div>
+
+    <div class="panel-card">
+      <h3>快速入口</h3>
+      <div class="quick-links">
+        <router-link to="/conversations" class="quick-link">進入 Conversations</router-link>
+        <router-link to="/customers" class="quick-link">進入 Customers</router-link>
+        <router-link to="/settings/line-bot" class="quick-link">設定 LINE Bot</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import api from '../api'
-
-const router = useRouter()
-
-async function logout() {
-  try {
-    await api.post('/logout')
-  } catch (e) {
-  } finally {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    router.push('/login')
-  }
-}
 </script>
 
 <style scoped>
-
-.secondary-link {
-  background: #0f766e;
-}
-
-
-.page {
-  padding: 32px;
-  background: #f4f7fb;
-  min-height: 100vh;
-}
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-.actions {
-  display: flex;
-  gap: 10px;
-}
-h1 {
-  margin: 0 0 6px;
-}
-p {
-  margin: 0;
-  color: #666;
-}
-button {
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 14px;
-  background: #111827;
-  color: #fff;
-  cursor: pointer;
-}
-.nav-btn {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  border-radius: 10px;
-  padding: 10px 14px;
-  background: #2563eb;
-  color: #fff;
-}
-.card-grid {
+.dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
-.card {
+.stat-card,
+.panel-card {
   background: #fff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
-.card h3 {
+.stat-title {
+  color: #6b7280;
+  font-size: 13px;
+}
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  margin-top: 10px;
+}
+.stat-sub {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+.panel-card h3 {
   margin-top: 0;
-  margin-bottom: 8px;
 }
-@media (max-width: 900px) {
-  .card-grid {
+.span-2 {
+  grid-column: span 2;
+}
+.quick-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.quick-link {
+  text-decoration: none;
+  color: #111827;
+  background: #eef2f7;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+  .span-2 {
+    grid-column: span 1;
   }
 }
 </style>

@@ -2,34 +2,58 @@
   <div class="admin-shell">
     <aside class="sidebar">
       <div class="brand">
-        <h1>LineAI Cloud</h1>
-        <p>SaaS Admin</p>
+        <div class="brand-logo">L</div>
+        <div>
+          <div class="brand-title">LineAI Cloud</div>
+          <div class="brand-sub">Admin Console</div>
+        </div>
       </div>
 
-      <nav class="menu">
-        <RouterLink to="/" class="menu-item">Dashboard</RouterLink>
-        <RouterLink to="/customers" class="menu-item">Customers</RouterLink>
-        <RouterLink to="/conversations" class="menu-item">Conversations</RouterLink>
-        <RouterLink to="/knowledge" class="menu-item">Knowledge</RouterLink>
-        <RouterLink to="/campaigns" class="menu-item">Campaigns</RouterLink>
-        <RouterLink to="/settings" class="menu-item">Settings</RouterLink>
+      <nav class="nav">
+        <router-link to="/" class="nav-item">
+          <span>Dashboard</span>
+        </router-link>
+
+        <router-link to="/conversations" class="nav-item">
+          <span>Conversations</span>
+        </router-link>
+
+        <router-link to="/customers" class="nav-item">
+          <span>Customers</span>
+        </router-link>
+
+        <router-link to="/settings/line-bot" class="nav-item">
+          <span>LINE Bot 設定</span>
+        </router-link>
+
+        <router-link to="/knowledge-base" class="nav-item">
+          <span>Knowledge Base</span>
+        </router-link>
+
+        <router-link to="/settings" class="nav-item">
+          <span>Settings</span>
+        </router-link>
       </nav>
     </aside>
 
     <div class="main">
       <header class="topbar">
         <div>
-          <strong>{{ pageTitle }}</strong>
+          <h1 class="topbar-title">{{ pageTitle }}</h1>
+          <p class="topbar-sub">LINE AI SaaS 後台管理系統</p>
         </div>
 
-        <div class="topbar-right">
-          <span class="user-name">{{ userName }}</span>
+        <div class="topbar-actions">
+          <div class="user-box">
+            <div class="user-name">{{ userName }}</div>
+            <div class="user-role">Tenant Admin</div>
+          </div>
           <button class="logout-btn" @click="logout">Logout</button>
         </div>
       </header>
 
-      <main class="page-content">
-        <slot />
+      <main class="content">
+        <router-view />
       </main>
     </div>
   </div>
@@ -43,24 +67,15 @@ import api from '../api'
 const route = useRoute()
 const router = useRouter()
 
-const titleMap = {
-  '/': 'Dashboard',
-  '/customers': 'Customers',
-  '/conversations': 'Conversations',
-  '/knowledge': 'Knowledge',
-  '/campaigns': 'Campaigns',
-  '/settings': 'Settings',
-}
-
-const pageTitle = computed(() => titleMap[route.path] || 'Admin')
+const pageTitle = computed(() => {
+  return route.meta?.title || 'Dashboard'
+})
 
 const userName = computed(() => {
-  const raw = localStorage.getItem('user')
-  if (!raw) return 'Admin'
   try {
-    const user = JSON.parse(raw)
-    return user.name || 'Admin'
-  } catch {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    return user?.name || 'Admin'
+  } catch (e) {
     return 'Admin'
   }
 })
@@ -79,75 +94,123 @@ async function logout() {
 
 <style scoped>
 .admin-shell {
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: 100vh;
   background: #f4f7fb;
 }
 
 .sidebar {
   background: #111827;
   color: #fff;
-  padding: 24px 18px;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.06);
 }
 
 .brand {
-  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 18px;
 }
 
-.brand h1 {
-  margin: 0;
-  font-size: 22px;
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
 }
 
-.brand p {
-  margin: 6px 0 0;
-  color: #9ca3af;
-  font-size: 13px;
+.brand-title {
+  font-weight: 700;
+  font-size: 16px;
 }
 
-.menu {
-  display: grid;
+.brand-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-top: 2px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.menu-item {
-  display: block;
-  padding: 12px 14px;
-  border-radius: 10px;
-  color: #d1d5db;
+.nav-item {
   text-decoration: none;
+  color: rgba(255,255,255,0.88);
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  display: block;
 }
 
-.menu-item.router-link-active {
-  background: #1f2937;
+.nav-item:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+.nav-item.router-link-active {
+  background: #2563eb;
   color: #fff;
   font-weight: 600;
 }
 
 .main {
-  display: grid;
-  grid-template-rows: 72px 1fr;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   background: #fff;
-  padding: 0 24px;
   border-bottom: 1px solid #e5e7eb;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.topbar-right {
+.topbar-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.topbar-sub {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.topbar-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+}
+
+.user-box {
+  text-align: right;
 }
 
 .user-name {
-  color: #374151;
-  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .logout-btn {
@@ -159,8 +222,8 @@ async function logout() {
   cursor: pointer;
 }
 
-.page-content {
-  padding: 24px;
+.content {
+  padding: 24px 28px;
 }
 
 @media (max-width: 960px) {
@@ -170,6 +233,14 @@ async function logout() {
 
   .sidebar {
     display: none;
+  }
+
+  .topbar {
+    padding: 18px 20px;
+  }
+
+  .content {
+    padding: 20px;
   }
 }
 </style>

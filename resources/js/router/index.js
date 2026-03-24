@@ -1,35 +1,64 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import Login from '../pages/Login.vue'
 import Dashboard from '../pages/Dashboard.vue'
 import Conversations from '../pages/Conversations.vue'
+import Customers from '../pages/Customers.vue'
 import LineBotSettings from '../pages/LineBotSettings.vue'
+import KnowledgeBase from '../pages/KnowledgeBase.vue'
+import Settings from '../pages/Settings.vue'
+import AdminLayout from '../layouts/AdminLayout.vue'
 
 const routes = [
   {
     path: '/login',
     name: 'login',
     component: Login,
-    meta: { guestOnly: true },
+    meta: { guestOnly: true, title: 'Login' },
   },
   {
     path: '/',
-    name: 'dashboard',
-    component: Dashboard,
+    component: AdminLayout,
     meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'dashboard',
+        component: Dashboard,
+        meta: { title: 'Dashboard' },
+      },
+      {
+        path: 'conversations',
+        name: 'conversations',
+        component: Conversations,
+        meta: { title: 'Conversations' },
+      },
+      {
+        path: 'customers',
+        name: 'customers',
+        component: Customers,
+        meta: { title: 'Customers' },
+      },
+      {
+        path: 'settings/line-bot',
+        name: 'line-bot-settings',
+        component: LineBotSettings,
+        meta: { title: 'LINE Bot 設定' },
+      },
+      {
+        path: 'knowledge-base',
+        name: 'knowledge-base',
+        component: KnowledgeBase,
+        meta: { title: 'Knowledge Base' },
+      },
+      {
+        path: 'settings',
+        name: 'settings',
+        component: Settings,
+        meta: { title: 'Settings' },
+      },
+    ],
   },
-  ,
-  {
-    path: '/conversations',
-    name: 'conversations',
-    component: Conversations,
-    meta: { requiresAuth: true },
-  },
-  {
-      path: '/settings/line-bot',
-      name: 'line-bot-settings',
-      component: LineBotSettings,
-      meta: { requiresAuth: true },
-   }
 ]
 
 const router = createRouter({
