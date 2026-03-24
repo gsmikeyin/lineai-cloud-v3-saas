@@ -2,18 +2,35 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KnowledgeItem extends Model
 {
-    use SoftDeletes, BelongsToTenant;
+    use SoftDeletes;
+
+    public const TYPE_FAQ = 'faq';
+    public const TYPE_PRODUCT = 'product';
+    public const TYPE_POLICY = 'policy';
+    public const TYPE_PROMPT = 'prompt';
+
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
+    public const STATUS_ARCHIVED = 'archived';
 
     protected $fillable = [
-        'tenant_id','type','title','question','content','answer','status','sort_order',
-        'is_ai_enabled','keywords','meta'
+        'tenant_id',
+        'type',
+        'title',
+        'question',
+        'content',
+        'answer',
+        'status',
+        'sort_order',
+        'is_ai_enabled',
+        'keywords',
+        'meta',
     ];
 
     protected $casts = [
@@ -22,5 +39,23 @@ class KnowledgeItem extends Model
         'meta' => 'array',
     ];
 
-    public function tenant(): BelongsTo { return $this->belongsTo(Tenant::class); }
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function scopeTenant($query, int $tenantId)
+    {
+        return $query->where('tenant_id', $tenantId);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function scopeAiEnabled($query)
+    {
+        return $query->where('is_ai_enabled', true);
+    }
 }

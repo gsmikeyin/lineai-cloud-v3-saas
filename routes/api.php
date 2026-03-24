@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\OpenAIController;
 
 use App\Http\Controllers\LineBotSettingController;
 
+use App\Http\Controllers\KnowledgeItemController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -46,6 +48,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/settings/line-bot', [LineBotSettingController::class, 'show']);
     Route::put('/settings/line-bot', [LineBotSettingController::class, 'update']);    
+   
+    Route::get('/knowledge-items', [KnowledgeItemController::class, 'index']);
+    Route::post('/knowledge-items', [KnowledgeItemController::class, 'store']);
+    Route::get('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'show']);
+    Route::put('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'update']);
+    Route::delete('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'destroy']);
     
 });
 
