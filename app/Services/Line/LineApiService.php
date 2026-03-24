@@ -3,7 +3,6 @@
 namespace App\Services\Line;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\RequestException;
 
 class LineApiService
 {

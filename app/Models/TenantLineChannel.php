@@ -2,18 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TenantLineChannel extends Model
 {
-    use BelongsToTenant;
-
     protected $fillable = [
-        'tenant_id','provider','channel_name','channel_id','channel_secret',
-        'channel_access_token','basic_id','bot_user_id','webhook_url',
-        'is_active','is_verified','last_webhook_at','meta'
+        'tenant_id',
+        'provider',
+        'channel_name',
+        'channel_id',
+        'channel_secret',
+        'channel_access_token',
+        'basic_id',
+        'bot_user_id',
+        'webhook_url',
+        'is_active',
+        'is_verified',
+        'last_webhook_at',
+        'meta',
     ];
 
     protected $casts = [
@@ -26,5 +33,10 @@ class TenantLineChannel extends Model
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

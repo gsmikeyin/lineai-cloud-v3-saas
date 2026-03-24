@@ -724,3 +724,224 @@ hi
 
 請直接輸出要回覆給客戶的文字，不要加系統說明。  
 [2026-03-24 13:42:55] local.ERROR: Open AI  您好，歡迎來到 Demo Store～我們每天 10:00–21:00 營業，請問有什麼可以幫您呢？  
+[2026-03-24 14:21:05] local.ERROR: Too few arguments to function App\Http\Controllers\LineWebhookController::handle(), 1 passed in D:\Project\AutoBot\lineai-cloud-v3-saas\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php on line 46 and exactly 2 expected {"exception":"[object] (ArgumentCountError(code: 0): Too few arguments to function App\\Http\\Controllers\\LineWebhookController::handle(), 1 passed in D:\\Project\\AutoBot\\lineai-cloud-v3-saas\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php on line 46 and exactly 2 expected at D:/Project/AutoBot/lineai-cloud-v3-saas/app/Http/Controllers/LineWebhookController.php:14)
+[stacktrace]
+#0 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(46): App/Http/Controllers/LineWebhookController->handle(Object(Illuminate/Http/Request))
+#1 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(265): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/LineWebhookController), 'handle')
+#2 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(211): Illuminate/Routing/Route->runController()
+#3 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(822): Illuminate/Routing/Route->run()
+#4 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
+#5 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#6 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#7 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#8 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(821): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#9 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(800): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#10 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(764): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#11 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(753): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#12 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#13 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
+#14 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#15 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#16 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#17 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#18 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#19 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#20 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#21 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#22 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(109): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#23 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#24 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(74): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#25 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#26 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#27 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#28 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#29 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php(26): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#31 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePathEncoding->handle(Object(Illuminate/Http/Request), Object(Closure))
+#32 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#33 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#34 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#35 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#36 D:/Project/AutoBot/lineai-cloud-v3-saas/public/index.php(11): Illuminate/Foundation/Application->handleRequest(Object(Illuminate/Http/Request))
+#37 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('D://Project//Auto...')
+#38 {main}
+"} 
+[2026-03-24 14:29:05] local.ERROR: Open AI  input [System Role]
+你是 Demo Store 的 LINE 客服助理。請用繁體中文回答，簡潔、親切、實用。
+
+[Knowledge]
+- 營業時間：我們每天 10:00 到 21:00 營業。
+
+[Conversation History]
+[user] hi
+[assistant] 您好，歡迎來到 Demo Store～我們每天 10:00–21:00 營業，請問有什麼可以幫您呢？
+[user] 你好
+
+[User Message]
+你好
+
+請直接輸出要回覆給客戶的文字，不要加系統說明。  
+[2026-03-24 14:29:08] local.ERROR: Open AI  您好，歡迎光臨 Demo Store～請問有什麼可以幫您呢？  
+[2026-03-24 14:41:17] local.ERROR: Call to a member function load() on null {"userId":2,"exception":"[object] (Error(code: 0): Call to a member function load() on null at D:/Project/AutoBot/lineai-cloud-v3-saas/app/Http/Controllers/LineBotSettingController.php:13)
+[stacktrace]
+#0 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(46): App/Http/Controllers/LineBotSettingController->show(Object(Illuminate/Http/Request))
+#1 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(265): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/LineBotSettingController), 'show')
+#2 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(211): Illuminate/Routing/Route->runController()
+#3 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(822): Illuminate/Routing/Route->run()
+#4 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
+#5 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#6 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#7 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(63): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#8 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Auth/Middleware/Authenticate->handle(Object(Illuminate/Http/Request), Object(Closure), 'sanctum')
+#9 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#10 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(821): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#11 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(800): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#12 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(764): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#13 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(753): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#14 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#15 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
+#16 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#17 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#18 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#19 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#20 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#21 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#22 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#23 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#24 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(109): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#25 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#26 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(74): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#27 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#28 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#29 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#31 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks->handle(Object(Illuminate/Http/Request), Object(Closure))
+#32 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php(26): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#33 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePathEncoding->handle(Object(Illuminate/Http/Request), Object(Closure))
+#34 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#35 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#36 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#37 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#38 D:/Project/AutoBot/lineai-cloud-v3-saas/public/index.php(11): Illuminate/Foundation/Application->handleRequest(Object(Illuminate/Http/Request))
+#39 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('D://Project//Auto...')
+#40 {main}
+"} 
+[2026-03-24 14:43:41] local.ERROR: Call to a member function load() on null {"userId":2,"exception":"[object] (Error(code: 0): Call to a member function load() on null at D:/Project/AutoBot/lineai-cloud-v3-saas/app/Http/Controllers/LineBotSettingController.php:13)
+[stacktrace]
+#0 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(46): App/Http/Controllers/LineBotSettingController->show(Object(Illuminate/Http/Request))
+#1 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(265): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/LineBotSettingController), 'show')
+#2 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(211): Illuminate/Routing/Route->runController()
+#3 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(822): Illuminate/Routing/Route->run()
+#4 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
+#5 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#6 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#7 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(63): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#8 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Auth/Middleware/Authenticate->handle(Object(Illuminate/Http/Request), Object(Closure), 'sanctum')
+#9 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#10 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(821): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#11 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(800): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#12 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(764): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#13 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(753): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#14 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#15 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
+#16 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#17 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#18 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#19 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#20 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#21 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#22 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#23 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#24 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(109): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#25 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#26 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(74): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#27 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#28 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#29 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#31 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks->handle(Object(Illuminate/Http/Request), Object(Closure))
+#32 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php(26): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#33 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePathEncoding->handle(Object(Illuminate/Http/Request), Object(Closure))
+#34 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#35 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#36 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#37 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#38 D:/Project/AutoBot/lineai-cloud-v3-saas/public/index.php(11): Illuminate/Foundation/Application->handleRequest(Object(Illuminate/Http/Request))
+#39 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('D://Project//Auto...')
+#40 {main}
+"} 
+[2026-03-24 14:44:26] local.ERROR: Call to a member function load() on null {"userId":2,"exception":"[object] (Error(code: 0): Call to a member function load() on null at D:/Project/AutoBot/lineai-cloud-v3-saas/app/Http/Controllers/LineBotSettingController.php:13)
+[stacktrace]
+#0 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(46): App/Http/Controllers/LineBotSettingController->show(Object(Illuminate/Http/Request))
+#1 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(265): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/LineBotSettingController), 'show')
+#2 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Route.php(211): Illuminate/Routing/Route->runController()
+#3 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(822): Illuminate/Routing/Route->run()
+#4 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
+#5 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#6 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#7 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(63): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#8 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Auth/Middleware/Authenticate->handle(Object(Illuminate/Http/Request), Object(Closure), 'sanctum')
+#9 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#10 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(821): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#11 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(800): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#12 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(764): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#13 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Routing/Router.php(753): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#14 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#15 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
+#16 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#17 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#18 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#19 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#20 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#21 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#22 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#23 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#24 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(109): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#25 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#26 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(74): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#27 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#28 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#29 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#31 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks->handle(Object(Illuminate/Http/Request), Object(Closure))
+#32 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php(26): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#33 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate/Http/Middleware/ValidatePathEncoding->handle(Object(Illuminate/Http/Request), Object(Closure))
+#34 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#35 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#36 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#37 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#38 D:/Project/AutoBot/lineai-cloud-v3-saas/public/index.php(11): Illuminate/Foundation/Application->handleRequest(Object(Illuminate/Http/Request))
+#39 D:/Project/AutoBot/lineai-cloud-v3-saas/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('D://Project//Auto...')
+#40 {main}
+"} 
+[2026-03-24 14:56:38] local.ERROR: Open AI  input [System Role]
+你是 Demo Store 的 LINE 客服助理。請用繁體中文回答，簡潔、親切、實用。
+
+[Knowledge]
+無
+
+[Conversation History]
+[user] hi
+
+[User Message]
+hi
+
+請直接輸出要回覆給客戶的文字，不要加系統說明。  
+[2026-03-24 14:56:55] local.ERROR: Open AI  您好～請問有什麼可以幫您的呢？  
+[2026-03-24 14:57:33] local.ERROR: Open AI  input [System Role]
+你是 Demo Store 的 LINE 客服助理。請用繁體中文回答，簡潔、親切、實用。
+
+[Knowledge]
+無
+
+[Conversation History]
+[user] hi
+[assistant] 您好～請問有什麼可以幫您的呢？
+[user] 營業時間
+
+[User Message]
+營業時間
+
+請直接輸出要回覆給客戶的文字，不要加系統說明。  
+[2026-03-24 14:57:35] local.ERROR: Open AI  您好～請問您是想查詢 Demo Store 的營業時間嗎？  
+目前我這邊沒有營業資訊，建議您提供門市名稱，或直接私訊客服，我可以再幫您確認喔！  

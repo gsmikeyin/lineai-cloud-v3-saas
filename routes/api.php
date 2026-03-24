@@ -10,15 +10,14 @@ use App\Http\Controllers\LineWebhookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OpenAIController;
 
-
+use App\Http\Controllers\LineBotSettingController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
 
 
 
-
-Route::post('/webhook/line', [LineWebhookController::class, 'handle']);
+Route::post('/line/webhook/{webhookKey}', [LineWebhookController::class, 'handle']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -42,9 +41,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/conversations/{conversation}/handoff', [ConversationController::class, 'handoff']);
     Route::post('/conversations/{conversation}/resume-ai', [ConversationController::class, 'resumeAi']);    
-    
     Route::middleware('auth:sanctum')->get('/conversations/unread-summary', [ConversationController::class, 'unreadSummary']);
 
+
+    Route::get('/settings/line-bot', [LineBotSettingController::class, 'show']);
+    Route::put('/settings/line-bot', [LineBotSettingController::class, 'update']);    
+    
 });
 
 

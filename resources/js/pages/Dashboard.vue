@@ -8,6 +8,9 @@
 
       <div class="actions">
         <router-link to="/conversations" class="nav-btn">Conversations</router-link>
+
+        <router-link to="/settings/line-bot" class="nav-btn secondary-link">LINE Bot 設定</router-link>
+
         <button @click="logout">Logout</button>
       </div>
     </div>
@@ -50,6 +53,12 @@ async function logout() {
 </script>
 
 <style scoped>
+
+.secondary-link {
+  background: #0f766e;
+}
+
+
 .page {
   padding: 32px;
   background: #f4f7fb;

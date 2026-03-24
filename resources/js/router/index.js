@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../pages/Login.vue'
 import Dashboard from '../pages/Dashboard.vue'
 import Conversations from '../pages/Conversations.vue'
-
+import LineBotSettings from '../pages/LineBotSettings.vue'
 
 const routes = [
   {
@@ -24,6 +24,12 @@ const routes = [
     component: Conversations,
     meta: { requiresAuth: true },
   },
+  {
+      path: '/settings/line-bot',
+      name: 'line-bot-settings',
+      component: LineBotSettings,
+      meta: { requiresAuth: true },
+   }
 ]
 
 const router = createRouter({

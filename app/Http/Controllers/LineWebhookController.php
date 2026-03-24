@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\Line\LineWebhookService;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class LineWebhookController extends Controller
 {
@@ -13,12 +11,12 @@ class LineWebhookController extends Controller
         protected LineWebhookService $webhookService
     ) {}
 
-    public function handle(Request $request): JsonResponse
+    public function handle(Request $request, string $webhookKey)
     {
-       $this->webhookService->handle($request);
+        $this->webhookService->handle($request, $webhookKey);
 
         return response()->json([
             'success' => true,
-        ], Response::HTTP_OK);
+        ]);
     }
 }

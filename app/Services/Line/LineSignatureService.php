@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class LineSignatureService
 {
-    public function verify(Request $request, ?string $channelSecret = null): void
+    public function verify(Request $request, string $channelSecret): void
     {
         $signature = $request->header('x-line-signature');
 
@@ -15,14 +15,8 @@ class LineSignatureService
             throw new AccessDeniedHttpException('Missing LINE signature.');
         }
 
-        $secret = $channelSecret ?: config('services.line.channel_secret');
-
-        if (!$secret) {
-            throw new AccessDeniedHttpException('LINE channel secret not configured.');
-        }
-
         $body = $request->getContent();
-        $hash = base64_encode(hash_hmac('sha256', $body, $secret, true));
+        $hash = base64_encode(hash_hmac('sha256', $body, $channelSecret, true));
 
         if (!hash_equals($hash, $signature)) {
             throw new AccessDeniedHttpException('Invalid LINE signature.');

@@ -6,8 +6,11 @@ use App\Models\Tenant;
 
 class TenantResolverService
 {
-    public function resolveFromWebhook(array $event): Tenant
+    public function resolveByWebhookKey(string $webhookKey): Tenant
     {
-        return Tenant::query()->firstOrFail();
+        return Tenant::query()
+            ->with('lineChannel')
+            ->where('webhook_key', $webhookKey)
+            ->firstOrFail();
     }
 }
