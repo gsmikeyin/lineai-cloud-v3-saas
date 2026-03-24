@@ -113,34 +113,38 @@ class LineWebhookEventProcessor
             return;
         }
 
-        $directAnswer = $this->knowledgeMatcher->findDirectAnswer($tenant, $userMessage);
+       $directAnswer = $this->knowledgeMatcher->findDirectAnswer($tenant, $userMessage);
 
-        if ($directAnswer) {
-            $reply = $directAnswer;
-            $source = 'knowledge';
-        } else {
-            $history = $conversation->messages()
-                ->latest('id')
-                ->limit(6)
-                ->get()
-                ->reverse()
-                ->map(function ($msg) {
-                    return [
-                        'role' => $msg->direction === 'inbound' ? 'user' : 'assistant',
-                        'content' => $msg->content,
-                    ];
-                })
-                ->values()
-                ->all();
+if ($directAnswer) {
+    $reply = $directAnswer;
+    $source = 'knowledge';
+} else {
+    $history = $conversation->messages()
+        ->latest('id')
+        ->limit(6)
+        ->get()
+        ->reverse()
+        ->map(function ($msg) {
+            return [
+                'role' => $msg->direction === 'inbound' ? 'user' : 'assistant',
+                'content' => $msg->content,
+            ];
+        })
+        ->values()
+        ->all();
 
-            $knowledge = $this->knowledgeMatcher->getKnowledgeContext($tenant);
+    $knowledge = $this->knowledgeMatcher->getKnowledgeContext($tenant, 8);
+    $promptRules = $this->knowledgeMatcher->getPromptRules($tenant);
 
-            $reply = $this->openAIReplyService->generateReply($tenant, $userMessage, [
-                'history' => $history,
-                'knowledge' => $knowledge,
-            ]);
-            $source = 'ai';
-        }
+    $reply = $this->openAIReplyService->generateReply($tenant, $userMessage, [
+        'history' => $history,
+        'knowledge' => $knowledge,
+        'prompt_rules' => $promptRules,
+    ]);
+    $source = 'ai';
+}
+
+
 
         $this->lineApiService->replyText(
             $replyToken,

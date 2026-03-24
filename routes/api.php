@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\OpenAIController;
 use App\Http\Controllers\LineBotSettingController;
 
 use App\Http\Controllers\KnowledgeItemController;
+use App\Http\Controllers\KnowledgeMatcherTestController;
+
+
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -20,6 +23,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::post('/line/webhook/{webhookKey}', [LineWebhookController::class, 'handle']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -54,7 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'show']);
     Route::put('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'update']);
     Route::delete('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'destroy']);
-    
+
+     Route::post('/knowledge-items/test-match', [KnowledgeMatcherTestController::class, 'test']);
 });
 
 

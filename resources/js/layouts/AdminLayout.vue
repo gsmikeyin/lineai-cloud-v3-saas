@@ -30,9 +30,17 @@
           <span>Knowledge Base</span>
         </router-link>
 
+        <router-link to="/knowledge-test" class="nav-item">
+             <span>知識命中測試</span>
+        </router-link>
+
+        
         <router-link to="/settings" class="nav-item">
           <span>Settings</span>
         </router-link>
+
+        
+
       </nav>
     </aside>
 

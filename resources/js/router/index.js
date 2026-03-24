@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Login from '../pages/Login.vue'
+import Login from '../pages/login.vue'
 import Dashboard from '../pages/Dashboard.vue'
 import Conversations from '../pages/Conversations.vue'
 import Customers from '../pages/Customers.vue'
@@ -8,6 +8,8 @@ import LineBotSettings from '../pages/LineBotSettings.vue'
 import KnowledgeBase from '../pages/KnowledgeBase.vue'
 import Settings from '../pages/Settings.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
+import KnowledgeMatcherTest from '../pages/KnowledgeMatcherTest.vue'
+
 
 const routes = [
   {
@@ -57,6 +59,12 @@ const routes = [
         component: Settings,
         meta: { title: 'Settings' },
       },
+      {
+        path: 'knowledge-test',
+        name: 'knowledge-test',
+        component: KnowledgeMatcherTest,
+        meta: { title: '知識命中測試' },
+      }
     ],
   },
 ]
