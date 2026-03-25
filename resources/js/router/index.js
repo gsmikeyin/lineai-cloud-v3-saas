@@ -9,6 +9,12 @@ import KnowledgeBase from '../pages/KnowledgeBase.vue'
 import Settings from '../pages/Settings.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
 import KnowledgeMatcherTest from '../pages/KnowledgeMatcherTest.vue'
+import Register from '../pages/Register.vue'
+import CustomerDetail from '../pages/CustomerDetail.vue'
+import ForgotPassword from '../pages/ForgotPassword.vue'
+import ResetPassword from '../pages/ResetPassword.vue'
+import VerifyEmail from '../pages/VerifyEmail.vue'
+
 
 
 const routes = [
@@ -19,6 +25,24 @@ const routes = [
     meta: { guestOnly: true, title: 'Login' },
   },
   {
+      path: '/register',
+      name: 'register',
+      component: Register,
+      meta: { guestOnly: true, title: 'Register' },
+  },
+  {
+  path: '/forgot-password',
+  name: 'forgot-password',
+  component: ForgotPassword,
+  meta: { guestOnly: true, title: 'Forgot Password' },
+},
+{
+  path: '/reset-password',
+  name: 'reset-password',
+  component: ResetPassword,
+  meta: { guestOnly: true, title: 'Reset Password' },
+},
+   {
     path: '/',
     component: AdminLayout,
     meta: { requiresAuth: true },
@@ -64,7 +88,19 @@ const routes = [
         name: 'knowledge-test',
         component: KnowledgeMatcherTest,
         meta: { title: '知識命中測試' },
-      }
+      }, 
+      {
+        path: 'customers/:id',
+        name: 'customer-detail',
+        component: CustomerDetail,
+        meta: { title: 'Customer Detail' },
+      },
+      {
+        path: 'verify-email',
+        name: 'verify-email',
+        component: VerifyEmail,
+        meta: { title: 'Verify Email' },
+     },
     ],
   },
 ]

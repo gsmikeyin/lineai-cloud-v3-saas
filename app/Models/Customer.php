@@ -36,4 +36,11 @@ class Customer extends Model
     public function conversations(): HasMany { return $this->hasMany(Conversation::class); }
     public function messages(): HasMany { return $this->hasMany(Message::class); }
     public function tags(): BelongsToMany { return $this->belongsToMany(Tag::class, 'customer_tag')->withPivot('created_at'); }
+    
+    public function notes(): HasMany
+    {
+        return $this->hasMany(CustomerNote::class);
+    }
+
+    
 }

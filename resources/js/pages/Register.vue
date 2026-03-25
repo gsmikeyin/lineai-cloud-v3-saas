@@ -1,10 +1,20 @@
 <template>
-  <div class="login-page">
-    <div class="login-card">
+  <div class="register-page">
+    <div class="register-card">
       <h1>LineAI Cloud</h1>
-      <p class="subtitle">登入後台</p>
+      <p class="subtitle">建立你的 SaaS 帳號</p>
 
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="handleRegister">
+        <div class="form-group">
+          <label>公司名稱</label>
+          <input v-model="form.company_name" type="text" placeholder="請輸入公司名稱" />
+        </div>
+
+        <div class="form-group">
+          <label>管理者姓名</label>
+          <input v-model="form.name" type="text" placeholder="請輸入姓名" />
+        </div>
+
         <div class="form-group">
           <label>Email</label>
           <input v-model="form.email" type="email" placeholder="請輸入 Email" />
@@ -12,7 +22,12 @@
 
         <div class="form-group">
           <label>Password</label>
-          <input v-model="form.password" type="password" placeholder="請輸入密碼" />
+          <input v-model="form.password" type="password" placeholder="至少 8 碼" />
+        </div>
+
+        <div class="form-group">
+          <label>確認密碼</label>
+          <input v-model="form.password_confirmation" type="password" placeholder="再次輸入密碼" />
         </div>
 
         <div v-if="errorMessage" class="error-message">
@@ -20,20 +35,14 @@
         </div>
 
         <button type="submit" :disabled="loading">
-          {{ loading ? '登入中...' : '登入' }}
+          {{ loading ? '註冊中...' : '註冊並登入' }}
         </button>
       </form>
 
       <div class="bottom-link">
-  <router-link to="/forgot-password">忘記密碼？</router-link>
-</div>
-
-
-      <div class="bottom-link">
-         還沒有帳號？
-         <router-link to="/register">立即註冊</router-link>
+        已有帳號？
+        <router-link to="/login">前往登入</router-link>
       </div>
-     
     </div>
   </div>
 </template>
@@ -44,32 +53,37 @@ import { useRouter } from 'vue-router'
 import api from '../api'
 
 const router = useRouter()
-
 const loading = ref(false)
 const errorMessage = ref('')
 
 const form = reactive({
+  company_name: '',
+  name: '',
   email: '',
   password: '',
+  password_confirmation: '',
 })
 
-async function handleLogin() {
+async function handleRegister() {
   loading.value = true
   errorMessage.value = ''
 
   try {
-    const res = await api.post('/login', {
-      email: form.email,
-      password: form.password,
-    })
+    const res = await api.post('/register', form)
 
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
 
     router.push('/')
   } catch (error) {
-    errorMessage.value =
-      error.response?.data?.message || '登入失敗，請稍後再試'
+    const data = error.response?.data
+
+    if (data?.errors) {
+      const firstKey = Object.keys(data.errors)[0]
+      errorMessage.value = data.errors[firstKey][0]
+    } else {
+      errorMessage.value = data?.message || '註冊失敗，請稍後再試'
+    }
   } finally {
     loading.value = false
   }
@@ -77,7 +91,7 @@ async function handleLogin() {
 </script>
 
 <style scoped>
-.login-page {
+.register-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -86,9 +100,9 @@ async function handleLogin() {
   padding: 24px;
 }
 
-.login-card {
+.register-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 460px;
   background: #fff;
   border-radius: 16px;
   padding: 32px;
@@ -147,22 +161,10 @@ button:disabled {
   font-size: 14px;
 }
 
-.demo-box {
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 10px;
-  background: #f8fafc;
-  color: #555;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
 .bottom-link {
   margin-top: 18px;
   font-size: 14px;
   color: #666;
   text-align: center;
 }
-
-
 </style>

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'lineai/cloud',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '627f8426ebd3c2233c07138b01498635c9936f63',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -506,9 +506,9 @@
             'dev_requirement' => false,
         ),
         'lineai/cloud' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '627f8426ebd3c2233c07138b01498635c9936f63',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

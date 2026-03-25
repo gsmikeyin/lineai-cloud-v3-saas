@@ -18,6 +18,7 @@
             <th>VIP</th>
             <th>訊息數</th>
             <th>最後互動</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -28,6 +29,11 @@
             <td>{{ item.is_vip ? '是' : '否' }}</td>
             <td>{{ item.total_messages ?? 0 }}</td>
             <td>{{ formatDate(item.last_interaction_at) }}</td>
+            <td>
+              <router-link :to="`/customers/${item.id}`" class="view-link">
+                查看
+              </router-link>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -99,5 +105,10 @@ onMounted(fetchCustomers)
 .table th {
   font-size: 13px;
   color: #6b7280;
+}
+.view-link {
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 600;
 }
 </style>

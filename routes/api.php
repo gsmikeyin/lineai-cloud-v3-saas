@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\CustomerController;
@@ -16,18 +16,29 @@ use App\Http\Controllers\KnowledgeItemController;
 use App\Http\Controllers\KnowledgeMatcherTestController;
 
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthPasswordController;
+use App\Http\Controllers\AuthVerificationController;
+
 
 
 Route::post('/login', [AuthController::class, 'login']);
-
-
-
+Route::post('/register', [AuthController::class, 'register']);    
 Route::post('/line/webhook/{webhookKey}', [LineWebhookController::class, 'handle']);
+
+
+Route::post('/forgot-password', [AuthPasswordController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthPasswordController::class, 'resetPassword']);
+
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    
+
 
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
@@ -58,8 +69,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'show']);
     Route::put('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'update']);
     Route::delete('/knowledge-items/{knowledgeItem}', [KnowledgeItemController::class, 'destroy']);
+    Route::post('/knowledge-items/test-match', [KnowledgeMatcherTestController::class, 'test']);
 
-     Route::post('/knowledge-items/test-match', [KnowledgeMatcherTestController::class, 'test']);
+
+    Route::post('/email/verification-notification', [AuthVerificationController::class, 'send']);
+    Route::get('/verify-email/{id}/{hash}', [AuthVerificationController::class, 'verify'])
+        ->middleware(['signed'])
+        ->name('verification.verify');     
+
 });
 
 
