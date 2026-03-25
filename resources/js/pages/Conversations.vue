@@ -3,7 +3,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div>
-          <h2>Conversations</h2>
+          <h2>對話</h2>
           <p>{{ conversations.length }} 筆對話</p>
         </div>
         <button class="ghost-btn" @click="manualRefresh">刷新</button>

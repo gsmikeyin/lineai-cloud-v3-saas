@@ -2,7 +2,7 @@
   <div class="page-card">
     <div class="page-head">
       <div>
-        <h2>Customers</h2>
+        <h2>客戶</h2>
         <p>管理 LINE 客戶資料與互動狀態</p>
       </div>
       <button class="ghost-btn" @click="fetchCustomers">刷新</button>

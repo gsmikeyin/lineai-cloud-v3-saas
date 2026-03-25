@@ -2,7 +2,7 @@
   <div class="page-card">
     <div class="page-head">
       <div>
-        <h2>Knowledge Base</h2>
+        <h2>知識基礎</h2>
         <p>管理 FAQ、商品知識、政策與 AI 使用內容</p>
       </div>
       <button class="primary-btn" @click="openCreateModal">

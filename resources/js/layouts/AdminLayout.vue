@@ -5,7 +5,7 @@
         <div class="brand-logo">L</div>
         <div>
           <div class="brand-title">LineAI Cloud</div>
-          <div class="brand-sub">Admin Console</div>
+          <div class="brand-sub">Admin 儀表板</div>
         </div>
       </div>
 
@@ -15,11 +15,11 @@
         </router-link>
 
         <router-link to="/conversations" class="nav-item">
-          <span>Conversations</span>
+          <span>對話</span>
         </router-link>
 
         <router-link to="/customers" class="nav-item">
-          <span>Customers</span>
+          <span>客戶</span>
         </router-link>
 
         <router-link to="/settings/line-bot" class="nav-item">
@@ -27,16 +27,16 @@
         </router-link>
 
         <router-link to="/knowledge-base" class="nav-item">
-          <span>Knowledge Base</span>
+          <span>知識基礎</span>
         </router-link>
 
         <router-link to="/knowledge-test" class="nav-item">
              <span>知識命中測試</span>
         </router-link>
 
-        
+
         <router-link to="/settings" class="nav-item">
-          <span>Settings</span>
+          <span>設定</span>
         </router-link>
 
         
@@ -56,7 +56,7 @@
             <div class="user-name">{{ userName }}</div>
             <div class="user-role">Tenant Admin</div>
           </div>
-          <button class="logout-btn" @click="logout">Logout</button>
+          <button class="logout-btn" @click="logout">登出</button>
         </div>
       </header>
 

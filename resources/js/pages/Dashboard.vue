@@ -1,39 +1,39 @@
 <template>
   <div class="dashboard-grid">
     <div class="stat-card">
-      <div class="stat-title">Conversations</div>
+      <div class="stat-title">對話</div>
       <div class="stat-value">128</div>
       <div class="stat-sub">本月累計對話</div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">Unread</div>
+      <div class="stat-title">未讀</div>
       <div class="stat-value">12</div>
       <div class="stat-sub">待處理訊息</div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">Customers</div>
+      <div class="stat-title">客戶</div>
       <div class="stat-value">542</div>
       <div class="stat-sub">累積客戶數</div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">AI Replies</div>
+      <div class="stat-title">AI 回復</div>
       <div class="stat-value">3,280</div>
       <div class="stat-sub">AI 已回覆數</div>
     </div>
 
     <div class="panel-card span-2">
       <h3>系統概覽</h3>
-      <p>你現在可以從左側選單進入 Conversations、Customers、LINE Bot 設定、Knowledge Base 與 Settings。</p>
+      <p>你現在可以從左側選單進入 對話、客戶、LINE Bot 設定、知識基礎 與 設定。</p>
     </div>
 
     <div class="panel-card">
       <h3>快速入口</h3>
       <div class="quick-links">
-        <router-link to="/conversations" class="quick-link">進入 Conversations</router-link>
-        <router-link to="/customers" class="quick-link">進入 Customers</router-link>
+        <router-link to="/conversations" class="quick-link">進入 對話</router-link>
+        <router-link to="/customers" class="quick-link">進入 客戶</router-link>
         <router-link to="/settings/line-bot" class="quick-link">設定 LINE Bot</router-link>
       </div>
     </div>

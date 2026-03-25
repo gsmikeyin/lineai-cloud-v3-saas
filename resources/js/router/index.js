@@ -57,13 +57,13 @@ const routes = [
         path: 'conversations',
         name: 'conversations',
         component: Conversations,
-        meta: { title: 'Conversations' },
+        meta: { title: '對話' },
       },
       {
         path: 'customers',
         name: 'customers',
         component: Customers,
-        meta: { title: 'Customers' },
+        meta: { title: '客戶' },
       },
       {
         path: 'settings/line-bot',
@@ -75,13 +75,13 @@ const routes = [
         path: 'knowledge-base',
         name: 'knowledge-base',
         component: KnowledgeBase,
-        meta: { title: 'Knowledge Base' },
+        meta: { title: '知識基礎' },
       },
       {
         path: 'settings',
         name: 'settings',
         component: Settings,
-        meta: { title: 'Settings' },
+        meta: { title: '設定' },
       },
       {
         path: 'knowledge-test',

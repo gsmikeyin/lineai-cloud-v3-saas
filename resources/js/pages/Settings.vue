@@ -2,7 +2,7 @@
   <div class="page-card">
     <div class="page-head">
       <div>
-        <h2>Settings</h2>
+        <h2>設定</h2>
         <p>系統與租戶基本設定</p>
       </div>
     </div>
