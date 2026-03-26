@@ -29,15 +29,38 @@ class AuthVerificationController extends Controller
 
     public function verify(EmailVerificationRequest $request)
     {
-        if ($request->user()->hasVerifiedEmail()) {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json([
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
+        if ((int) $user->getKey() !== (int) $request->route('id')) {
+            return response()->json([
+                'message' => '驗證使用者不一致',
+            ], 403);
+        }
+
+        if (! hash_equals(
+            (string) $request->route('hash'),
+            sha1($user->getEmailForVerification())
+        )) {
+            return response()->json([
+                'message' => '驗證連結無效',
+            ], 403);
+        }
+
+        if ($user->hasVerifiedEmail()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Email 已驗證',
             ]);
         }
 
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
         }
 
         return response()->json([

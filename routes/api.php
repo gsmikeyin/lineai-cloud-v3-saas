@@ -31,6 +31,11 @@ Route::post('/forgot-password', [AuthPasswordController::class, 'forgotPassword'
 Route::post('/reset-password', [AuthPasswordController::class, 'resetPassword']);
 
 
+Route::get('/login', function () {
+    return response()->json([
+        'message' => 'Please login first.'
+    ], 401);
+})->name('login');
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -72,10 +77,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/knowledge-items/test-match', [KnowledgeMatcherTestController::class, 'test']);
 
 
-    Route::post('/email/verification-notification', [AuthVerificationController::class, 'send']);
+  Route::post('/email/verification-notification', [AuthVerificationController::class, 'send']);
+
     Route::get('/verify-email/{id}/{hash}', [AuthVerificationController::class, 'verify'])
-        ->middleware(['signed'])
-        ->name('verification.verify');     
+        ->middleware('signed')
+        ->name('verification.verify');
 
 });
 

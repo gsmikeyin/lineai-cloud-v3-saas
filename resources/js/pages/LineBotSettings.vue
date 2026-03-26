@@ -1,5 +1,7 @@
 <template>
   <div class="page">
+    <EmailVerificationBanner :email-verified="emailVerified" />
+
     <div class="page-header">
       <div>
         <h1>LINE Bot 設定</h1>
@@ -7,7 +9,11 @@
       </div>
     </div>
 
-    <div class="grid">
+    <div v-if="!emailVerified" class="lock-box">
+      為了安全性，請先完成 Email 驗證後再設定 LINE Bot。
+    </div>
+
+    <div class="grid" :class="{ disabled: !emailVerified }">
       <div class="card">
         <h2>Bot 基本設定</h2>
 
@@ -16,12 +22,12 @@
         <form v-else @submit.prevent="saveSettings">
           <div class="form-group">
             <label>Channel Name</label>
-            <input v-model="form.channel_name" type="text" placeholder="例如：客服 Bot" />
+            <input v-model="form.channel_name" type="text" placeholder="例如：客服 Bot" :disabled="!emailVerified" />
           </div>
 
           <div class="form-group">
             <label>Channel ID</label>
-            <input v-model="form.channel_id" type="text" placeholder="請輸入 LINE Channel ID" />
+            <input v-model="form.channel_id" type="text" placeholder="請輸入 LINE Channel ID" :disabled="!emailVerified" />
           </div>
 
           <div class="form-group">
@@ -30,11 +36,12 @@
               v-model="form.channel_secret"
               :type="showSecret ? 'text' : 'password'"
               placeholder="請輸入 LINE Channel Secret"
+              :disabled="!emailVerified"
             />
           </div>
 
           <div class="form-actions-inline">
-            <button type="button" class="ghost-btn" @click="showSecret = !showSecret">
+            <button type="button" class="ghost-btn" @click="showSecret = !showSecret" :disabled="!emailVerified">
               {{ showSecret ? '隱藏 Secret' : '顯示 Secret' }}
             </button>
           </div>
@@ -45,22 +52,23 @@
               v-model="form.channel_access_token"
               rows="4"
               placeholder="請輸入 LINE Channel Access Token"
+              :disabled="!emailVerified"
             />
           </div>
 
           <div class="form-group">
             <label>Basic ID</label>
-            <input v-model="form.basic_id" type="text" placeholder="@yourbot" />
+            <input v-model="form.basic_id" type="text" placeholder="@yourbot" :disabled="!emailVerified" />
           </div>
 
           <div class="form-group">
             <label>Bot User ID</label>
-            <input v-model="form.bot_user_id" type="text" placeholder="Uxxxxxxxxxxxxxxxx" />
+            <input v-model="form.bot_user_id" type="text" placeholder="Uxxxxxxxxxxxxxxxx" :disabled="!emailVerified" />
           </div>
 
           <div class="form-group switch-row">
             <label>啟用 Bot</label>
-            <input v-model="form.is_active" type="checkbox" />
+            <input v-model="form.is_active" type="checkbox" :disabled="!emailVerified" />
           </div>
 
           <div v-if="successMessage" class="success-message">
@@ -72,7 +80,7 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="primary-btn" :disabled="saving">
+            <button type="submit" class="primary-btn" :disabled="saving || !emailVerified">
               {{ saving ? '儲存中...' : '儲存設定' }}
             </button>
           </div>
@@ -127,14 +135,6 @@
             </div>
           </div>
         </div>
-
-        <div class="info-block warning-box">
-          <label>注意事項</label>
-          <p>
-            若你修改了 Channel Secret 或 Access Token，記得重新測試 webhook。
-            若 queue worker 正在執行，建議重啟 queue worker 讓新設定生效。
-          </p>
-        </div>
       </div>
     </div>
   </div>
@@ -143,6 +143,10 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import api from '../api'
+import EmailVerificationBanner from '../components/EmailVerificationBanner.vue'
+import { useAuthState } from '../composables/useAuthState'
+
+const { emailVerified } = useAuthState()
 
 const loading = ref(true)
 const saving = ref(false)
@@ -187,6 +191,11 @@ async function fetchSettings() {
 }
 
 async function saveSettings() {
+  if (!emailVerified.value) {
+    errorMessage.value = '請先完成 Email 驗證'
+    return
+  }
+
   saving.value = true
   errorMessage.value = ''
   successMessage.value = ''
@@ -229,50 +238,49 @@ onMounted(fetchSettings)
 
 <style scoped>
 .page {
+  display: grid;
+  gap: 18px;
   padding: 32px;
   background: #f4f7fb;
   min-height: 100vh;
 }
-
 .page-header {
-  margin-bottom: 24px;
+  margin-bottom: 6px;
 }
-
 .page-header h1 {
   margin: 0 0 8px;
 }
-
 .page-header p {
   margin: 0;
   color: #6b7280;
 }
-
+.lock-box {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
 .grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 20px;
 }
-
+.grid.disabled {
+  opacity: 0.85;
+}
 .card {
   background: #fff;
   border-radius: 18px;
   padding: 24px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
-
 .card h2 {
   margin-top: 0;
   margin-bottom: 20px;
 }
-
-.loading-box {
-  color: #6b7280;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
+.loading-box { color: #6b7280; }
+.form-group { margin-bottom: 16px; }
 .form-group label {
   display: block;
   margin-bottom: 8px;
@@ -280,7 +288,6 @@ onMounted(fetchSettings)
   color: #374151;
   font-weight: 600;
 }
-
 .form-group input,
 .form-group textarea {
   width: 100%;
@@ -291,27 +298,22 @@ onMounted(fetchSettings)
   font-size: 14px;
   background: #fff;
 }
-
 .form-actions-inline {
   margin-top: -4px;
   margin-bottom: 16px;
 }
-
 .switch-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
 .switch-row input[type="checkbox"] {
   width: 18px;
   height: 18px;
 }
-
 .form-actions {
   margin-top: 20px;
 }
-
 .primary-btn,
 .ghost-btn {
   border: 0;
@@ -320,39 +322,30 @@ onMounted(fetchSettings)
   cursor: pointer;
   font-size: 14px;
 }
-
 .primary-btn {
   background: #111827;
   color: #fff;
 }
-
 .ghost-btn {
   background: #eef2f7;
   color: #111827;
 }
-
 .primary-btn:disabled,
 .ghost-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
 .success-message {
   margin-top: 8px;
   color: #15803d;
   font-size: 14px;
 }
-
 .error-message {
   margin-top: 8px;
   color: #dc2626;
   font-size: 14px;
 }
-
-.info-block {
-  margin-bottom: 22px;
-}
-
+.info-block { margin-bottom: 22px; }
 .info-block label {
   display: block;
   margin-bottom: 8px;
@@ -360,12 +353,10 @@ onMounted(fetchSettings)
   color: #374151;
   font-weight: 600;
 }
-
 .copy-row {
   display: flex;
   gap: 10px;
 }
-
 .copy-row input {
   flex: 1;
   box-sizing: border-box;
@@ -375,25 +366,21 @@ onMounted(fetchSettings)
   font-size: 14px;
   background: #f9fafb;
 }
-
 .hint {
   margin-top: 8px;
   color: #6b7280;
   font-size: 13px;
 }
-
 .steps {
   margin: 0;
   padding-left: 18px;
   color: #374151;
   line-height: 1.8;
 }
-
 .status-list {
   display: grid;
   gap: 10px;
 }
-
 .status-item {
   display: flex;
   justify-content: space-between;
@@ -402,19 +389,6 @@ onMounted(fetchSettings)
   border-radius: 10px;
   background: #f9fafb;
 }
-
-.warning-box {
-  padding: 14px;
-  border-radius: 14px;
-  background: #fff7ed;
-}
-
-.warning-box p {
-  margin: 0;
-  color: #9a3412;
-  line-height: 1.7;
-}
-
 @media (max-width: 980px) {
   .grid {
     grid-template-columns: 1fr;
