@@ -19,7 +19,7 @@ class OpenAIReplyService
 
         $promptRules = $context['prompt_rules'] ?? [];
 
-        
+
         $knowledgeText = $this->formatKnowledge($context['knowledge'] ?? []);
 
         $historyText = $this->formatHistory($context['history'] ?? []);
