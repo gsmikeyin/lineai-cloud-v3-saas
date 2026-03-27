@@ -19,7 +19,7 @@ use App\Http\Controllers\KnowledgeMatcherTestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPasswordController;
 use App\Http\Controllers\AuthVerificationController;
-
+use Illuminate\Http\Request;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,6 +36,16 @@ Route::get('/login', function () {
         'message' => 'Please login first.'
     ], 401);
 })->name('login');
+
+
+
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request) {
+    return response()->json([
+        'message' => 'Verification placeholder route.',
+    ]);
+})->middleware('signed')->name('verification.verify');
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -79,10 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/email/verification-notification', [AuthVerificationController::class, 'send']);
-      
-    Route::get('/verify-email/{id}/{hash}', [AuthVerificationController::class, 'verify'])
-        ->middleware('signed')
-        ->name('verification.verify');
+    Route::post('/verify-email', [AuthVerificationController::class, 'verify']);
 
 
 });

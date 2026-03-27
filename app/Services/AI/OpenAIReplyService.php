@@ -4,6 +4,8 @@ namespace App\Services\AI;
 
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
 
 class OpenAIReplyService
 {
@@ -16,7 +18,10 @@ class OpenAIReplyService
             ?: '你是商家的 LINE 客服助理，請使用繁體中文、簡潔、友善、專業地回答。若不確定，不要亂猜，請引導轉人工客服。';
 
         $promptRules = $context['prompt_rules'] ?? [];
+
+        
         $knowledgeText = $this->formatKnowledge($context['knowledge'] ?? []);
+
         $historyText = $this->formatHistory($context['history'] ?? []);
 
         $extraPromptRules = $this->formatPromptRules($promptRules);
@@ -39,6 +44,9 @@ class OpenAIReplyService
 
 請直接輸出要回覆給客戶的文字，不要加系統說明、不要加標題、不要解釋你是 AI。
 TEXT;
+
+       //直接輸出到console mode
+       error_log("generateReply user message input: " . $userMessage);
 
         $response = Http::withToken($apiKey)
             ->acceptJson()

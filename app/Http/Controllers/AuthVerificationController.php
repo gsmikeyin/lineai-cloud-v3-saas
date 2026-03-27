@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 class AuthVerificationController extends Controller
 {
@@ -27,39 +27,41 @@ class AuthVerificationController extends Controller
         ]);
     }
 
-    public function verify(EmailVerificationRequest $request)
+    public function verify(Request $request)
     {
+        $validated = $request->validate([
+            'id' => ['required'],
+            'hash' => ['required', 'string'],
+            'expires' => ['required'],
+            'signature' => ['required', 'string'],
+        ]);
+
         $user = $request->user();
 
-        if (! $user) {
-            return response()->json([
-                'message' => 'Unauthenticated1233.',
-            ], 401);
-        }
-
-        if ((int) $user->getKey() !== (int) $request->route('id')) {
+        if ((string) $user->getKey() !== (string) $validated['id']) {
             return response()->json([
                 'message' => '驗證使用者不一致',
             ], 403);
         }
 
-        if (! hash_equals(
-            (string) $request->route('hash'),
-            sha1($user->getEmailForVerification())
-        )) {
+        $verifyUrl = url('/api/email/verify/' . $validated['id'] . '/' . $validated['hash'])
+            . '?expires=' . urlencode($validated['expires'])
+            . '&signature=' . urlencode($validated['signature']);
+
+        if (! URL::hasValidSignature(Request::create($verifyUrl))) {
             return response()->json([
-                'message' => '驗證連結無效',
+                'message' => '驗證連結無效或已過期',
             ], 403);
         }
 
-        if ($user->hasVerifiedEmail()) {
+        if (! hash_equals((string) $validated['hash'], sha1($user->getEmailForVerification()))) {
             return response()->json([
-                'success' => true,
-                'message' => 'Email 已驗證',
-            ]);
+                'message' => '驗證資料不正確',
+            ], 403);
         }
 
-        if ($user->markEmailAsVerified()) {
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
             event(new Verified($user));
         }
 

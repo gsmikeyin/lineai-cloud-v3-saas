@@ -11,6 +11,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Support\Facades\URL;
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -52,6 +54,29 @@ class User extends Authenticatable implements MustVerifyEmail
                . '/reset-password?token=' . $token
                . '&email=' . urlencode($user->email);
        });
+
+
+      VerifyEmail::createUrlUsing(function ($notifiable) {
+        $signedUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]
+        );
+
+        $parts = parse_url($signedUrl);
+        $query = $parts['query'] ?? '';
+
+        return rtrim(config('app.frontend_url'), '/')
+            . '/verify-email?'
+            . $query
+            . '&id=' . $notifiable->getKey()
+            . '&hash=' . sha1($notifiable->getEmailForVerification());
+        });
+        
+        
     }
 
 
