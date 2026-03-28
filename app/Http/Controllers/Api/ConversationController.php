@@ -91,17 +91,23 @@ public function show(Request $request, Conversation $conversation)
     public function reply(Request $request, Conversation $conversation)
     {
 
-    abort_if($conversation->tenant_id !== $request->user()->tenant_id, 403);
+        error_log("ConversationController  reply:開始");
+
+        abort_if($conversation->tenant_id !== $request->user()->tenant_id, 403);
 
         $validated = $request->validate([
             'message' => ['required', 'string'],
         ]);
+
+         error_log("ConversationController  reply: 送出1");
 
         $message = $this->conversationReplyService->replyAsAgent(
             conversation: $conversation,
             user: $request->user(),
             text: $validated['message'],
         );
+
+          error_log("ConversationController  reply: 已送出");
 
         return response()->json([
             'success' => true,

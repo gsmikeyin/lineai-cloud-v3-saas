@@ -63,7 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/conversations', [ConversationController::class, 'index']);
     Route::get('/conversations/{conversation}', [ConversationController::class, 'show']);
+
+    
     Route::post('/conversations/{conversation}/reply', [ConversationController::class, 'reply']);
+
 
     Route::get('/knowledge', [KnowledgeController::class, 'index']);
     Route::post('/knowledge', [KnowledgeController::class, 'store']);
