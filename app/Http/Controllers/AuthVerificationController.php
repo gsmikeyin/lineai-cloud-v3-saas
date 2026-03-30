@@ -19,7 +19,9 @@ class AuthVerificationController extends Controller
             ]);
         }
 
+
         $user->sendEmailVerificationNotification();
+
 
         return response()->json([
             'success' => true,
@@ -28,8 +30,11 @@ class AuthVerificationController extends Controller
     }
 
     public function verify(Request $request)
-    {
-        $validated = $request->validate([
+    {  
+      
+       error_log("verify mail in: " );
+
+       $validated = $request->validate([
             'id' => ['required'],
             'hash' => ['required', 'string'],
             'expires' => ['required'],
