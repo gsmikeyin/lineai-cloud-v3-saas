@@ -4,7 +4,7 @@
       <div class="brand">
         <div class="brand-logo">L</div>
         <div>
-          <div class="brand-title">LineAI Cloud</div>
+          <div class="brand-title">ServiceAI Cloud</div>
           <div class="brand-sub">Admin 儀表板</div>
         </div>
       </div>

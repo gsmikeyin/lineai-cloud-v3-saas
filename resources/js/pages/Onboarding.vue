@@ -4,7 +4,7 @@
       <EmailVerificationBanner :email-verified="emailVerified" />
 
       <div class="hero">
-        <h1>歡迎使用 LineAI Cloud</h1>
+        <h1>歡迎使用 ServiceAI Cloud</h1>
         <p>再幾步就能完成你的 LINE AI SaaS 初始設定。</p>
       </div>
 

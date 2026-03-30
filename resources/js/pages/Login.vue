@@ -1,17 +1,17 @@
 <template>
   <div class="login-page">
     <div class="login-card">
-      <h1>LineAI Cloud</h1>
+      <h1>ServiceAI Cloud</h1>
       <p class="subtitle">登入後台</p>
 
       <form @submit.prevent="handleLogin">
         <div class="form-group">
-          <label>Email</label>
+          <label>電子郵件</label>
           <input v-model="form.email" type="email" placeholder="請輸入 Email" />
         </div>
 
         <div class="form-group">
-          <label>Password</label>
+          <label>密碼</label>
           <input v-model="form.password" type="password" placeholder="請輸入密碼" />
         </div>
 
