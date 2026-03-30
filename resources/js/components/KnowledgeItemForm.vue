@@ -5,18 +5,18 @@
         <label>類型</label>
         <select v-model="localForm.type">
           <option value="faq">FAQ</option>
-          <option value="product">Product</option>
-          <option value="policy">Policy</option>
-          <option value="prompt">Prompt</option>
+          <option value="product">產品</option>
+          <option value="policy">政策</option>
+          <option value="prompt">提示</option>
         </select>
       </div>
 
       <div class="form-group">
         <label>狀態</label>
         <select v-model="localForm.status">
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-          <option value="archived">Archived</option>
+          <option value="draft">草稿</option>
+          <option value="published">發佈</option>
+          <option value="archived">存檔</option>
         </select>
       </div>
 

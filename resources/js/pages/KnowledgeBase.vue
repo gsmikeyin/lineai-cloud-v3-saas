@@ -20,16 +20,17 @@
       <select v-model="filters.type">
         <option value="">全部類型</option>
         <option value="faq">FAQ</option>
-        <option value="product">Product</option>
-        <option value="policy">Policy</option>
-        <option value="prompt">Prompt</option>
+
+        <option value="product">產品</option>
+        <option value="policy">政策</option>
+        <option value="prompt">提示</option>
       </select>
 
       <select v-model="filters.status">
         <option value="">全部狀態</option>
-        <option value="draft">Draft</option>
-        <option value="published">Published</option>
-        <option value="archived">Archived</option>
+        <option value="draft">草稿</option>
+        <option value="published">發表</option>
+        <option value="archived">存檔</option>
       </select>
 
       <button class="ghost-btn" @click="fetchItems">搜尋</button>
@@ -66,11 +67,14 @@
                 <div class="title-sub">{{ item.question || '-' }}</div>
               </div>
             </td>
-            <td>{{ item.type }}</td>
+
+            <td>{{typeDate(item.type)}}</td>
+
             <td>
               <span class="badge" :class="`status-${item.status}`">
-                {{ item.status }}
+                {{ statusDate(item.status) }}
               </span>
+
             </td>
             <td>
               <span class="badge" :class="item.is_ai_enabled ? 'ai-on' : 'ai-off'">
@@ -286,6 +290,40 @@ function formatDate(value) {
   if (Number.isNaN(d.getTime())) return value
   return d.toLocaleString('zh-TW')
 }
+
+
+
+function typeDate(value) {
+  switch (value)
+  {
+    case 'faq':
+      return 'FAQ'
+    case 'product':
+      return '產品'
+    case 'policy':
+      return '政策'
+    case 'prompt':
+      return '提示'
+    default:
+      return value
+  }      
+}
+
+function statusDate(value) {
+  switch (value)
+  {
+    case 'draft':
+      return '草稿'
+    case 'published':
+      return '發佈'
+    case 'archived':
+      return '存檔'
+    default:
+      return value
+  }      
+}
+
+//status
 
 onMounted(fetchItems)
 </script>
