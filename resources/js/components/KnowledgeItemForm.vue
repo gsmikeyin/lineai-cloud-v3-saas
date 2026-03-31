@@ -1,6 +1,7 @@
 <template>
   <div class="form-shell">
     <div class="form-grid">
+      
       <div class="form-group">
         <label>類型</label>
         <select v-model="localForm.type">
@@ -126,13 +127,18 @@ watch(
     localForm.content = value?.content || ''
     localForm.status = value?.status || 'draft'
     localForm.sort_order = value?.sort_order ?? 0
+
     localForm.is_ai_enabled =
       typeof value?.is_ai_enabled === 'boolean' ? value.is_ai_enabled : true
+
     localForm.keywords = Array.isArray(value?.keywords) ? value.keywords : []
+
     keywordsInput.value = localForm.keywords.join(', ')
+
   },
   { immediate: true, deep: true }
 )
+
 
 function submitForm() {
   const keywords = keywordsInput.value

@@ -137,7 +137,7 @@
       </button>
     </div>
 
-    <div v-if="showModal" class="modal-mask" @click.self="closeModal">
+    <div v-if="showModal" class="modal-mask" >
       <div class="modal-card">
         <div class="modal-header">
           <h3>{{ editingItem ? '編輯知識' : '新增知識' }}</h3>
