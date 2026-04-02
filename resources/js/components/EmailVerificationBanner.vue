@@ -12,7 +12,7 @@
         <button class="ghost-btn" @click="resend" :disabled="loading">
           {{ loading ? '寄送中...' : '重新寄送驗證信' }}
         </button>
-        <router-link class="primary-link" to="/verify-email">
+        <router-link class="primary-link" to="/app/verify-email">
           前往驗證頁
         </router-link>
       </div>

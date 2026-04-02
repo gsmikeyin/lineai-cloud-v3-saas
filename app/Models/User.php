@@ -70,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $query = $parts['query'] ?? '';
 
         return rtrim(config('app.frontend_url'), '/')
-            . '/verify-email?'
+            . '/app/verify-email?'
             . $query
             . '&id=' . $notifiable->getKey()
             . '&hash=' . sha1($notifiable->getEmailForVerification());

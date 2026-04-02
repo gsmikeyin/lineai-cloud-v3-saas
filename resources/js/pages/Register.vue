@@ -74,7 +74,7 @@ async function handleRegister() {
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
 
-    router.push('/')
+    router.push('/app/onboarding')
   } catch (error) {
     const data = error.response?.data
 

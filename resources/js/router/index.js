@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+
+
+import LandingPage from '../pages/LandingPage.vue'
 import Login from '../pages/login.vue'
+
+
 import Dashboard from '../pages/Dashboard.vue'
+
 import Conversations from '../pages/Conversations.vue'
 import Customers from '../pages/Customers.vue'
 import LineBotSettings from '../pages/LineBotSettings.vue'
@@ -18,6 +24,12 @@ import VerifyEmail from '../pages/VerifyEmail.vue'
 
 
 const routes = [
+   {
+    path: '/',
+    name: 'landing',
+    component: LandingPage,
+    meta: { title: 'LineAI Cloud' },
+  },  
   {
     path: '/login',
     name: 'login',
@@ -43,7 +55,7 @@ const routes = [
   meta: { guestOnly: true, title: 'Reset Password' },
 },
    {
-    path: '/',
+    path: '/app',
     component: AdminLayout,
     meta: { requiresAuth: true },
     children: [
@@ -118,7 +130,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.guestOnly && token) {
-    return next('/')
+    return next('/app')
   }
 
   next()

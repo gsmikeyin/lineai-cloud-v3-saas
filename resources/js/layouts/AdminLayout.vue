@@ -10,32 +10,32 @@
       </div>
 
       <nav class="nav">
-        <router-link to="/" class="nav-item">
+        <router-link to="/app" class="nav-item">
           <span>Dashboard</span>
         </router-link>
 
-        <router-link to="/conversations" class="nav-item">
+        <router-link to="/app/conversations" class="nav-item">
           <span>對話</span>
         </router-link>
 
-        <router-link to="/customers" class="nav-item">
+        <router-link to="/app/customers" class="nav-item">
           <span>客戶</span>
         </router-link>
 
-        <router-link to="/settings/line-bot" class="nav-item">
+        <router-link to="/app/settings/line-bot" class="nav-item">
           <span>LINE Bot 設定</span>
         </router-link>
 
-        <router-link to="/knowledge-base" class="nav-item">
+        <router-link to="/app/knowledge-base" class="nav-item">
           <span>知識基礎</span>
         </router-link>
 
-        <router-link to="/knowledge-test" class="nav-item">
+        <router-link to="/app/knowledge-test" class="nav-item">
              <span>知識命中測試</span>
         </router-link>
 
 
-        <router-link to="/settings" class="nav-item">
+        <router-link to="/app/settings" class="nav-item">
           <span>設定</span>
         </router-link>
 

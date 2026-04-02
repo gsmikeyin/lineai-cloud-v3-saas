@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
             );
 
             return config('app.frontend_url')
-                . '/verify-email?verify_url='
+                . '/app/verify-email?verify_url='
                 . urlencode($verifyUrl);
         });
     }

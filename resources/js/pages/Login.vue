@@ -66,7 +66,7 @@ async function handleLogin() {
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
 
-    router.push('/')
+    router.push('/app')
   } catch (error) {
     errorMessage.value =
       error.response?.data?.message || '登入失敗，請稍後再試'
