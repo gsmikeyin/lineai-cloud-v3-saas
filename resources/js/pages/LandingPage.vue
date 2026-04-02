@@ -44,7 +44,9 @@
       </div>
 
       <div class="hero-right">
+
         <div class="mockup-card">
+                        
           <div class="mockup-header">
             <span class="dot red"></span>
             <span class="dot yellow"></span>
