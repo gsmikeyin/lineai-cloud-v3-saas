@@ -92,4 +92,13 @@ class OpenAIController extends Controller
             'success' => true
         ]);
     }
+
+
+    public function test(Request $request): JsonResponse
+    {                       
+        return response()->json([
+            'token' => 'TEST KEY',            
+        ]);
+    }
+
 }

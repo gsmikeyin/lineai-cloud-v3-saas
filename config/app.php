@@ -57,5 +57,7 @@ return [
    
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:8000'),
 
+
     
+    'admin_email' => env('ADMIN_EMAIL'),
 ];

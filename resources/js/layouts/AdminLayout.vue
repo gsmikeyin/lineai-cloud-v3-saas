@@ -27,7 +27,7 @@
         </router-link>
 
         <router-link to="/app/knowledge-base" class="nav-item">
-          <span>知識基礎</span>
+          <span>知識庫</span>
         </router-link>
 
         <router-link to="/app/knowledge-test" class="nav-item">
@@ -39,8 +39,11 @@
           <span>設定</span>
         </router-link>
 
-        
+        <router-link to="/app/contact-leads" class="nav-item">
+            <span>Contact Leads</span>
+        </router-link>
 
+        
       </nav>
     </aside>
 

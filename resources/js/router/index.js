@@ -20,6 +20,7 @@ import CustomerDetail from '../pages/CustomerDetail.vue'
 import ForgotPassword from '../pages/ForgotPassword.vue'
 import ResetPassword from '../pages/ResetPassword.vue'
 import VerifyEmail from '../pages/VerifyEmail.vue'
+import ContactLeads from '../pages/ContactLeads.vue'
 
 
 
@@ -113,6 +114,14 @@ const routes = [
         component: VerifyEmail,
         meta: { title: 'Verify Email' },
      },
+     
+     {
+        path: 'contact-leads',
+        name: 'contact-leads',
+        component: ContactLeads,
+        meta: { title: 'Contact Leads' },
+    }
+
     ],
   },
 ]

@@ -20,6 +20,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPasswordController;
 use App\Http\Controllers\AuthVerificationController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ContactLeadController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -47,6 +48,8 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
 })->middleware('signed')->name('verification.verify');
 
 
+// 公開聯絡表單
+Route::post('/contact', [ContactLeadController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -95,6 +98,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/verify-email', [AuthVerificationController::class, 'verify']);
 
 
+    Route::get('/contact-leads', [ContactLeadController::class, 'index']);
+    Route::get('/contact-leads/{contactLead}', [ContactLeadController::class, 'show']);
+    Route::put('/contact-leads/{contactLead}', [ContactLeadController::class, 'update']);
+
+
+
 });
 
 
@@ -105,3 +114,6 @@ Route::post('/upload-file', [OpenAIController::class, 'uploadFile']);
 Route::post('/create-vector-store', [OpenAIController::class, 'VectorStore']);
 Route::post('/add-file-to-vector-store', [OpenAIController::class, 'AddFileVectorStore']);
 Route::post('/knowledge/upload', [KnowledgeController::class, 'upload']);
+
+
+Route::get('/test', [OpenAIController::class, 'test']);
