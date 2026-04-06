@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->string('locale', 10)->default('zh_TW')->after('status');
         });
     }
     public function down(): void { Schema::dropIfExists('tenants'); }

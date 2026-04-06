@@ -1,4 +1,7 @@
 <template>
+
+   
+
   <div class="landing-page">
     <header class="topbar">
       <div class="container topbar-inner">
@@ -16,6 +19,11 @@
           <a href="#faq">FAQ</a>
           <a href="#contact">聯絡我們</a>
           <router-link to="/login" class="login-link">登入</router-link>
+
+          <select :value="locale" @change="changeLocale($event.target.value)" class="locale-select">
+                 <option value="zh_TW">繁中</option>
+                 <option value="en">English</option>                 
+          </select>
         </nav>
       </div>
     </header>
@@ -23,20 +31,21 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-left">
-          <div class="hero-badge">LINE + AI + CRM + SaaS</div>
-          <h1>把 LINE 客服<br />升級成可管理、可成長的 AI 平台</h1>
-          <p class="hero-desc">
-            整合 LINE 官方帳號、Knowledge Base、AI 自動回覆、真人接手與 CRM，
-            幫助企業降低客服成本、提升回覆速度，並把客服流程變成真正可營運的系統。
-          </p>
+          <div class="hero-badge">{{ $t('landing.badge') }}</div>
+          <h1>{{ $t('landing.heroTitle1') }}<br />{{ $t('landing.heroTitle2') }}</h1>
+          <p class="hero-desc">{{ $t('landing.heroDesc') }}</p>
 
           <div class="hero-actions">
             <router-link to="/register" class="primary-btn">
-              免費開始
+                {{ $t('landing.startFree') }}
             </router-link>
-            <router-link to="/login" class="ghost-btn">
-              前往登入
-            </router-link>
+
+           <router-link to="/login" class="ghost-btn">
+                {{ $t('landing.goLogin') }}
+           </router-link>
+
+          
+
           </div>
 
           <div class="hero-points">
@@ -288,7 +297,7 @@
             <form @submit.prevent="submitContact">
               <div class="form-grid">
                 <div class="form-group">
-                  <label>姓名</label>
+                  <label>{{ $t('form.name') }}</label>                  
                   <input v-model="contactForm.name" type="text" placeholder="請輸入姓名" />
                 </div>
 
@@ -405,7 +414,11 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import api from '../api'
+
+
+const { t, locale } = useI18n()
 
 const contactSuccess = ref('')
 const contactError = ref('')
@@ -418,6 +431,21 @@ const contactForm = reactive({
   phone: '',
   message: '',
 })
+
+
+
+async function changeLocale(value) {
+  locale.value = value
+  localStorage.setItem('locale', value)
+
+  const token = localStorage.getItem('token')
+  if (token) {
+    try {
+      await api.put('/me/locale', { locale: value })
+    } catch (e) {}
+  }
+}
+
 
 async function submitContact() {
   contactSuccess.value = ''
@@ -432,21 +460,20 @@ async function submitContact() {
       phone: contactForm.phone,
       message: contactForm.message,
     })
+    
+    
+    contactSuccess.value = res.data.message || t('landing.sent')
+    Object.keys(contactForm).forEach((k) => {
+      contactForm[k] = ''
+    })
 
-    contactSuccess.value = res.data.message || '已收到你的聯絡資訊，我們會盡快與你聯繫。'
-
-    contactForm.name = ''
-    contactForm.email = ''
-    contactForm.company = ''
-    contactForm.phone = ''
-    contactForm.message = ''
   } catch (error) {
     const data = error.response?.data
     if (data?.errors) {
       const firstKey = Object.keys(data.errors)[0]
       contactError.value = data.errors[firstKey][0]
     } else {
-      contactError.value = data?.message || '送出失敗，請稍後再試'
+      contactError.value = data?.message || 'Error'
     }
   } finally {
     contactLoading.value = false

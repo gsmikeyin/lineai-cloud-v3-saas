@@ -50,7 +50,7 @@ class ContactLeadController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => '已收到你的聯絡資訊，我們會盡快與你聯繫。',
+            'message' => __('common.contact_received'),
             'data' => $lead,
         ], 201);
     }

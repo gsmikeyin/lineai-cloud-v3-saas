@@ -32,6 +32,13 @@ Route::post('/forgot-password', [AuthPasswordController::class, 'forgotPassword'
 Route::post('/reset-password', [AuthPasswordController::class, 'resetPassword']);
 
 
+
+ 
+Route::middleware('set.locale')->group(function () {
+    Route::post('/contact', [ContactLeadController::class, 'store']);
+});
+
+
 Route::get('/login', function () {
     return response()->json([
         'message' => 'Please login first.'
@@ -39,6 +46,7 @@ Route::get('/login', function () {
 })->name('login');
 
 
+Route::middleware('auth:sanctum')->put('/me/locale', [AuthController::class, 'updateLocale']);
 
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request) {

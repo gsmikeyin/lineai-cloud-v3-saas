@@ -11,7 +11,7 @@
 
       <nav class="nav">
         <router-link to="/app" class="nav-item">
-          <span>Dashboard</span>
+          <span>{{ $t('nav.dashboard') }}</span>
         </router-link>
 
         <router-link to="/app/conversations" class="nav-item">

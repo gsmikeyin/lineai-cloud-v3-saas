@@ -112,4 +112,18 @@ TEXT;
             ->map(fn ($rule) => "- {$rule}")
             ->implode("\n");
     }
+
+
+    protected function resolveReplyLanguage(?string $customerLanguage, string $tenantLocale): string
+   {
+        $lang = $customerLanguage ?: $tenantLocale;
+
+       return match ($lang) {
+            'en' => 'Please reply in English.',
+            'ja' => '日本語で回答してください。',
+            default => '請使用繁體中文回答。',
+       };
+   }
+
+   
 }

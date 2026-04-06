@@ -150,4 +150,24 @@ class AuthController extends Controller
             'success' => true,
         ]);
     }
+
+
+    public function updateLocale(Request $request)
+    {
+        $validated = $request->validate([
+            'locale' => ['required', 'string', 'in:zh_TW,en,ja'],
+        ]);
+
+        $user = $request->user();
+        $user->update([
+              'locale' => $validated['locale'],
+       ]);
+
+        return response()->json([
+            'success' => true,
+            'locale' => $user->locale,
+        ]);
+    }
+
+
 }
