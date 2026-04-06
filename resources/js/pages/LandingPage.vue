@@ -276,10 +276,7 @@
                 <label>Email</label>
                 <div>service@serviceaicloud.com</div>
               </div>
-              <div class="contact-info-item">
-                <label>電話</label>
-                <div>+886-2-8226-9997</div>
-              </div>
+              
               <div class="contact-info-item">
                 <label>服務時間</label>
                 <div>週一至週五 09:00–18:00</div>
@@ -395,8 +392,7 @@
 
         <div class="footer-col">
           <h4>聯絡</h4>
-          <a href="mailto:service@serviceaicloud.com">service@serviceaicloud.com</a>
-          <a href="tel:+886212345678">+886-2-8226-9997</a>
+          <a href="mailto:service@serviceaicloud.com">service@serviceaicloud.com</a>          
           <a href="#contact">聯絡表單</a>
         </div>
       </div>
