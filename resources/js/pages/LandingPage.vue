@@ -58,10 +58,10 @@
             <div class="showcase-body">
               <aside class="showcase-sidebar">
                 <div class="side-item active">Dashboard</div>
-                <div class="side-item">Conversations</div>
-                <div class="side-item">Customers</div>
-                <div class="side-item">Knowledge Base</div>
+                <div class="side-item">對話</div>
+                <div class="side-item">客戶</div>
                 <div class="side-item">LINE Bot 設定</div>
+                <div class="side-item">智識庫</div>                
               </aside>
 
               <div class="showcase-main">
@@ -265,11 +265,11 @@
             <div class="contact-info-list">
               <div class="contact-info-item">
                 <label>Email</label>
-                <div>service@lineaicloud.com</div>
+                <div>service@serviceaicloud.com</div>
               </div>
               <div class="contact-info-item">
                 <label>電話</label>
-                <div>+886-2-1234-5678</div>
+                <div>+886-2-8226-9997</div>
               </div>
               <div class="contact-info-item">
                 <label>服務時間</label>
@@ -386,14 +386,14 @@
 
         <div class="footer-col">
           <h4>聯絡</h4>
-          <a href="mailto:service@lineaicloud.com">service@lineaicloud.com</a>
-          <a href="tel:+886212345678">+886-2-1234-5678</a>
+          <a href="mailto:service@serviceaicloud.com">service@serviceaicloud.com</a>
+          <a href="tel:+886212345678">+886-2-8226-9997</a>
           <a href="#contact">聯絡表單</a>
         </div>
       </div>
 
       <div class="container footer-bottom">
-        <span>© 2026 LineAI Cloud. All rights reserved.</span>
+        <span>© 2026 ServiceAI Cloud. All rights reserved.</span>
         <div class="footer-bottom-links">
           <a href="#">Privacy</a>
           <a href="#">Terms</a>
