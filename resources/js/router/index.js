@@ -21,7 +21,7 @@ import ForgotPassword from '../pages/ForgotPassword.vue'
 import ResetPassword from '../pages/ResetPassword.vue'
 import VerifyEmail from '../pages/VerifyEmail.vue'
 import ContactLeads from '../pages/ContactLeads.vue'
-
+import LoginSuccess from '../pages/LoginSuccess.vue'
 
 
 const routes = [
@@ -36,6 +36,12 @@ const routes = [
     name: 'login',
     component: Login,
     meta: { guestOnly: true, title: 'Login' },
+  },  
+  {
+         path: '/login/success',
+         name: 'login-success',
+         component: LoginSuccess,
+         meta: { title: 'LINE Login Success' },         
   },
   {
       path: '/register',

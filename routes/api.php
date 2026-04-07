@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ContactLeadController;
 
 
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);    
 Route::post('/line/webhook/{webhookKey}', [LineWebhookController::class, 'handle']);
@@ -30,6 +31,7 @@ Route::post('/line/webhook/{webhookKey}', [LineWebhookController::class, 'handle
 
 Route::post('/forgot-password', [AuthPasswordController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthPasswordController::class, 'resetPassword']);
+
 
 
 

@@ -17,12 +17,19 @@
 
         <div v-if="errorMessage" class="error-message">
           {{ errorMessage }}
-        </div>
-
+        </div>      
         <button type="submit" :disabled="loading">
           {{ loading ? '登入中...' : '登入' }}
         </button>
       </form>
+
+       <div class="login-actions">
+           <button class="line-btn" @click="loginWithLine">
+              使用 LINE 登入
+           </button>
+      </div>
+
+
 
       <div class="bottom-link">
   <router-link to="/forgot-password">忘記密碼？</router-link>
@@ -52,6 +59,14 @@ const form = reactive({
   email: '',
   password: '',
 })
+
+
+
+function loginWithLine() {
+  window.location.href = '/auth/line/redirect'
+}
+
+
 
 async function handleLogin() {
   loading.value = true
@@ -162,6 +177,19 @@ button:disabled {
   font-size: 14px;
   color: #666;
   text-align: center;
+}
+
+
+.line-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  background: #06c755;
+  color: #fff;
+  margin-top: 12px;
 }
 
 
