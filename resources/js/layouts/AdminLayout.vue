@@ -40,9 +40,14 @@
         </router-link>
 
         <router-link to="/app/contact-leads" class="nav-item">
-            <span>Contact Leads</span>
+            <span>聯絡潛在客戶</span>
         </router-link>
-
+        
+        
+       <a href="/files/manual.pdf" download class="nav-item">
+               下載使用說明
+        </a>
+        
         
       </nav>
     </aside>

@@ -29,8 +29,7 @@
 
       <div class="panel-card span-2">
         <h3>系統概覽</h3>
-        <p>你現在可以從左側選單進入 對話、客戶、LINE Bot 設定、知識基礎 與 設定。</p>
-        <p><a href="/files/manual.pdf" download>點擊下載使用說明</a></p>
+        <p>你現在可以從左側選單進入 對話、客戶、LINE Bot 設定、知識基礎 與 設定。</p>    
       </div>
 
       <div class="panel-card">
@@ -118,6 +117,9 @@ onMounted(fetchStats)
   padding: 12px 14px;
   border-radius: 10px;
 }
+
+
+
 @media (max-width: 1100px) {
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -132,3 +134,7 @@ onMounted(fetchStats)
   }
 }
 </style>
+
+
+
+
