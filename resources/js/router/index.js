@@ -23,6 +23,10 @@ import VerifyEmail from '../pages/VerifyEmail.vue'
 import ContactLeads from '../pages/ContactLeads.vue'
 import LoginSuccess from '../pages/LoginSuccess.vue'
 
+import DifySettings from '../pages/DifySettings.vue'
+import KnowledgeUpload from '../pages/KnowledgeUpload.vue'
+
+
 
 const routes = [
    {
@@ -126,8 +130,19 @@ const routes = [
         name: 'contact-leads',
         component: ContactLeads,
         meta: { title: 'Contact Leads' },
-    }
-
+    },
+    {
+         path: 'settings/dify',
+         name: 'dify-settings',
+         component: DifySettings,
+         meta: { title: 'Dify Settings' },
+    },
+    {
+         path: 'knowledge-upload',
+         name: 'knowledge-upload',
+         component: KnowledgeUpload,
+         meta: { title: 'Knowledge Upload' },
+    },
     ],
   },
 ]

@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Models\TenantLineChannel;
+use App\Models\TenantAiSetting;
+
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Services\AI\DifyDatasetProvisionService;
+
 
 class AuthController extends Controller
 {
+
+    public function __construct(
+        protected DifyDatasetProvisionService $difyDatasetProvisionService
+    ) {}
+
+    
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -67,6 +77,36 @@ class AuthController extends Controller
                     'webhook_url' => rtrim(config('app.url'), '/') . '/api/line/webhook/' . $tenant->webhook_key,
                 ]
             );
+
+
+            // 1) 先建立 tenant_ai_settings
+            $aiSetting = TenantAiSetting::create([
+                'tenant_id' => $tenant->id,
+                'provider' => 'dify',
+                'dify_base_url' => config('services.dify.base_url'),
+                // 註冊時先只寫 dataset_api_key，app_api_key 之後再由管理者填
+                'dify_dataset_api_key' => config('services.dify.dataset_api_key'),
+                'is_active' => false,
+            ]);
+
+
+            
+            // 2) 自動建立空的 Dify Knowledge Base
+            $dataset = $this->difyDatasetProvisionService->createEmptyDataset(
+                baseUrl: config('services.dify.base_url'),
+                datasetApiKey: config('services.dify.dataset_api_key'),
+                name: $tenant->name . ' Knowledge Base',
+                description: 'Auto-created at registration for tenant #' . $tenant->id,
+                indexingTechnique: 'high_quality'
+            );
+
+            $aiSetting->update([
+                'dify_dataset_id' => $dataset['id'],
+                'dify_dataset_name' => $dataset['name'],
+            ]);
+
+
+
 
             event(new Registered($user));
 

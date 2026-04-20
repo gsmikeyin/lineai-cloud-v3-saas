@@ -22,6 +22,11 @@ use App\Http\Controllers\AuthVerificationController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ContactLeadController;
 
+use App\Http\Controllers\DifyConversationController;
+use App\Http\Controllers\DifySettingController;
+use App\Http\Controllers\KnowledgeUploadController;
+
+
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -62,6 +67,18 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
 Route::post('/contact', [ContactLeadController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
+
+
+    Route::get('/settings/dify', [DifySettingController::class, 'show']);
+    Route::put('/settings/dify', [DifySettingController::class, 'update']);
+    Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
+    Route::get('/knowledge/documents', [KnowledgeUploadController::class, 'index']);
+
+    
+    Route::post('/conversations/{conversation}/dify-reply', [DifyConversationController::class, 'reply']);
+
+
+
 
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);

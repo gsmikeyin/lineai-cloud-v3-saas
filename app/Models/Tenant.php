@@ -121,4 +121,16 @@ class Tenant extends Model
     {
         return $this->hasMany(AutomationRule::class);
     }
+
+    public function aiSetting()
+   {
+       return $this->hasOne(TenantAiSetting::class);
+   }
+
+   public function knowledgeSources()
+   {
+       return $this->hasMany(KnowledgeSource::class);
+   }
+
+
 }

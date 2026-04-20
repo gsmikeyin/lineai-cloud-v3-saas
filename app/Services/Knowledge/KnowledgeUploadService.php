@@ -6,21 +6,33 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
+use App\Services\AI\DifyKnowledgeService;
+use Illuminate\Http\UploadedFile;
+use App\Models\Tenant;
+
 
 class KnowledgeUploadService
 {
     protected string $baseUrl;
     protected string $apiKey;
 
-    public function __construct()
-    {
+    public function __construct(
+       protected DifyKnowledgeService $difyKnowledgeService   
+    )
+    {      
         $this->baseUrl = rtrim(config('services.openai.base_url'), '/');
         $this->apiKey = (string) config('services.openai.key');
-
         if (empty($this->apiKey)) {
             throw new RuntimeException('OPENAI_API_KEY is not configured.');
-        }
+        }        
     }
+
+     public function upload(Tenant $tenant, UploadedFile $file)
+    {
+        return $this->difyKnowledgeService->uploadDocument($tenant, $file);
+    }
+
+
 
     protected function client(): PendingRequest
     {

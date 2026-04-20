@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\KnowledgeItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Services\KnowledgeUploadService;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
+use App\Services\AI\DifyKnowledgeService;
+
 
 class KnowledgeController extends Controller
 {
+      public function __construct(
+        protected DifyKnowledgeService $difyKnowledgeService
+    ) {}
+
+
+    
     public function index(Request $request): JsonResponse
     {
         $tenantId = $request->user()->tenant_id;
@@ -39,49 +46,23 @@ class KnowledgeController extends Controller
     }
 
 
-    public function upload(Request $request, KnowledgeUploadService $service)
+   public function upload(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'max:51200'], // 50MB
-            'vector_store_id' => ['nullable', 'string'],
-            'vector_store_name' => ['nullable', 'string', 'max:255'],
-            'chunking' => ['nullable', 'in:auto,static'],
-            'max_chunk_size_tokens' => ['nullable', 'integer', 'min:100', 'max:4096'],
-            'chunk_overlap_tokens' => ['nullable', 'integer', 'min:0', 'max:2048'],
+            'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md'],
         ]);
 
-        $uploaded = $request->file('file');
-        $storedPath = $uploaded->storeAs('knowledge_uploads', $uploaded->getClientOriginalName());
-        $absolutePath = Storage::path($storedPath);
+        $tenant = $request->user()->tenant;
 
-        $chunking = $request->string('chunking')->value() ?: 'auto';
+        $record = $this->difyKnowledgeService->uploadDocument(
+            tenant: $tenant,
+            file: $request->file('file')
+        );
 
-        $chunkingStrategy = $chunking === 'static'
-            ? KnowledgeUploadService::staticChunking(
-                (int) ($request->input('max_chunk_size_tokens', 800)),
-                (int) ($request->input('chunk_overlap_tokens', 400)),
-            )
-            : KnowledgeUploadService::autoChunking();
-
-        try {
-            $result = $service->uploadAndStore(
-                absolutePath: $absolutePath,
-                vectorStoreId: $request->input('vector_store_id'),
-                vectorStoreName: $request->input('vector_store_name'),
-                chunkingStrategy: $chunkingStrategy,
-            );
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Knowledge uploaded successfully.',
-                'data' => $result,
-            ]);
-        } catch (RuntimeException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'data' => $record,
+        ], 201);
     }
 
 

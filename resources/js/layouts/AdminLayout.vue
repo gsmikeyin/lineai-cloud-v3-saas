@@ -26,10 +26,22 @@
           <span>LINE Bot 設定</span>
         </router-link>
 
+         <router-link to="/app/settings/dify" class="nav-item">
+            <span>Dify 設定</span>
+        </router-link>
+
+
+
         <router-link to="/app/knowledge-base" class="nav-item">
           <span>知識庫</span>
         </router-link>
 
+         <router-link to="/app/knowledge-upload" class="nav-item">
+             <span>知識上傳</span>
+        </router-link>
+
+
+        
         <router-link to="/app/knowledge-test" class="nav-item">
              <span>知識命中測試</span>
         </router-link>
@@ -39,11 +51,15 @@
           <span>設定</span>
         </router-link>
 
+
         <router-link to="/app/contact-leads" class="nav-item">
             <span>聯絡潛在客戶</span>
         </router-link>
         
         
+       
+       
+
        <a href="/files/manual.pdf" download class="nav-item">
                下載使用說明
         </a>

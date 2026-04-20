@@ -35,5 +35,12 @@ return [
     'channel_secret' => env('LINE_CHANNEL_LOGIN_SECRET'),
     'redirect' => env('LINE_REDIRECT_URI'),
     ],
+
+
+    'dify' => [
+          'base_url' => env('DIFY_BASE_URL', 'https://api.dify.ai/v1'),
+          'dataset_api_key' => env('DIFY_DATASET_API_KEY'),
+    ],
+
     
 ];

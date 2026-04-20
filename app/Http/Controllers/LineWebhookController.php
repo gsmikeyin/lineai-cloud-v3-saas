@@ -13,10 +13,13 @@ class LineWebhookController extends Controller
 
     public function handle(Request $request, string $webhookKey)
     {
-        $this->webhookService->handle($request, $webhookKey);
+                    
+         $this->webhookService->handle($request, $webhookKey);
 
         return response()->json([
             'success' => true,
         ]);
+
+
     }
 }
