@@ -31,6 +31,8 @@ use App\Http\Controllers\DifyAppPoolController;
 use App\Models\TenantAiSetting;
 
 use App\Http\Controllers\DifyAppPoolUiController;
+use App\Http\Controllers\DifyTestController;
+
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -173,7 +175,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/contact-leads/{contactLead}', [ContactLeadController::class, 'show']);
     Route::put('/contact-leads/{contactLead}', [ContactLeadController::class, 'update']);
 
-
+ Route::post('/dify/test', [DifyTestController::class, 'test']);
 
 });
 

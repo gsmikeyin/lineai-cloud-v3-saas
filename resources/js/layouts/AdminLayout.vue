@@ -39,7 +39,7 @@
 
 
 
-        <router-link to="/app/knowledge-test" class="nav-item">
+        <router-link to="/app/knowledge-hit-test" class="nav-item">
              <span>知識命中測試</span>
         </router-link>
 

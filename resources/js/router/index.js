@@ -30,6 +30,8 @@ import DifyAppPools from '../pages/DifyAppPools.vue'
 
 import DifyBindingHelper from '../pages/DifyBindingHelper.vue'
 import DifyAppPoolManager from '../pages/DifyAppPoolManager.vue'
+import KnowledgeHitTest from '../pages/KnowledgeHitTest.vue'
+
 
 
 const routes = [
@@ -111,10 +113,10 @@ const routes = [
         meta: { title: '設定' },
       },
       {
-        path: 'knowledge-test',
-        name: 'knowledge-test',
-        component: KnowledgeMatcherTest,
-        meta: { title: '知識命中測試' },
+        path: 'knowledge-hit-test',
+        name: 'knowledge-hit-test',
+        component: KnowledgeHitTest,
+        meta: { title: 'Dify 知識命中測試' },
       }, 
       {
         path: 'customers/:id',
