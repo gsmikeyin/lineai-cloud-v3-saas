@@ -3,7 +3,7 @@
     <div class="page-head">
       <div>
         <h2>Dify Knowledge Upload</h2>
-        <p>上傳 PDF / DOCX / TXT 到 Dify Dataset，並查看索引狀態。</p>
+        <p>上傳 PDF / DOCX / TXT / MD 到 Dify Dataset，並查看索引狀態。</p>
       </div>
       <button class="ghost-btn" @click="fetchDocuments">刷新</button>
     </div>
@@ -17,6 +17,7 @@
             accept=".pdf,.txt,.doc,.docx,.md"
             @change="handleFileChange"
           />
+
           <button class="primary-btn" type="submit" :disabled="uploading || !selectedFile">
             {{ uploading ? '上傳中...' : '上傳到知識庫' }}
           </button>
@@ -125,6 +126,9 @@ async function submitUpload() {
 
 async function fetchDocuments() {
   loading.value = true
+  successMessage.value = ''
+  errorMessage.value = ''
+
   try {
     const res = await api.get('/knowledge/documents')
     documents.value = res.data.data || []

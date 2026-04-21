@@ -1,7 +1,0 @@
-<router-link to="/app/settings/dify" class="nav-item">
-  <span>Dify 設定</span>
-</router-link>
-
-<router-link to="/app/knowledge-upload" class="nav-item">
-  <span>知識上傳</span>
-</router-link>

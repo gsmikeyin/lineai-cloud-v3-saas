@@ -13,11 +13,19 @@ class KnowledgeUploadController extends Controller
 
     public function upload(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md'],
         ]);
 
         $tenant = $request->user()->tenant;
+
+        if (!$tenant) {
+            return response()->json(['message' => 'Tenant not found for current user.'], 422);
+        }
 
         $record = $this->difyKnowledgeService->uploadDocument(
             tenant: $tenant,
@@ -33,11 +41,8 @@ class KnowledgeUploadController extends Controller
     public function index(Request $request)
     {
         $tenant = $request->user()->tenant;
-
-        $items = $tenant->knowledgeSources()
-            ->latest('id')
-            ->paginate(20);
-
-        return response()->json($items);
+        return response()->json(
+            $tenant->knowledgeSources()->latest('id')->paginate(20)
+        );
     }
 }

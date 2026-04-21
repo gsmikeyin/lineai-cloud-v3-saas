@@ -22,10 +22,14 @@ import ResetPassword from '../pages/ResetPassword.vue'
 import VerifyEmail from '../pages/VerifyEmail.vue'
 import ContactLeads from '../pages/ContactLeads.vue'
 import LoginSuccess from '../pages/LoginSuccess.vue'
-
-import DifySettings from '../pages/DifySettings.vue'
 import KnowledgeUpload from '../pages/KnowledgeUpload.vue'
 
+
+import DifyAppPools from '../pages/DifyAppPools.vue'
+
+
+import DifyBindingHelper from '../pages/DifyBindingHelper.vue'
+import DifyAppPoolManager from '../pages/DifyAppPoolManager.vue'
 
 
 const routes = [
@@ -132,17 +136,38 @@ const routes = [
         meta: { title: 'Contact Leads' },
     },
     {
-         path: 'settings/dify',
-         name: 'dify-settings',
-         component: DifySettings,
-         meta: { title: 'Dify Settings' },
-    },
-    {
          path: 'knowledge-upload',
          name: 'knowledge-upload',
          component: KnowledgeUpload,
          meta: { title: 'Knowledge Upload' },
     },
+    {
+        path: 'dify-app-pools',
+        name: 'dify-app-pools',
+        component: DifyAppPools,
+        meta: { title: 'Dify App Pools' },
+    },
+
+{
+  path: 'knowledge-upload',
+  name: 'knowledge-upload',
+  component: KnowledgeUpload,
+  meta: { title: 'Knowledge Upload' },
+},
+{
+  path: 'dify-binding',
+  name: 'dify-binding',
+  component: DifyBindingHelper,
+  meta: { title: 'Dify Binding Helper' },
+},
+{
+  path: 'dify-app-pools',
+  name: 'dify-app-pools',
+  component: DifyAppPoolManager,
+  meta: { title: 'Dify App Pools' },
+},
+
+
     ],
   },
 ]

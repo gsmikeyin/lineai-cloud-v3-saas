@@ -10,16 +10,20 @@ class TenantAiSetting extends Model
     protected $fillable = [
         'tenant_id',
         'provider',
-        'dify_base_url',
-        'dify_app_api_key',
-        'dify_dataset_api_key',
         'dify_dataset_id',
+        'dify_dataset_name',
+        'dify_app_api_key',
+        'dify_app_name',
         'dify_app_mode',
         'is_active',
+        'dataset_bound',
+        'dataset_bound_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'dataset_bound' => 'boolean',
+        'dataset_bound_at' => 'datetime',
     ];
 
     public function tenant(): BelongsTo

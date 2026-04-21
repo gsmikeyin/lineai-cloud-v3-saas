@@ -5,16 +5,13 @@ namespace App\Services\AI;
 use App\Models\Conversation;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class DifyChatService
 {
-    public function reply(
-        Tenant $tenant,
-        Conversation $conversation,
-        string $userId,
-        string $message
-    ): array {
+    public function reply(Tenant $tenant, Conversation $conversation, string $userId, string $message): array
+    {
         $settings = $tenant->aiSetting;
 
         if (!$settings || !$settings->is_active) {
@@ -26,7 +23,13 @@ class DifyChatService
         }
 
         $payload = [
-            'inputs' => new \stdClass(),
+            'inputs' => [
+                'tenant_id' => (string) $tenant->id,
+                'dataset_id' => (string) $settings->dify_dataset_id,
+                'brand_name' => (string) $tenant->name,
+                'locale' => (string) ($tenant->locale ?: 'zh_TW'),
+                'channel' => 'line',
+            ],
             'query' => $message,
             'response_mode' => 'blocking',
             'user' => (string) $userId,
@@ -36,26 +39,31 @@ class DifyChatService
             $payload['conversation_id'] = $conversation->external_conversation_id;
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $settings->dify_app_api_key,
-            'Content-Type' => 'application/json',
-        ])->post(
-            rtrim($settings->dify_base_url, '/') . '/chat-messages',
-            $payload
-        )->throw()->json();
+        Log::info('Dify request', [
+            'tenant_id' => $tenant->id,
+            'conversation_id' => $conversation->id,
+        ]);
 
-        $conversationId = data_get($response, 'conversation_id');
+        $response = Http::timeout(90)
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $settings->dify_app_api_key,
+                'Content-Type' => 'application/json',
+            ])->post(rtrim(config('services.dify.base_url'), '/') . '/chat-messages', $payload)
+            ->throw()
+            ->json();
+
+        $externalId = data_get($response, 'conversation_id');
         $answer = trim((string) data_get($response, 'answer', ''));
 
-        if ($conversationId && $conversation->external_conversation_id !== $conversationId) {
+        if ($externalId && $conversation->external_conversation_id !== $externalId) {
             $conversation->update([
-                'external_conversation_id' => $conversationId,
+                'external_conversation_id' => $externalId,
             ]);
         }
 
         return [
             'answer' => $answer,
-            'conversation_id' => $conversationId,
+            'conversation_id' => $externalId,
             'raw' => $response,
         ];
     }

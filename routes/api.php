@@ -25,8 +25,12 @@ use App\Http\Controllers\ContactLeadController;
 use App\Http\Controllers\DifyConversationController;
 use App\Http\Controllers\DifySettingController;
 use App\Http\Controllers\KnowledgeUploadController;
+use App\Http\Controllers\DifyAppPoolController;
 
 
+use App\Models\TenantAiSetting;
+
+use App\Http\Controllers\DifyAppPoolUiController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -68,13 +72,53 @@ Route::post('/contact', [ContactLeadController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+     Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
+    Route::get('/knowledge/documents', [KnowledgeUploadController::class, 'index']);
+    Route::post('/conversations/{conversation}/dify-reply', [DifyConversationController::class, 'reply']);
 
-    Route::get('/settings/dify', [DifySettingController::class, 'show']);
-    Route::put('/settings/dify', [DifySettingController::class, 'update']);
+    Route::get('/dify-app-pools', [DifyAppPoolUiController::class, 'index']);
+    Route::post('/dify-app-pools', [DifyAppPoolUiController::class, 'store']);
+    
+    Route::get('/dify-app-pools/{difyAppPool}/assignments', [DifyAppPoolUiController::class, 'assignments']);
+    Route::post('/dify-app-pools/{difyAppPool}/release', [DifyAppPoolUiController::class, 'release']);
+    Route::post('/dify-app-pools/{difyAppPool}/reassign', [DifyAppPoolUiController::class, 'reassign']);
+
+    Route::get('/dify-binding/pending', function () {
+        return response()->json([
+            'data' => TenantAiSetting::where('dataset_bound', false)->with('tenant')->get(),
+        ]);
+    });
+
+    Route::post('/dify-binding/confirm', function (Request $request) {
+        $request->validate(['tenant_id' => 'required|integer']);
+        $setting = TenantAiSetting::where('tenant_id', $request->tenant_id)->firstOrFail();
+        $setting->update([
+            'dataset_bound' => true,
+            'dataset_bound_at' => now(),
+        ]);
+        return response()->json(['success' => true]);
+    });
+
+    Route::get('/dify-binding/link/{tenantId}', function ($tenantId) {
+        $setting = TenantAiSetting::where('tenant_id', $tenantId)->firstOrFail();
+        return response()->json([
+            'app_url' => rtrim(config('services.dify.console_url'), '/') . '/apps',
+            'dataset_id' => $setting->dify_dataset_id,
+            'tenant_name' => $setting->tenant->name,
+        ]);
+    });
+
+
+
+
+
+    Route::put('/dify-app-pools/{difyAppPool}', [DifyAppPoolController::class, 'update']);
+
+
     Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
     Route::get('/knowledge/documents', [KnowledgeUploadController::class, 'index']);
 
-    
+
     Route::post('/conversations/{conversation}/dify-reply', [DifyConversationController::class, 'reply']);
 
 

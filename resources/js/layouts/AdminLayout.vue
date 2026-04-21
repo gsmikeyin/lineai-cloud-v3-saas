@@ -26,10 +26,7 @@
           <span>LINE Bot 設定</span>
         </router-link>
 
-         <router-link to="/app/settings/dify" class="nav-item">
-            <span>Dify 設定</span>
-        </router-link>
-
+    
 
 
         <router-link to="/app/knowledge-base" class="nav-item">
@@ -41,7 +38,7 @@
         </router-link>
 
 
-        
+
         <router-link to="/app/knowledge-test" class="nav-item">
              <span>知識命中測試</span>
         </router-link>
@@ -56,6 +53,15 @@
             <span>聯絡潛在客戶</span>
         </router-link>
         
+
+
+<router-link to="/app/dify-binding" class="nav-item">
+  <span>Dify 綁定助手</span>
+</router-link>
+
+<router-link to="/app/dify-app-pools" class="nav-item">
+  <span>Dify App Pools</span>
+</router-link>
         
        
        

@@ -10,9 +10,7 @@ return new class extends Migration
     {
         Schema::table('conversations', function (Blueprint $table) {
             if (!Schema::hasColumn('conversations', 'external_conversation_id')) {
-                $table->string('external_conversation_id')
-                    ->nullable()
-                    ->after('id');
+                $table->string('external_conversation_id')->nullable()->after('id');
             }
         });
     }

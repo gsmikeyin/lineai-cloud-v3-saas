@@ -133,4 +133,5 @@ class Tenant extends Model
    }
 
 
+
 }

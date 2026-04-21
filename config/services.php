@@ -37,10 +37,12 @@ return [
     ],
 
 
-    'dify' => [
-          'base_url' => env('DIFY_BASE_URL', 'https://api.dify.ai/v1'),
-          'dataset_api_key' => env('DIFY_DATASET_API_KEY'),
-    ],
-
+  'dify' => [
+    'enabled' => env('DIFY_ENABLED', false),
+    'base_url' => env('DIFY_BASE_URL', 'http://114.34.240.115:4001/v1'),
+    'dataset_api_key' => env('DIFY_DATASET_API_KEY'),
+    'indexing_technique' => env('DIFY_INDEXING_TECHNIQUE', 'high_quality'),
+    'console_url' => env('DIFY_CONSOLE_URL', 'http://114.34.240.115:4001'),
+],
     
 ];
