@@ -50,7 +50,7 @@ class DifyAppDeployService
         // 4️⃣ 輸出 YAML
         File::put($outputDsl, $content);
 
-        
+
         $dsl = $this->loadYaml($outputDsl);
 
         
@@ -70,6 +70,10 @@ class DifyAppDeployService
 
         $appId = $result['app_id'];
 
+        // ✅ 先 publish workflow
+        $this->publishWorkflow($appId);
+
+        
         // 7️⃣ 建 API key
         $key = $this->createApiKey($appId, $keyName);
         //$apiKey = $key['api_key'] ?? null;
@@ -86,6 +90,12 @@ class DifyAppDeployService
         }
 
         
+       // 啟用 Web App
+       $this->enableSite($appId, true);
+
+       // 啟用 API
+       $this->enableApi($appId, true);
+
 
         // 8️⃣ 存 DB
         $record = DifyApp::updateOrCreate(
@@ -96,11 +106,43 @@ class DifyAppDeployService
                 'app_description' => $this->getDescription($dsl),
                 'api_key' => $apiKey,
                 'dsl_path' => $outputDsl,
+                'site_enabled' => true,
+                'api_enabled' => true,
             ]
         );
 
+
+        //publish......
+
+
+
         return $record->toArray();
     }
+
+
+    protected function publishWorkflow(string $appId): array
+    {
+        return $this->request('POST', "/console/api/apps/{$appId}/workflows/publish", []);
+    }
+
+
+
+    protected function enableSite(string $appId, bool $enable = true): array
+    {
+        return $this->request('POST', "/console/api/apps/{$appId}/site-enable", [
+            'enable_site' => $enable,
+         ]);
+    }
+
+    protected function enableApi(string $appId, bool $enable = true): array
+    {
+          return $this->request('POST', "/console/api/apps/{$appId}/api-enable", [
+                'enable_api' => $enable,
+            ]);
+    }
+
+
+
 
     // =========================
     // 🔥 DSL 修復器（核心）
