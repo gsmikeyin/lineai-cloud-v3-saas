@@ -24,13 +24,13 @@ import ContactLeads from '../pages/ContactLeads.vue'
 import LoginSuccess from '../pages/LoginSuccess.vue'
 import KnowledgeUpload from '../pages/KnowledgeUpload.vue'
 
-
 import DifyAppPools from '../pages/DifyAppPools.vue'
-
 
 import DifyBindingHelper from '../pages/DifyBindingHelper.vue'
 import DifyAppPoolManager from '../pages/DifyAppPoolManager.vue'
 import KnowledgeHitTest from '../pages/KnowledgeHitTest.vue'
+
+import { getAuthUser, hasRole } from '../utils/auth'
 
 
 
@@ -154,19 +154,19 @@ const routes = [
   path: 'knowledge-upload',
   name: 'knowledge-upload',
   component: KnowledgeUpload,
-  meta: { title: 'Knowledge Upload' },
+  meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'staff'] },
 },
 {
   path: 'dify-binding',
   name: 'dify-binding',
   component: DifyBindingHelper,
-  meta: { title: 'Dify Binding Helper' },
+  meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
 },
 {
   path: 'dify-app-pools',
   name: 'dify-app-pools',
   component: DifyAppPoolManager,
-  meta: { title: 'Dify App Pools' },
+  meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
 },
 
 
@@ -180,17 +180,18 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
 
-  if (to.meta.requiresAuth && !token) {
+   const user = getAuthUser()
+
+  if (to.meta.requiresAuth && !user) {
     return next('/login')
   }
 
-  if (to.meta.guestOnly && token) {
-    return next('/app')
+  if (to.meta.roles && !hasRole(to.meta.roles)) {
+    return next('/app/dashboard')
   }
-
   next()
+
 })
 
 export default router

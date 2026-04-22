@@ -33,6 +33,7 @@ onMounted(async () => {
     })
 
     if (res.data?.user) {
+       
       localStorage.setItem('user', JSON.stringify(res.data.user))
     }
   } catch (e) {

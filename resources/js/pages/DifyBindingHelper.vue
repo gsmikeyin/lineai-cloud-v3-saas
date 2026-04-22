@@ -66,6 +66,10 @@
 </template>
 
 <script setup>
+
+import { isAdmin } from '../utils/auth'
+import { useRouter } from 'vue-router'
+
 import { ref, onMounted } from 'vue'
 import api from '../api'
 
@@ -75,7 +79,16 @@ const successMessage = ref('')
 const errorMessage = ref('')
 const selectedInfo = ref(null)
 
+const router = useRouter()
+
+
 async function load() {
+
+  if (!isAdmin()) {
+    router.replace('/app/dashboard')
+  }
+
+
   loading.value = true
   successMessage.value = ''
   errorMessage.value = ''

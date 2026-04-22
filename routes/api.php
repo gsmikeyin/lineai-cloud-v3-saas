@@ -72,12 +72,12 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
 // 公開聯絡表單
 Route::post('/contact', [ContactLeadController::class, 'store']);
 
-Route::middleware('auth:sanctum')->group(function () {
 
-     Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
-    Route::get('/knowledge/documents', [KnowledgeUploadController::class, 'index']);
-    Route::post('/conversations/{conversation}/dify-reply', [DifyConversationController::class, 'reply']);
 
+
+Route::middleware('auth:sanctum', 'role:super_admin,admin')->group(function () {
+
+   
     Route::get('/dify-app-pools', [DifyAppPoolUiController::class, 'index']);
     Route::post('/dify-app-pools', [DifyAppPoolUiController::class, 'store']);
     
@@ -110,11 +110,15 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
     });
 
-
-
-
-
     Route::put('/dify-app-pools/{difyAppPool}', [DifyAppPoolController::class, 'update']);
+
+});
+
+Route::middleware(['auth:sanctum', 'role:super_admin,admin,staff'])->group(function () {
+     Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
+    Route::get('/knowledge/documents', [KnowledgeUploadController::class, 'index']);
+    Route::post('/conversations/{conversation}/dify-reply', [DifyConversationController::class, 'reply']);
+
 
 
     Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
@@ -175,9 +179,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/contact-leads/{contactLead}', [ContactLeadController::class, 'show']);
     Route::put('/contact-leads/{contactLead}', [ContactLeadController::class, 'update']);
 
- Route::post('/dify/test', [DifyTestController::class, 'test']);
+    Route::post('/dify/test', [DifyTestController::class, 'test']);
 
 });
+
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/me', function (\Illuminate\Http\Request $request) {
+        return response()->json([
+            'user' => $request->user(),
+        ]);
+    });  
+});
+
 
 
 

@@ -19,10 +19,12 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public const ROLE_OWNER = 'owner';
+
+    public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
-    public const ROLE_AGENT = 'agent';
-    public const ROLE_ANALYST = 'analyst';
+    public const ROLE_STAFF = 'staff';
+    public const ROLE_USER = 'user';
+
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
@@ -136,16 +138,41 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isOwner(): bool
     {
-        return $this->role === self::ROLE_OWNER;
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+    
+    
+   
+
+      public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
     }
 
     public function isAdmin(): bool
     {
-        return in_array($this->role, [self::ROLE_OWNER, self::ROLE_ADMIN], true);
+        return in_array($this->role, [
+            self::ROLE_SUPER_ADMIN,
+            self::ROLE_ADMIN,
+        ], true);
     }
 
-    public function isAgent(): bool
+    public function isStaff(): bool
     {
-        return $this->role === self::ROLE_AGENT;
+        return in_array($this->role, [
+            self::ROLE_SUPER_ADMIN,
+            self::ROLE_ADMIN,
+            self::ROLE_STAFF,
+        ], true);
     }
+
+
+       public function hasRole(string|array $roles): bool
+    {
+        $roles = is_array($roles) ? $roles : [$roles];
+        return in_array($this->role, $roles, true);
+    }
+    
+
+
 }

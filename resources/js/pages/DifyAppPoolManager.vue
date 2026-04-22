@@ -122,7 +122,13 @@
 </template>
 
 <script setup>
+
+import { isAdmin } from '../utils/auth'
+import { useRouter } from 'vue-router'
+
+
 import { onMounted, ref, reactive } from 'vue'
+
 import api from '../api'
 
 const pools = ref([])
@@ -133,6 +139,9 @@ const creating = ref(false)
 const reassigning = ref(false)
 const successMessage = ref('')
 const errorMessage = ref('')
+
+const router = useRouter()
+
 
 const createForm = reactive({
   app_name: '',
@@ -146,6 +155,12 @@ const reassignForm = reactive({
 })
 
 async function fetchPools() {
+
+   if (!isAdmin()) {
+    router.replace('/app/dashboard')
+  }
+
+  
   successMessage.value = ''
   errorMessage.value = ''
   try {

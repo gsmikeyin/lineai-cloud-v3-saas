@@ -14,11 +14,11 @@
           <span>{{ $t('nav.dashboard') }}</span>
         </router-link>
 
-        <router-link to="/app/conversations" class="nav-item">
+        <router-link v-if="isStaff()"  to="/app/conversations" class="nav-item">
           <span>對話</span>
         </router-link>
 
-        <router-link to="/app/customers" class="nav-item">
+        <router-link v-if="isStaff()" to="/app/customers" class="nav-item">
           <span>客戶</span>
         </router-link>
 
@@ -29,7 +29,7 @@
     
 
 
-        <router-link to="/app/knowledge-base" class="nav-item">
+        <router-link v-if="isStaff()" to="/app/knowledge-base" class="nav-item">
           <span>知識庫</span>
         </router-link>
 
@@ -44,22 +44,22 @@
         </router-link>
 
 
-        <router-link to="/app/settings" class="nav-item">
+        <router-link v-if="isAdmin()"  to="/app/settings" class="nav-item">
           <span>設定</span>
         </router-link>
 
 
         <router-link to="/app/contact-leads" class="nav-item">
-            <span>聯絡潛在客戶</span>
+            <span>潛在客戶列表</span>
         </router-link>
         
 
 
-<router-link to="/app/dify-binding" class="nav-item">
+<router-link v-if="isAdmin()" to="/app/dify-binding" class="nav-item">
   <span>Dify 綁定助手</span>
 </router-link>
 
-<router-link to="/app/dify-app-pools" class="nav-item">
+<router-link v-if="isAdmin()" to="/app/dify-app-pools" class="nav-item">
   <span>Dify App Pools</span>
 </router-link>
         
@@ -101,6 +101,8 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
+import { isAdmin, isStaff } from '../utils/auth'
+
 
 const route = useRoute()
 const router = useRouter()
@@ -123,9 +125,12 @@ async function logout() {
     await api.post('/logout')
   } catch (e) {
   } finally {
+
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     router.push('/login')
+
+    
   }
 }
 </script>
