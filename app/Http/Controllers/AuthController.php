@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Services\AI\DifyDatasetProvisionService;
 use App\Services\AI\DifyAppPoolService;
+use App\Services\DifyAppDeployService;
+use App\Models\DifyAppPool;
+
 
 class AuthController extends Controller
 {
@@ -87,13 +90,28 @@ class AuthController extends Controller
             description: "Tenant {$tenant->id} knowledge base"
         );
 
-        $pool = app(DifyAppPoolService::class)->assignAvailablePoolToTenant($tenant->id);
+        $difyApp = $this->createTenantApp([
+            'id' => $tenant->id,
+            'name' => "CHATBOT{$tenant->name}-{$tenant->id}",
+            'dataset_id' => $dataset['id'],
+        ]);
+        
+        
+         $pool = DifyAppPool::create([
+            'app_name' => $difyApp['app_name'],
+            'app_api_key' => $difyApp['api_key'],
+            'app_mode' => 'chat',
+            'status' => 'available',
+        ]);
 
+        $pool = app(DifyAppPoolService::class)->assignAvailablePoolToTenant($tenant->id);
         $aiSetting = TenantAiSetting::create([
             'tenant_id' => $tenant->id,
             'provider' => 'dify',
+
             'dify_dataset_id' => $dataset['id'],
             'dify_dataset_name' => $dataset['name'],
+
             'dify_app_api_key' => $pool->app_api_key,
             'dify_app_name' => $pool->app_name,
             'dify_app_mode' => $pool->app_mode,
@@ -101,6 +119,8 @@ class AuthController extends Controller
             'dataset_bound' => false,
         ]);
 
+
+        
         event(new Registered($user));
         $token = $user->createToken('lineai-web')->plainTextToken;
 
@@ -116,6 +136,25 @@ class AuthController extends Controller
         'email_verification_required' => true,
     ], 201);
 }
+    
+
+    public function createTenantApp(array $tenantData)
+    {
+        $service = app(DifyAppDeployService::class);
+
+        return $service->deployApp(
+
+            inputDsl: storage_path('app/dify/template.yml'),
+            outputDsl: storage_path("app/dify/output/tenant_{$tenantData['id']}.yml"),
+
+            datasetIds: [$tenantData['dataset_id']],
+            description: "Tenant {$tenantData['name']} AI App",
+
+            keyName: "tenant-{$tenantData['id']}-key"
+        );
+    }
+
+
 
 
     public function login(Request $request)

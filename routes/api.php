@@ -114,7 +114,7 @@ Route::middleware('auth:sanctum', 'role:super_admin,admin')->group(function () {
 
 });
 
-Route::middleware(['auth:sanctum', 'role:super_admin,admin,staff'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner'])->group(function () {
      Route::post('/knowledge/upload', [KnowledgeUploadController::class, 'upload']);
     Route::get('/knowledge/documents', [KnowledgeUploadController::class, 'index']);
     Route::post('/conversations/{conversation}/dify-reply', [DifyConversationController::class, 'reply']);

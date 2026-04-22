@@ -14,11 +14,11 @@
           <span>{{ $t('nav.dashboard') }}</span>
         </router-link>
 
-        <router-link v-if="isStaff()"  to="/app/conversations" class="nav-item">
+        <router-link v-if="isOwner()"  to="/app/conversations" class="nav-item">
           <span>對話</span>
         </router-link>
 
-        <router-link v-if="isStaff()" to="/app/customers" class="nav-item">
+        <router-link v-if="isOwner()" to="/app/customers" class="nav-item">
           <span>客戶</span>
         </router-link>
 
@@ -29,11 +29,7 @@
     
 
 
-        <router-link v-if="isStaff()" to="/app/knowledge-base" class="nav-item">
-          <span>知識庫</span>
-        </router-link>
-
-         <router-link to="/app/knowledge-upload" class="nav-item">
+         <router-link v-if="isOwner()" to="/app/knowledge-upload" class="nav-item">
              <span>知識上傳</span>
         </router-link>
 
@@ -101,7 +97,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
-import { isAdmin, isStaff } from '../utils/auth'
+import { isAdmin, isOwner } from '../utils/auth'
 
 
 const route = useRoute()

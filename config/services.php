@@ -42,7 +42,9 @@ return [
     'base_url' => env('DIFY_BASE_URL', 'http://114.34.240.115:4001/v1'),
     'dataset_api_key' => env('DIFY_DATASET_API_KEY'),
     'indexing_technique' => env('DIFY_INDEXING_TECHNIQUE', 'high_quality'),
-    'console_url' => env('DIFY_CONSOLE_URL', 'http://114.34.240.115:4001'),
+    'console_url' => env('DIFY_CONSOLE_URL', 'http://114.34.240.115:4001'),    
+    'email' => env('DIFY_EMAIL'),
+    'password' => env('DIFY_PASSWORD'),
 ],
     
 ];

@@ -17,8 +17,8 @@ export function isAdmin() {
   return hasRole(['super_admin', 'admin'])
 }
 
-export function isStaff() {
-  return hasRole(['super_admin', 'admin', 'staff'])
+export function isOwner() {
+  return hasRole(['super_admin', 'admin', 'owner'])
 }
 
 export function isSuperAdmin() {

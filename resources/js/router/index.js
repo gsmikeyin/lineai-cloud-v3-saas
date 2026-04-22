@@ -141,7 +141,7 @@ const routes = [
          path: 'knowledge-upload',
          name: 'knowledge-upload',
          component: KnowledgeUpload,
-         meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'staff'] },
+         meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'owner'] },
     },
     {
         path: 'dify-app-pools',

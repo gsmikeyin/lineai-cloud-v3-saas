@@ -22,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
-    public const ROLE_STAFF = 'staff';
+    public const ROLE_OWNER = 'owner';
     public const ROLE_USER = 'user';
 
 
@@ -162,7 +162,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return in_array($this->role, [
             self::ROLE_SUPER_ADMIN,
             self::ROLE_ADMIN,
-            self::ROLE_STAFF,
+            self::ROLE_OWNER,
         ], true);
     }
 
