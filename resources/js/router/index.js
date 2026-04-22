@@ -141,34 +141,20 @@ const routes = [
          path: 'knowledge-upload',
          name: 'knowledge-upload',
          component: KnowledgeUpload,
-         meta: { title: 'Knowledge Upload' },
+         meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'staff'] },
     },
     {
         path: 'dify-app-pools',
         name: 'dify-app-pools',
-        component: DifyAppPools,
-        meta: { title: 'Dify App Pools' },
-    },
-
-{
-  path: 'knowledge-upload',
-  name: 'knowledge-upload',
-  component: KnowledgeUpload,
-  meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'staff'] },
-},
+        component: DifyAppPoolManager,
+        meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
+    },    
 {
   path: 'dify-binding',
   name: 'dify-binding',
   component: DifyBindingHelper,
   meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
 },
-{
-  path: 'dify-app-pools',
-  name: 'dify-app-pools',
-  component: DifyAppPoolManager,
-  meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
-},
-
 
     ],
   },
@@ -188,7 +174,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.roles && !hasRole(to.meta.roles)) {
-    return next('/app/dashboard')
+    return next('/app')
   }
   next()
 

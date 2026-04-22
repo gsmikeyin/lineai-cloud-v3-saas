@@ -133,7 +133,7 @@
 import { ref } from 'vue'
 import api from '../api'
 
-const message = ref('請問你們幾點營業？')
+const message = ref('')
 const loading = ref(false)
 const result = ref(null)
 const errorMessage = ref('')

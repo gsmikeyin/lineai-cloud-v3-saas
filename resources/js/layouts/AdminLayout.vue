@@ -49,7 +49,7 @@
         </router-link>
 
 
-        <router-link to="/app/contact-leads" class="nav-item">
+        <router-link v-if="isAdmin()" to="/app/contact-leads" class="nav-item">
             <span>潛在客戶列表</span>
         </router-link>
         
@@ -130,7 +130,7 @@ async function logout() {
     localStorage.removeItem('user')
     router.push('/login')
 
-    
+
   }
 }
 </script>
