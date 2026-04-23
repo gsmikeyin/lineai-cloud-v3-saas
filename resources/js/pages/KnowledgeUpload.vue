@@ -117,6 +117,7 @@ async function submitUpload() {
     if (fileInput.value) fileInput.value.value = ''
 
     await fetchDocuments()
+    
   } catch (error) {
     errorMessage.value = error.response?.data?.message || '上傳失敗'
   } finally {

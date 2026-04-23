@@ -122,6 +122,7 @@ class AuthController extends Controller
 
         
         event(new Registered($user));
+        
         $token = $user->createToken('lineai-web')->plainTextToken;
 
         return compact('tenant', 'user', 'token', 'aiSetting');
@@ -176,6 +177,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if ($user->status !== User::STATUS_ACTIVE) {
+
             Auth::logout();
 
             return response()->json([

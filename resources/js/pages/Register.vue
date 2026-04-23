@@ -71,12 +71,22 @@ async function handleRegister() {
   try {
     const res = await api.post('/register', form)
 
+
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+
+
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
+    
+    api.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
+    
+
 
     router.push('/app')
 
   } catch (error) {
+    
     const data = error.response?.data
 
     if (data?.errors) {
