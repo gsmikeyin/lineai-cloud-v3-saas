@@ -78,13 +78,13 @@ async function handleRegister() {
 
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
-    
+
     api.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
     
 
-
+    //window.location.href = '/app'
     router.push('/app')
-
+    
   } catch (error) {
     
     const data = error.response?.data

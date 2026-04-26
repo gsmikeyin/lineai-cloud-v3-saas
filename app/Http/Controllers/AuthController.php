@@ -11,9 +11,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Services\AI\DifyDatasetProvisionService;
-use App\Services\AI\DifyAppPoolService;
 use App\Services\DifyAppDeployService;
 use App\Models\DifyAppPool;
 
@@ -22,70 +22,104 @@ class AuthController extends Controller
 {
 
     public function __construct(
-        protected DifyDatasetProvisionService $difyDatasetProvisionService,
-        protected DifyAppPoolService $difyAppPoolService
+        protected DifyDatasetProvisionService $difyDatasetProvisionService
     ) {}
 
-    
-  public function register(Request $request)
-{
-    $validated = $request->validate([
-        'company_name' => ['required', 'string', 'max:255'],
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-    ]);
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'company_name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
 
-    $result = DB::transaction(function () use ($validated) {
-        $baseSlug = Str::slug($validated['company_name']);
-        $slug = $baseSlug ?: 'tenant';
-        $counter = 1;
+        $result = DB::transaction(function () use ($validated) {
+            $baseSlug = Str::slug($validated['company_name']);
+            $slug = $baseSlug ?: 'tenant';
+            $counter = 1;
 
-        while (Tenant::where('slug', $slug)->exists()) {
-            $slug = ($baseSlug ?: 'tenant') . '-' . $counter;
-            $counter++;
+            while (Tenant::where('slug', $slug)->exists()) {
+                $slug = ($baseSlug ?: 'tenant') . '-' . $counter;
+                $counter++;
+            }
+
+            $tenant = Tenant::create([
+                'name' => $validated['company_name'],
+                'slug' => $slug,
+                'company_name' => $validated['company_name'],
+                'status' => Tenant::STATUS_ACTIVE,
+                'timezone' => 'Asia/Taipei',
+                'locale' => 'zh_TW',
+                'currency' => 'TWD',
+            ]);
+
+            $user = User::create([
+                'tenant_id' => $tenant->id,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => $validated['password'],
+                'role' => User::ROLE_OWNER,
+                'status' => User::STATUS_ACTIVE,
+            ]);
+
+            $tenant->update([
+                'owner_user_id' => $user->id,
+                'contact_name' => $user->name,
+                'contact_email' => $user->email,
+            ]);
+
+            TenantLineChannel::firstOrCreate(
+                ['tenant_id' => $tenant->id],
+                [
+                    'provider' => 'line',
+                    'channel_name' => $tenant->name . ' Bot',
+                    'is_active' => false,
+                    'is_verified' => false,
+                    'webhook_url' => rtrim(config('app.url'), '/') . '/api/line/webhook/' . $tenant->webhook_key,
+                ]
+            );
+
+            return compact('tenant', 'user');
+        });
+
+        event(new Registered($result['user']));
+
+        $aiSetting = null;
+        $provisioningStatus = 'skipped';
+
+        if (config('services.dify.enabled')) {
+            try {
+                $aiSetting = $this->provisionDifyForTenant($result['tenant']);
+                $provisioningStatus = 'ready';
+            } catch (\Throwable $e) {
+                report($e);
+                Log::error('Tenant Dify provisioning failed', [
+                    'tenant_id' => $result['tenant']->id,
+                    'error' => $e->getMessage(),
+                ]);
+                $provisioningStatus = 'failed';
+            }
         }
 
-        $tenant = Tenant::create([
-            'name' => $validated['company_name'],
-            'slug' => $slug,
-            'company_name' => $validated['company_name'],
-            'status' => Tenant::STATUS_ACTIVE,
-            'timezone' => 'Asia/Taipei',
-            'locale' => 'zh_TW',
-            'currency' => 'TWD',
-        ]);
+        $token = $result['user']->createToken('lineai-web')->plainTextToken;
 
-        $user = User::create([
-            'tenant_id' => $tenant->id,
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-            'role' => User::ROLE_OWNER,
-            'status' => User::STATUS_ACTIVE,
-        ]);
+        return response()->json([
+            'success' => true,
+            'token' => $token,
+            'user' => $result['user'],
+            'tenant' => $result['tenant'],
+            'dify_dataset_id' => $aiSetting?->dify_dataset_id,
+            'dify_provisioning_status' => $provisioningStatus,
+            'email_verification_required' => true,
+        ], 201);
+    }
 
-        $tenant->update([
-            'owner_user_id' => $user->id,
-            'contact_name' => $user->name,
-            'contact_email' => $user->email,
-        ]);
+    protected function provisionDifyForTenant(Tenant $tenant): TenantAiSetting
+    {
+        $datasetName = "{$tenant->name} KB ({$tenant->id})";
 
-        TenantLineChannel::firstOrCreate(
-            ['tenant_id' => $tenant->id],
-            [
-                'provider' => 'line',
-                'channel_name' => $tenant->name . ' Bot',
-                'is_active' => false,
-                'is_verified' => false,
-                'webhook_url' => rtrim(config('app.url'), '/') . '/api/line/webhook/' . $tenant->webhook_key,
-            ]
-        );
-
-
-        $datasetName = "{$tenant->name} KB ({$tenant->id})";        
-
-        $dataset = app(DifyDatasetProvisionService::class)->createEmptyDataset(
+        $dataset = $this->difyDatasetProvisionService->createEmptyDataset(
             name: $datasetName,
             description: "Tenant {$tenant->id} knowledge base"
         );
@@ -95,48 +129,29 @@ class AuthController extends Controller
             'name' => "CHATBOT{$tenant->name}-{$tenant->id}",
             'dataset_id' => $dataset['id'],
         ]);
-        
-        
-         $pool = DifyAppPool::create([
+
+        $pool = DifyAppPool::create([
             'app_name' => $difyApp['app_name'],
             'app_api_key' => $difyApp['api_key'],
             'app_mode' => 'chat',
-            'status' => 'available',
+            'status' => 'assigned',
+            'assigned_tenant_id' => $tenant->id,
         ]);
 
-        $pool = app(DifyAppPoolService::class)->assignAvailablePoolToTenant($tenant->id);
-        $aiSetting = TenantAiSetting::create([
-            'tenant_id' => $tenant->id,
-            'provider' => 'dify',
-
-            'dify_dataset_id' => $dataset['id'],
-            'dify_dataset_name' => $dataset['name'],
-
-            'dify_app_api_key' => $pool->app_api_key,
-            'dify_app_name' => $pool->app_name,
-            'dify_app_mode' => $pool->app_mode,
-            'is_active' => true,
-            'dataset_bound' => false,
-        ]);
-
-
-        
-        event(new Registered($user));
-        
-        $token = $user->createToken('lineai-web')->plainTextToken;
-
-        return compact('tenant', 'user', 'token', 'aiSetting');
-    });
-
-    return response()->json([
-        'success' => true,
-        'token' => $result['token'],
-        'user' => $result['user'],
-        'tenant' => $result['tenant'],
-        'dify_dataset_id' => $result['aiSetting']->dify_dataset_id,
-        'email_verification_required' => true,
-    ], 201);
-}
+        return TenantAiSetting::updateOrCreate(
+            ['tenant_id' => $tenant->id],
+            [
+                'provider' => 'dify',
+                'dify_dataset_id' => $dataset['id'],
+                'dify_dataset_name' => $dataset['name'],
+                'dify_app_api_key' => $pool->app_api_key,
+                'dify_app_name' => $pool->app_name,
+                'dify_app_mode' => $pool->app_mode,
+                'is_active' => true,
+                'dataset_bound' => false,
+            ]
+        );
+    }
     
 
     public function createTenantApp(array $tenantData)
@@ -211,21 +226,19 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $user = $request->user();
+        if ($request->user()) {
+        $request->user()->currentAccessToken()?->delete();
+       }
 
-        /*
-        if ($user && $user->currentAccessToken()) {
-            $user->currentAccessToken()->delete();
-        }*/
+       auth()->guard('web')->logout();
 
-        if ($user) {
-            $user->tokens()->delete();
-        }
-
+       $request->session()->invalidate();
+       $request->session()->regenerateToken();
 
         return response()->json([
             'success' => true,
         ]);
+        
     }
 
 

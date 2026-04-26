@@ -32,6 +32,33 @@ npm run dev
 
 Then open the Laravel URL shown by `php artisan serve`.
 
+## Docker Development
+Start Docker Desktop first, then run:
+
+```bash
+docker compose up --build
+```
+
+Open:
+- App: http://localhost:8080
+- Vite dev server: http://localhost:5173
+- MySQL: localhost:3307
+- Redis: localhost:6380
+
+Run migrations inside the app container:
+
+```bash
+docker compose exec app php artisan migrate --seed
+```
+
+Useful commands:
+
+```bash
+docker compose exec app php artisan test
+docker compose exec app php artisan queue:work
+docker compose down
+```
+
 ## Production asset build
 ```bash
 npm run build

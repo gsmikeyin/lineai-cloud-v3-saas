@@ -16,6 +16,56 @@ class LineWebhookEventProcessor
         protected LineMessagingService $lineMessagingService,
     ) {}
 
+    public function process(int $tenantId, array $event): void
+    {
+        if (data_get($event, 'type') !== 'message' || data_get($event, 'message.type') !== 'text') {
+            return;
+        }
+
+        $tenant = Tenant::query()->with('lineChannel')->findOrFail($tenantId);
+        $lineUserId = data_get($event, 'source.userId');
+        $userMessage = trim((string) data_get($event, 'message.text', ''));
+
+        if (!$lineUserId || $userMessage === '') {
+            return;
+        }
+
+        $customer = Customer::firstOrCreate(
+            [
+                'tenant_id' => $tenant->id,
+                'line_user_id' => $lineUserId,
+            ],
+            [
+                'source' => 'line',
+                'display_name' => 'LINE User',
+                'status' => 'active',
+                'first_interaction_at' => now(),
+            ]
+        );
+
+        $customer->update([
+            'last_interaction_at' => now(),
+            'total_messages' => (int) $customer->total_messages + 1,
+        ]);
+
+        $conversation = Conversation::firstOrCreate(
+            [
+                'tenant_id' => $tenant->id,
+                'customer_id' => $customer->id,
+                'status' => Conversation::STATUS_OPEN,
+            ],
+            [
+                'channel' => 'line',
+                'priority' => Conversation::PRIORITY_NORMAL,
+                'ai_enabled' => true,
+                'human_handoff' => false,
+                'last_message_at' => now(),
+            ]
+        );
+
+        $this->processTextMessage($tenant, $event, $customer->fresh(), $conversation, $userMessage);
+    }
+
     public function processTextMessage(Tenant $tenant, array $event, Customer $customer, Conversation $conversation, string $userMessage): void
     {
         $replyToken = data_get($event, 'replyToken');
@@ -26,16 +76,20 @@ class LineWebhookEventProcessor
             'tenant_id' => $tenant->id,
             'conversation_id' => $conversation->id,
             'customer_id' => $customer->id,
-            'direction' => 'inbound',
-            'sender_type' => 'customer',
-            'message_type' => 'text',
+            'direction' => Message::DIRECTION_INBOUND,
+            'sender_type' => Message::SENDER_CUSTOMER,
+            'message_type' => Message::TYPE_TEXT,
             'content' => $userMessage,
+            'line_message_id' => data_get($event, 'message.id'),
+            'reply_token' => $replyToken,
+            'raw_payload' => $event,
             'is_ai_generated' => false,
             'sent_at' => now(),
         ]);
 
         $conversation->update([
             'last_message_at' => now(),
+            'last_customer_message_at' => now(),
             'unread_count' => ($conversation->unread_count ?? 0) + 1,
         ]);
 
@@ -43,10 +97,11 @@ class LineWebhookEventProcessor
             if ($replyToken) {
                 $this->lineMessagingService->reply(
                     $replyToken,
-                    '您好，您的訊息已轉交真人客服處理，請稍候。',
+                    '已轉交人工客服，請稍候。',
                     $channelAccessToken
                 );
             }
+
             return;
         }
 
@@ -58,7 +113,7 @@ class LineWebhookEventProcessor
                 message: $userMessage
             );
 
-            $reply = $difyResult['answer'] ?: '不好意思，我先幫您轉人工客服處理。';
+            $reply = $difyResult['answer'] ?: '目前無法產生回覆，請稍後再試。';
             $source = 'dify';
         } catch (\Throwable $e) {
             report($e);
@@ -68,7 +123,7 @@ class LineWebhookEventProcessor
                 'error' => $e->getMessage(),
             ]);
 
-            $reply = '不好意思，目前系統較忙，請稍後再試，或我幫您轉人工客服。';
+            $reply = '目前系統忙碌，請稍後再試。';
             $source = 'fallback';
         }
 
@@ -80,18 +135,18 @@ class LineWebhookEventProcessor
             'tenant_id' => $tenant->id,
             'conversation_id' => $conversation->id,
             'customer_id' => $customer->id,
-            'direction' => 'outbound',
-            'sender_type' => 'ai',
-            'message_type' => 'text',
+            'direction' => Message::DIRECTION_OUTBOUND,
+            'sender_type' => Message::SENDER_AI,
+            'message_type' => Message::TYPE_TEXT,
             'content' => $reply,
             'is_ai_generated' => true,
-            'reply_source' => $source,
+            'meta' => ['reply_source' => $source],
             'sent_at' => now(),
         ]);
 
         $conversation->update([
             'last_message_at' => now(),
-            'last_ai_reply_at' => now(),
+            'last_agent_reply_at' => now(),
             'ai_enabled' => true,
         ]);
     }

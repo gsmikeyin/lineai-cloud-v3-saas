@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tenant_ai_settings')) {
+            return;
+        }
+
         Schema::create('tenant_ai_settings', function (Blueprint $table) {
 
         $table->id();
@@ -35,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenant_ai_settings');
+        //
     }
 };

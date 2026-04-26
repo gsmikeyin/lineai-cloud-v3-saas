@@ -8,6 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('dify_app_pools')) {
+            Schema::table('dify_app_pools', function (Blueprint $table) {
+                if (!Schema::hasColumn('dify_app_pools', 'meta')) {
+                    $table->json('meta')->nullable();
+                }
+            });
+
+            return;
+        }
+
         Schema::create('dify_app_pools', function (Blueprint $table) {
             $table->id();
             $table->string('app_name');
@@ -25,6 +35,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('dify_app_pools');
+        //
     }
 };

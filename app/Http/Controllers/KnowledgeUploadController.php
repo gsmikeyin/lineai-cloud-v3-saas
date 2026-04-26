@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KnowledgeSource;
 use App\Services\AI\DifyKnowledgeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class KnowledgeUploadController extends Controller
 {
+    private const MAX_DOCUMENTS_PER_TENANT = 2;
+
     public function __construct(
         protected DifyKnowledgeService $difyKnowledgeService
     ) {}
@@ -29,13 +34,31 @@ class KnowledgeUploadController extends Controller
             ], 422);
         }
 
+        if ($tenant->knowledgeSources()->count() >= self::MAX_DOCUMENTS_PER_TENANT) {
+            return response()->json([
+                'message' => 'Knowledge document limit reached. You can upload up to 2 files.',
+            ], 422);
+        }
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md'],
         ]);
 
+        $file = $request->file('file');
+        $alreadyExists = $tenant->knowledgeSources()
+            ->where('name', $file->getClientOriginalName())
+            ->where('file_size', $file->getSize())
+            ->exists();
+
+        if ($alreadyExists) {
+            return response()->json([
+                'message' => 'This knowledge document has already been uploaded.',
+            ], 422);
+        }
+
         $record = $this->difyKnowledgeService->uploadDocument(
             tenant: $tenant,
-            file: $request->file('file')
+            file: $file
         );
 
         return response()->json([
@@ -56,6 +79,10 @@ class KnowledgeUploadController extends Controller
 
         $tenant = $user->tenant;
 
+        Log::error("user = " . $user);
+        Log::error("tenant = " . $tenant);
+
+
         if (!$tenant) {
             return response()->json([
                 'message' => 'Tenant not found for current user.',
@@ -63,7 +90,28 @@ class KnowledgeUploadController extends Controller
         }
 
         return response()->json(
-            $tenant->knowledgeSources()->latest('id')->paginate(20)
+            $tenant->knowledgeSources()->latest('id')->paginate(self::MAX_DOCUMENTS_PER_TENANT)
         );
+    }
+
+    public function destroy(Request $request, KnowledgeSource $knowledgeSource)
+    {
+        $user = auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
+        if ((int) $knowledgeSource->tenant_id !== (int) $user->tenant_id) {
+            abort(403);
+        }
+
+        $this->difyKnowledgeService->deleteDocument($knowledgeSource);
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

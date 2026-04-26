@@ -3,9 +3,9 @@
     <div class="page-head">
       <div>
         <h2>Dify Knowledge Upload</h2>
-        <p>上傳 PDF / DOCX / TXT / MD 到 Dify Dataset，並查看索引狀態。</p>
+        <p>上傳 PDF / DOCX / TXT / MD 到 Dify Dataset，每個租戶最多 2 個檔案。</p>
       </div>
-      <button class="ghost-btn" @click="fetchDocuments">刷新</button>
+      <button class="ghost-btn" type="button" @click="fetchDocuments">重新整理</button>
     </div>
 
     <div class="upload-card">
@@ -15,12 +15,17 @@
             ref="fileInput"
             type="file"
             accept=".pdf,.txt,.doc,.docx,.md"
+            :disabled="uploadLimitReached"
             @change="handleFileChange"
           />
 
-          <button class="primary-btn" type="submit" :disabled="uploading || !selectedFile">
-            {{ uploading ? '上傳中...' : '上傳到知識庫' }}
+          <button class="primary-btn" type="submit" :disabled="uploading || !selectedFile || uploadLimitReached">
+            {{ uploading ? '上傳中...' : '上傳文件' }}
           </button>
+        </div>
+
+        <div class="limit-info" :class="{ reached: uploadLimitReached }">
+          已上傳 {{ documents.length }} / {{ MAX_DOCUMENTS }} 個檔案
         </div>
 
         <div v-if="selectedFile" class="file-info">
@@ -41,13 +46,14 @@
       <table class="table">
         <thead>
           <tr>
-            <th>名稱</th>
+            <th>檔名</th>
             <th>類型</th>
             <th>大小</th>
             <th>狀態</th>
             <th>索引狀態</th>
             <th>Dify Document ID</th>
             <th>建立時間</th>
+            <th class="action-col">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -63,11 +69,16 @@
             <td>{{ item.indexing_status || '-' }}</td>
             <td class="mono">{{ item.dify_document_id || '-' }}</td>
             <td>{{ formatDate(item.created_at) }}</td>
+            <td class="action-col">
+              <button class="danger-btn" type="button" :disabled="deletingId === item.id" @click="deleteDocument(item)">
+                {{ deletingId === item.id ? '刪除中...' : '刪除' }}
+              </button>
+            </td>
           </tr>
 
           <tr v-if="!loading && documents.length === 0">
-            <td colspan="7">
-              <div class="empty-box">目前還沒有上傳任何知識檔案</div>
+            <td colspan="8">
+              <div class="empty-box">尚未上傳任何知識文件</div>
             </td>
           </tr>
         </tbody>
@@ -77,23 +88,50 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '../api'
 
+const MAX_DOCUMENTS = 2
 const loading = ref(false)
 const uploading = ref(false)
+const deletingId = ref(null)
 const selectedFile = ref(null)
 const documents = ref([])
 const fileInput = ref(null)
 const successMessage = ref('')
 const errorMessage = ref('')
+const uploadLimitReached = computed(() => documents.value.length >= MAX_DOCUMENTS)
 
 function handleFileChange(event) {
-  selectedFile.value = event.target.files?.[0] || null
+  if (uploadLimitReached.value) {
+    selectedFile.value = null
+    if (fileInput.value) fileInput.value.value = ''
+    errorMessage.value = `最多只能上傳 ${MAX_DOCUMENTS} 個檔案`
+    return
+  }
+
+  const file = event.target.files?.[0] || null
+
+  if (file && isDuplicateFile(file)) {
+    selectedFile.value = null
+    if (fileInput.value) fileInput.value.value = ''
+    errorMessage.value = '此檔案已上傳，請選擇其他檔案'
+    return
+  }
+
+  selectedFile.value = file
 }
 
 async function submitUpload() {
   if (!selectedFile.value) return
+  if (uploadLimitReached.value) {
+    errorMessage.value = `最多只能上傳 ${MAX_DOCUMENTS} 個檔案`
+    return
+  }
+  if (isDuplicateFile(selectedFile.value)) {
+    errorMessage.value = '此檔案已上傳，請選擇其他檔案'
+    return
+  }
 
   uploading.value = true
   successMessage.value = ''
@@ -109,19 +147,33 @@ async function submitUpload() {
       },
     })
 
-    successMessage.value = res.data?.success
-      ? '檔案已送出到 Dify，正在建立索引'
-      : '上傳完成'
-
+    successMessage.value = res.data?.success ? '文件已上傳到 Dify，正在建立索引。' : '上傳完成'
     selectedFile.value = null
     if (fileInput.value) fileInput.value.value = ''
 
     await fetchDocuments()
-    
   } catch (error) {
     errorMessage.value = error.response?.data?.message || '上傳失敗'
   } finally {
     uploading.value = false
+  }
+}
+
+async function deleteDocument(item) {
+  if (!window.confirm(`確定要刪除「${item.name}」？`)) return
+
+  deletingId.value = item.id
+  successMessage.value = ''
+  errorMessage.value = ''
+
+  try {
+    await api.delete(`/knowledge/documents/${item.id}`)
+    successMessage.value = '文件已刪除'
+    await fetchDocuments()
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || '刪除失敗'
+  } finally {
+    deletingId.value = null
   }
 }
 
@@ -161,6 +213,10 @@ function statusClass(status) {
   return 'status-default'
 }
 
+function isDuplicateFile(file) {
+  return documents.value.some((item) => item.name === file.name && Number(item.file_size) === file.size)
+}
+
 onMounted(fetchDocuments)
 </script>
 
@@ -197,11 +253,17 @@ onMounted(fetchDocuments)
   flex-wrap: wrap;
 }
 .primary-btn,
-.ghost-btn {
+.ghost-btn,
+.danger-btn {
   border: 0;
   border-radius: 10px;
   padding: 10px 14px;
   cursor: pointer;
+}
+.primary-btn:disabled,
+.danger-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 .primary-btn {
   background: #111827;
@@ -211,9 +273,21 @@ onMounted(fetchDocuments)
   background: #eef2f7;
   color: #111827;
 }
+.danger-btn {
+  background: #fee2e2;
+  color: #991b1b;
+}
 .file-info {
   margin-top: 12px;
   color: #4b5563;
+}
+.limit-info {
+  margin-top: 12px;
+  color: #4b5563;
+  font-size: 14px;
+}
+.limit-info.reached {
+  color: #dc2626;
 }
 .success-message {
   margin-top: 12px;
@@ -240,6 +314,10 @@ onMounted(fetchDocuments)
 .table th {
   font-size: 13px;
   color: #6b7280;
+}
+.action-col {
+  white-space: nowrap;
+  text-align: right;
 }
 .badge {
   padding: 4px 8px;

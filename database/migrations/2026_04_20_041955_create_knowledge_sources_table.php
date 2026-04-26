@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+       if (Schema::hasTable('knowledge_sources')) {
+           return;
+       }
+
        Schema::create('knowledge_sources', function (Blueprint $table) {
     $table->id();
     $table->unsignedBigInteger('tenant_id');
@@ -39,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('knowledge_sources');
+        //
     }
 };

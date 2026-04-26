@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class OpenAIController extends Controller
@@ -31,7 +28,6 @@ class OpenAIController extends Controller
        $fileId = $data['id'] ?? null;
 
         return response()->json([
-            'token' => env('OPENAI_API_KEY'),
             'fileID' => $fileId,
         ]);
     }
@@ -52,7 +48,6 @@ class OpenAIController extends Controller
         $vectorStoreId = $storeData['id'] ?? null;
 
         return response()->json([
-            'token' => env('OPENAI_API_KEY'),
             'vectorStoreId' => $vectorStoreId,
         ]);
 
@@ -68,7 +63,7 @@ class OpenAIController extends Controller
         $attachData = $attachResponse->json();
 
         return response()->json([
-            'token' => env('OPENAI_API_KEY'),            
+            'success' => $attachResponse->successful(),
         ]);
 
     }

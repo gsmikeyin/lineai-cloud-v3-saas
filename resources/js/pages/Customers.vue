@@ -3,9 +3,9 @@
     <div class="page-head">
       <div>
         <h2>客戶</h2>
-        <p>管理 LINE 客戶資料與互動狀態</p>
+        <p>查看 LINE 客戶資料與互動紀錄。</p>
       </div>
-      <button class="ghost-btn" @click="fetchCustomers">刷新</button>
+      <button class="ghost-btn" type="button" @click="fetchCustomers">重新整理</button>
     </div>
 
     <div class="table-wrap">
@@ -15,7 +15,6 @@
             <th>名稱</th>
             <th>電話</th>
             <th>Email</th>
-            <th>VIP</th>
             <th>訊息數</th>
             <th>最後互動</th>
             <th>操作</th>
@@ -26,11 +25,10 @@
             <td>{{ item.display_name || '-' }}</td>
             <td>{{ item.phone || '-' }}</td>
             <td>{{ item.email || '-' }}</td>
-            <td>{{ item.is_vip ? '是' : '否' }}</td>
             <td>{{ item.total_messages ?? 0 }}</td>
             <td>{{ formatDate(item.last_interaction_at) }}</td>
             <td>
-              <router-link :to="`/customers/${item.id}`" class="view-link">
+              <router-link :to="`/app/customers/${item.id}`" class="view-link">
                 查看
               </router-link>
             </td>

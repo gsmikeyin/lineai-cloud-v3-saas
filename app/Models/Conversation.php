@@ -19,6 +19,7 @@ class Conversation extends Model
 
     protected $fillable = [
         'tenant_id',
+        'external_conversation_id',
         'customer_id',
         'assigned_user_id',
         'channel',
