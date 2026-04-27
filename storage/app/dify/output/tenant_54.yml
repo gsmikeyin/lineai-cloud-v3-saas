@@ -1,10 +1,10 @@
 app:
-  description: $$@@__CHAT BOT__@@$$
+  description: Tenant CHATBOTTEST23-54 AI App
   icon: 🤖
   icon_background: '#FFEAD5'
   icon_type: emoji
   mode: advanced-chat
-  name: $$##__CHATBOT__##$$
+  name: CHATBOTTEST23-54
   use_icon_as_answer_icon: false
 dependencies:
 - current_identifier: null
@@ -256,7 +256,7 @@ workflow:
       width: 242
     - data:
         dataset_ids:
-        - $$@@__DATASETID__@@$$
+        - 2ca82d15-f3dd-4efe-9dfa-5eafac10797e
         metadata_filtering_mode: disabled
         multiple_retrieval_config:
           reranking_enable: false

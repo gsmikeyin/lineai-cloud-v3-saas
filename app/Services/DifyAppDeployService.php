@@ -32,7 +32,8 @@ class DifyAppDeployService
         string $inputDsl,
         string $outputDsl,
         array $datasetIds,
-        ?string $description = null,
+        ?string $name = "CHATBOOT",
+        ?string $description = null,        
         string $keyName = 'auto-generated-key'
     ): array {
         
@@ -40,7 +41,9 @@ class DifyAppDeployService
         $content = File::get($inputDsl);     
         $content = str_replace("$$@@__DATASETID__@@$$", $datasetIds[0], $content); // "Hello Laravel"
 
-         
+        
+        $content = str_replace("$$##__CHATBOT__##$$", $name, $content); // "專案名稱l"        
+
 
         // 2️⃣ 修改 description
         if ($description) {

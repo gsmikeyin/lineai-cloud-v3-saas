@@ -127,6 +127,7 @@ class AuthController extends Controller
         $difyApp = $this->createTenantApp([
             'id' => $tenant->id,
             'name' => "CHATBOT{$tenant->name}-{$tenant->id}",
+            'name_title' => "CHATBOT_{$tenant->contact_name}-{$tenant->contact_email}",
             'dataset_id' => $dataset['id'],
         ]);
 
@@ -162,8 +163,9 @@ class AuthController extends Controller
 
             inputDsl: storage_path('app/dify/template.yml'),
             outputDsl: storage_path("app/dify/output/tenant_{$tenantData['id']}.yml"),
-
+            
             datasetIds: [$tenantData['dataset_id']],
+            name: "{$tenantData['name_title']}",            
             description: "Tenant {$tenantData['name']} AI App",
 
             keyName: "tenant-{$tenantData['id']}-key"

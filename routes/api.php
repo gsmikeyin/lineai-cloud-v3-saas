@@ -48,11 +48,7 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
 
 Route::middleware('auth:sanctum', 'role:super_admin,admin')->group(function () {
     Route::get('/dify-app-pools', [DifyAppPoolUiController::class, 'index']);
-    Route::post('/dify-app-pools', [DifyAppPoolUiController::class, 'store']);
     Route::put('/dify-app-pools/{difyAppPool}', [DifyAppPoolController::class, 'update']);
-    Route::get('/dify-app-pools/{difyAppPool}/assignments', [DifyAppPoolUiController::class, 'assignments']);
-    Route::post('/dify-app-pools/{difyAppPool}/release', [DifyAppPoolUiController::class, 'release']);
-    Route::post('/dify-app-pools/{difyAppPool}/reassign', [DifyAppPoolUiController::class, 'reassign']);
 
     Route::get('/dify-binding/pending', function () {
         return response()->json([

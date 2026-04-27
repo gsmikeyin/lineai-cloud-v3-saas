@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DifyAppPool extends Model
 {
@@ -14,4 +15,9 @@ class DifyAppPool extends Model
         'status',
         'assigned_tenant_id',
     ];
+
+    public function assignedTenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class, 'assigned_tenant_id');
+    }
 }
