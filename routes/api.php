@@ -18,7 +18,6 @@ use App\Http\Controllers\KnowledgeMatcherTestController;
 use App\Http\Controllers\KnowledgeUploadController;
 use App\Http\Controllers\LineBotSettingController;
 use App\Http\Controllers\LineWebhookController;
-use App\Models\TenantAiSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +26,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/line/webhook/{webhookKey}', [LineWebhookController::class, 'handle']);
 Route::post('/forgot-password', [AuthPasswordController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthPasswordController::class, 'resetPassword']);
+Route::post('/verify-email', [AuthVerificationController::class, 'verify']);
 
 Route::middleware('set.locale')->group(function () {
     Route::post('/contact', [ContactLeadController::class, 'store']);
@@ -40,43 +40,14 @@ Route::get('/login', function () {
 
 Route::middleware('auth:sanctum')->put('/me/locale', [AuthController::class, 'updateLocale']);
 
-Route::get('/email/verify/{id}/{hash}', function (Request $request) {
-    return response()->json([
-        'message' => 'Verification placeholder route.',
-    ]);
-})->middleware('signed')->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [AuthVerificationController::class, 'verifySigned'])
+    ->middleware('signed')
+    ->name('verification.verify');
 
 Route::middleware('auth:sanctum', 'role:super_admin,admin')->group(function () {
     Route::get('/dify-app-pools', [DifyAppPoolUiController::class, 'index']);
+    Route::delete('/dify-app-pools/{difyAppPool}', [DifyAppPoolUiController::class, 'destroy']);
     Route::put('/dify-app-pools/{difyAppPool}', [DifyAppPoolController::class, 'update']);
-
-    Route::get('/dify-binding/pending', function () {
-        return response()->json([
-            'data' => TenantAiSetting::where('dataset_bound', false)->with('tenant')->get(),
-        ]);
-    });
-
-    Route::post('/dify-binding/confirm', function (Request $request) {
-        $request->validate(['tenant_id' => 'required|integer']);
-
-        $setting = TenantAiSetting::where('tenant_id', $request->tenant_id)->firstOrFail();
-        $setting->update([
-            'dataset_bound' => true,
-            'dataset_bound_at' => now(),
-        ]);
-
-        return response()->json(['success' => true]);
-    });
-
-    Route::get('/dify-binding/link/{tenantId}', function ($tenantId) {
-        $setting = TenantAiSetting::where('tenant_id', $tenantId)->firstOrFail();
-
-        return response()->json([
-            'app_url' => rtrim(config('services.dify.console_url'), '/') . '/apps',
-            'dataset_id' => $setting->dify_dataset_id,
-            'tenant_name' => $setting->tenant->name,
-        ]);
-    });
 });
 
 Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner,sta'])->group(function () {
@@ -116,11 +87,11 @@ Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner,sta'])->group(f
     Route::put('/settings/line-bot', [LineBotSettingController::class, 'update']);
 
     Route::post('/email/verification-notification', [AuthVerificationController::class, 'send']);
-    Route::post('/verify-email', [AuthVerificationController::class, 'verify']);
 
     Route::get('/contact-leads', [ContactLeadController::class, 'index']);
     Route::get('/contact-leads/{contactLead}', [ContactLeadController::class, 'show']);
     Route::put('/contact-leads/{contactLead}', [ContactLeadController::class, 'update']);
 
+    Route::get('/dify/test/last', [DifyTestController::class, 'last']);
     Route::post('/dify/test', [DifyTestController::class, 'test']);
 });

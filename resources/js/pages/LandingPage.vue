@@ -1,28 +1,25 @@
 <template>
-
-   
-
   <div class="landing-page">
     <header class="topbar">
       <div class="container topbar-inner">
         <div class="brand">
-          <div class="brand-logo">L</div>
+          <div class="brand-logo">S</div>
           <div class="brand-text">
-            <div class="brand-title">LineAI Cloud</div>
-            <div class="brand-sub">LINE AI Customer Service SaaS</div>
+            <div class="brand-title">ServiceAI Cloud</div>
+            <div class="brand-sub">{{ $t('landing.brandSub') }}</div>
           </div>
         </div>
 
         <nav class="topnav">
-          <a href="#features">功能</a>
-          <a href="#use-cases">應用場景</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">聯絡我們</a>
-          <router-link to="/login" class="login-link">登入</router-link>
+          <a href="#features">{{ $t('nav.features') }}</a>
+          <a href="#use-cases">{{ $t('nav.useCases') }}</a>
+          <a href="#faq">{{ $t('nav.faq') }}</a>
+          <a href="#contact">{{ $t('nav.contact') }}</a>
+          <router-link to="/login" class="login-link">{{ $t('nav.login') }}</router-link>
 
           <select :value="locale" @change="changeLocale($event.target.value)" class="locale-select">
-                 <option value="zh_TW">繁中</option>
-                 <option value="en">English</option>                 
+            <option value="zh_TW">繁中</option>
+            <option value="en">English</option>
           </select>
         </nav>
       </div>
@@ -36,23 +33,14 @@
           <p class="hero-desc">{{ $t('landing.heroDesc') }}</p>
 
           <div class="hero-actions">
-            <router-link to="/register" class="primary-btn">
-                {{ $t('landing.startFree') }}
-            </router-link>
-
-           <router-link to="/login" class="ghost-btn">
-                {{ $t('landing.goLogin') }}
-           </router-link>
-
-          
-
+            <router-link to="/register" class="primary-btn">{{ $t('landing.startFree') }}</router-link>
+            <router-link to="/login" class="ghost-btn">{{ $t('landing.goLogin') }}</router-link>
           </div>
 
           <div class="hero-points">
-            <div class="point-item">✓ LINE 官方帳號整合</div>
-            <div class="point-item">✓ AI 自動回覆</div>
-            <div class="point-item">✓ 真人客服接手</div>
-            <div class="point-item">✓ 客戶資料與知識庫管理</div>
+            <div v-for="point in $tm('landing.points')" :key="point" class="point-item">
+              {{ point }}
+            </div>
           </div>
         </div>
 
@@ -67,10 +55,10 @@
             <div class="showcase-body">
               <aside class="showcase-sidebar">
                 <div class="side-item active">Dashboard</div>
-                <div class="side-item">對話</div>
-                <div class="side-item">客戶</div>
-                <div class="side-item">LINE Bot 設定</div>
-                <div class="side-item">智識庫</div>                
+                <div class="side-item">{{ $t('landing.showcase.conversations') }}</div>
+                <div class="side-item">{{ $t('landing.showcase.customers') }}</div>
+                <div class="side-item">{{ $t('landing.showcase.lineBot') }}</div>
+                <div class="side-item">{{ $t('landing.showcase.knowledge') }}</div>
               </aside>
 
               <div class="showcase-main">
@@ -90,10 +78,10 @@
                 </div>
 
                 <div class="chat-preview">
-                  <div class="bubble left">請問你們幾點營業？</div>
-                  <div class="bubble right">您好，我們的營業時間為週一到週五 09:00–18:00。</div>
-                  <div class="bubble left">可以退貨嗎？</div>
-                  <div class="bubble right">收到商品 7 天內可申請退貨，也可以協助您轉接真人客服。</div>
+                  <div class="bubble left">{{ $t('landing.showcase.customerQuestion1') }}</div>
+                  <div class="bubble right">{{ $t('landing.showcase.agentAnswer1') }}</div>
+                  <div class="bubble left">{{ $t('landing.showcase.customerQuestion2') }}</div>
+                  <div class="bubble right">{{ $t('landing.showcase.agentAnswer2') }}</div>
                 </div>
               </div>
             </div>
@@ -105,20 +93,20 @@
     <section class="trust-strip">
       <div class="container trust-grid">
         <div class="trust-item">
-          <strong>AI 回覆</strong>
-          <span>FAQ / Prompt / Knowledge 整合</span>
+          <strong>{{ $t('landing.trust.aiTitle') }}</strong>
+          <span>{{ $t('landing.trust.aiDesc') }}</span>
         </div>
         <div class="trust-item">
-          <strong>CRM</strong>
-          <span>客戶資料、標籤、備註、歷史互動</span>
+          <strong>{{ $t('landing.trust.crmTitle') }}</strong>
+          <span>{{ $t('landing.trust.crmDesc') }}</span>
         </div>
         <div class="trust-item">
-          <strong>客服後台</strong>
-          <span>未讀、接手、回覆、對話管理</span>
+          <strong>{{ $t('landing.trust.supportTitle') }}</strong>
+          <span>{{ $t('landing.trust.supportDesc') }}</span>
         </div>
         <div class="trust-item">
-          <strong>SaaS 架構</strong>
-          <span>Tenant、設定、擴充性與產品化</span>
+          <strong>{{ $t('landing.trust.saasTitle') }}</strong>
+          <span>{{ $t('landing.trust.saasDesc') }}</span>
         </div>
       </div>
     </section>
@@ -126,39 +114,14 @@
     <section id="features" class="section">
       <div class="container">
         <div class="section-head">
-          <h2>核心功能</h2>
-          <p>從客戶訊息進站，到 AI 與真人協作回覆，全流程整合。</p>
+          <h2>{{ $t('landing.featuresTitle') }}</h2>
+          <p>{{ $t('landing.featuresDesc') }}</p>
         </div>
 
         <div class="feature-grid">
-          <div class="feature-card">
-            <h3>AI 自動回覆</h3>
-            <p>先命中知識庫，再交由 AI 補足情境與語氣，提升回覆速度與一致性。</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>Knowledge Base</h3>
-            <p>集中維護 FAQ、退換貨政策、產品知識與 Prompt 規則，持續優化 AI 品質。</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>真人接手</h3>
-            <p>遇到複雜問題時，一鍵切換人工模式，避免 AI 回覆不完整影響成交。</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>Conversations 後台</h3>
-            <p>具備對話列表、未讀數、客戶資訊、客服回覆與即時操作能力。</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>Customer CRM</h3>
-            <p>客戶資料、標籤、備註、歷史訊息與互動紀錄集中管理。</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>多語與擴充性</h3>
-            <p>可延伸 i18n、Billing、WebSocket、AI 成本統計與 SaaS 商業模型。</p>
+          <div v-for="feature in $tm('landing.features')" :key="feature[0]" class="feature-card">
+            <h3>{{ feature[0] }}</h3>
+            <p>{{ feature[1] }}</p>
           </div>
         </div>
       </div>
@@ -167,29 +130,14 @@
     <section id="use-cases" class="section alt">
       <div class="container">
         <div class="section-head">
-          <h2>適用場景</h2>
-          <p>不同行業都可以把 LINE 從聊天工具升級成營運系統。</p>
+          <h2>{{ $t('landing.useCasesTitle') }}</h2>
+          <p>{{ $t('landing.useCasesDesc') }}</p>
         </div>
 
         <div class="usecase-grid">
-          <div class="usecase-card">
-            <h3>電商 / 零售</h3>
-            <p>自動回答出貨、付款、退貨、商品規格與客服常見問題。</p>
-          </div>
-
-          <div class="usecase-card">
-            <h3>品牌客服</h3>
-            <p>維持品牌口吻，建立標準化客服流程，縮短新人上手時間。</p>
-          </div>
-
-          <div class="usecase-card">
-            <h3>門市 / 預約服務</h3>
-            <p>處理預約、營業資訊、價格詢問與轉人工客服需求。</p>
-          </div>
-
-          <div class="usecase-card">
-            <h3>B2B 服務公司</h3>
-            <p>把客服流程數位化，並逐步擴充成可商業化的 SaaS 平台。</p>
+          <div v-for="useCase in $tm('landing.useCases')" :key="useCase[0]" class="usecase-card">
+            <h3>{{ useCase[0] }}</h3>
+            <p>{{ useCase[1] }}</p>
           </div>
         </div>
       </div>
@@ -198,33 +146,15 @@
     <section class="section">
       <div class="container">
         <div class="section-head">
-          <h2>流程很簡單</h2>
-          <p>幾步就能開始運作。</p>
+          <h2>{{ $t('landing.processTitle') }}</h2>
+          <p>{{ $t('landing.processDesc') }}</p>
         </div>
 
         <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-no">1</div>
-            <h3>設定 LINE Bot</h3>
-            <p>填入 Channel Secret、Access Token 與 Webhook URL。</p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-no">2</div>
-            <h3>建立 Knowledge Base</h3>
-            <p>把營業時間、物流、退換貨與產品資訊放進系統。</p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-no">3</div>
-            <h3>開始接收訊息</h3>
-            <p>客戶透過 LINE 送訊息進來，系統自動建立對話與客戶資料。</p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-no">4</div>
-            <h3>AI 與真人協作</h3>
-            <p>AI 回覆常見問題，複雜情境交由客服接手處理。</p>
+          <div v-for="(step, index) in $tm('landing.steps')" :key="step[0]" class="step-card">
+            <div class="step-no">{{ index + 1 }}</div>
+            <h3>{{ step[0] }}</h3>
+            <p>{{ step[1] }}</p>
           </div>
         </div>
       </div>
@@ -233,29 +163,14 @@
     <section id="faq" class="section faq-section">
       <div class="container">
         <div class="section-head">
-          <h2>常見問題</h2>
-          <p>導入前常被問到的幾個問題。</p>
+          <h2>{{ $t('landing.faqTitle') }}</h2>
+          <p>{{ $t('landing.faqDesc') }}</p>
         </div>
 
         <div class="faq-list">
-          <div class="faq-item">
-            <h3>這是只能做 AI 聊天機器人嗎？</h3>
-            <p>不是。它同時包含 AI、自動化、客服後台、Knowledge Base 與 CRM，是一整套客服營運系統。</p>
-          </div>
-
-          <div class="faq-item">
-            <h3>如果 AI 回錯怎麼辦？</h3>
-            <p>可以透過 Prompt 與知識庫持續優化，也可以一鍵切換真人客服接手。</p>
-          </div>
-
-          <div class="faq-item">
-            <h3>能不能依產業客製？</h3>
-            <p>可以。你可以依照電商、門市、預約、品牌客服等場景建立不同知識內容與流程。</p>
-          </div>
-
-          <div class="faq-item">
-            <h3>可以做成 SaaS 產品嗎？</h3>
-            <p>可以。系統本身就是以 Tenant 架構設計，方便後續擴充成可商業化的 SaaS 平台。</p>
+          <div v-for="faq in $tm('landing.faqs')" :key="faq[0]" class="faq-item">
+            <h3>{{ faq[0] }}</h3>
+            <p>{{ faq[1] }}</p>
           </div>
         </div>
       </div>
@@ -264,83 +179,73 @@
     <section id="contact" class="section contact-section">
       <div class="container">
         <div class="section-head">
-          <h2>聯絡我們</h2>
-          <p>想導入、客製或合作，直接留下資訊，我們會與你聯繫。</p>
+          <h2>{{ $t('landing.contactTitle') }}</h2>
+          <p>{{ $t('landing.contactDesc') }}</p>
         </div>
 
         <div class="contact-grid">
           <div class="contact-info-card">
-            <h3>聯絡資訊</h3>
+            <h3>{{ $t('landing.contactInfoTitle') }}</h3>
             <div class="contact-info-list">
               <div class="contact-info-item">
                 <label>Email</label>
                 <div>service@serviceaicloud.com</div>
               </div>
-              
               <div class="contact-info-item">
-                <label>服務時間</label>
-                <div>週一至週五 09:00–18:00</div>
+                <label>{{ $t('landing.serviceHours') }}</label>
+                <div>{{ $t('landing.serviceHoursValue') }}</div>
               </div>
               <div class="contact-info-item">
-                <label>合作項目</label>
-                <div>LINE AI 客服、CRM、SaaS 客製、系統整合</div>
+                <label>{{ $t('landing.cooperation') }}</label>
+                <div>{{ $t('landing.cooperationValue') }}</div>
               </div>
             </div>
           </div>
 
           <div class="contact-form-card">
-            <h3>聯絡表單</h3>
+            <h3>{{ $t('landing.contactFormTitle') }}</h3>
 
             <form @submit.prevent="submitContact">
               <div class="form-grid">
                 <div class="form-group">
-                  <label>{{ $t('form.name') }}</label>                  
-                  <input v-model="contactForm.name" type="text" placeholder="請輸入姓名" />
+                  <label>{{ $t('form.name') }}</label>
+                  <input v-model="contactForm.name" type="text" :placeholder="$t('form.namePlaceholder')" />
                 </div>
 
                 <div class="form-group">
-                  <label>Email</label>
-                  <input v-model="contactForm.email" type="email" placeholder="請輸入 Email" />
+                  <label>{{ $t('form.email') }}</label>
+                  <input v-model="contactForm.email" type="email" :placeholder="$t('form.emailPlaceholder')" />
                 </div>
 
                 <div class="form-group">
-                  <label>公司名稱</label>
-                  <input v-model="contactForm.company" type="text" placeholder="請輸入公司名稱" />
+                  <label>{{ $t('form.company') }}</label>
+                  <input v-model="contactForm.company" type="text" :placeholder="$t('form.companyPlaceholder')" />
                 </div>
 
                 <div class="form-group">
-                  <label>電話</label>
-                  <input v-model="contactForm.phone" type="text" placeholder="請輸入聯絡電話" />
+                  <label>{{ $t('form.phone') }}</label>
+                  <input v-model="contactForm.phone" type="text" :placeholder="$t('form.phonePlaceholder')" />
                 </div>
 
                 <div class="form-group full">
-                  <label>需求說明</label>
-                  <textarea
-                    v-model="contactForm.message"
-                    rows="5"
-                    placeholder="請描述你的需求，例如：想導入 LINE AI 客服、客製 SaaS、串接 CRM..."
-                  />
+                  <label>{{ $t('form.message') }}</label>
+                  <textarea v-model="contactForm.message" rows="5" :placeholder="$t('form.messagePlaceholder')" />
                 </div>
               </div>
 
+              <div v-if="contactSuccess" class="success-box">
+                {{ contactSuccess }}
+              </div>
 
+              <div v-if="contactError" class="error-box">
+                {{ contactError }}
+              </div>
 
-             <div v-if="contactSuccess" class="success-box">
-               {{ contactSuccess }}
-             </div>
-
-            <div v-if="contactError" class="error-box">
-                 {{ contactError }}
-           </div>
-
-          <div class="contact-actions">
-                 <button type="submit" class="primary-btn button-btn" :disabled="contactLoading">
-                           {{ contactLoading ? '送出中...' : '送出聯絡資訊' }}
-                 </button>
-          </div>
-
-
-
+              <div class="contact-actions">
+                <button type="submit" class="primary-btn button-btn" :disabled="contactLoading">
+                  {{ contactLoading ? $t('form.submitting') : $t('form.submitContact') }}
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -350,16 +255,12 @@
     <section class="cta-section">
       <div class="container">
         <div class="cta-card">
-          <h2>準備開始建立你的 LINE AI 客服平台？</h2>
-          <p>從註冊、設定 Bot、建立知識庫，到進入客服後台，幾步就能開始。</p>
+          <h2>{{ $t('landing.ctaTitle') }}</h2>
+          <p>{{ $t('landing.ctaDesc') }}</p>
 
           <div class="hero-actions center">
-            <router-link to="/register" class="primary-btn">
-              立即開始
-            </router-link>
-            <router-link to="/login" class="ghost-btn">
-              前往登入
-            </router-link>
+            <router-link to="/register" class="primary-btn">{{ $t('landing.startFree') }}</router-link>
+            <router-link to="/login" class="ghost-btn">{{ $t('landing.goLogin') }}</router-link>
           </div>
         </div>
       </div>
@@ -368,40 +269,36 @@
     <footer class="footer">
       <div class="container footer-main">
         <div class="footer-col brand-col">
-          <div class="footer-brand">LineAI Cloud</div>
-          <p class="footer-text">
-            LINE AI Customer Service SaaS Platform
-          </p>
-          <p class="footer-desc">
-            專注於 LINE 客服、AI 自動回覆、Knowledge Base、CRM 與 SaaS 平台化。
-          </p>
+          <div class="footer-brand">ServiceAI Cloud</div>
+          <p class="footer-text">{{ $t('landing.footerText') }}</p>
+          <p class="footer-desc">{{ $t('landing.footerDesc') }}</p>
         </div>
 
         <div class="footer-col">
-          <h4>產品</h4>
-          <a href="#features">核心功能</a>
-          <a href="#use-cases">應用場景</a>
-          <a href="#faq">FAQ</a>
+          <h4>{{ $t('landing.product') }}</h4>
+          <a href="#features">{{ $t('nav.features') }}</a>
+          <a href="#use-cases">{{ $t('nav.useCases') }}</a>
+          <a href="#faq">{{ $t('nav.faq') }}</a>
         </div>
 
         <div class="footer-col">
-          <h4>帳號</h4>
-          <router-link to="/login">登入</router-link>
-          <router-link to="/register">註冊</router-link>
+          <h4>{{ $t('landing.account') }}</h4>
+          <router-link to="/login">{{ $t('nav.login') }}</router-link>
+          <router-link to="/register">{{ $t('nav.register') }}</router-link>
         </div>
 
         <div class="footer-col">
-          <h4>聯絡</h4>
-          <a href="mailto:service@serviceaicloud.com">service@serviceaicloud.com</a>          
-          <a href="#contact">聯絡表單</a>
+          <h4>{{ $t('nav.contact') }}</h4>
+          <a href="mailto:service@serviceaicloud.com">service@serviceaicloud.com</a>
+          <a href="#contact">{{ $t('landing.contactFormTitle') }}</a>
         </div>
       </div>
 
       <div class="container footer-bottom">
         <span>© 2026 ServiceAI Cloud. All rights reserved.</span>
         <div class="footer-bottom-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="#">{{ $t('common.privacy') }}</a>
+          <a href="#">{{ $t('common.terms') }}</a>
         </div>
       </div>
     </footer>
@@ -412,7 +309,6 @@
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api'
-
 
 const { t, locale } = useI18n()
 
@@ -428,8 +324,6 @@ const contactForm = reactive({
   message: '',
 })
 
-
-
 async function changeLocale(value) {
   locale.value = value
   localStorage.setItem('locale', value)
@@ -441,7 +335,6 @@ async function changeLocale(value) {
     } catch (e) {}
   }
 }
-
 
 async function submitContact() {
   contactSuccess.value = ''
@@ -456,13 +349,11 @@ async function submitContact() {
       phone: contactForm.phone,
       message: contactForm.message,
     })
-    
-    
-    contactSuccess.value = res.data.message || t('landing.sent')
-    Object.keys(contactForm).forEach((k) => {
-      contactForm[k] = ''
-    })
 
+    contactSuccess.value = res.data.message || t('landing.sent')
+    Object.keys(contactForm).forEach((key) => {
+      contactForm[key] = ''
+    })
   } catch (error) {
     const data = error.response?.data
     if (data?.errors) {
@@ -497,8 +388,8 @@ async function submitContact() {
   top: 0;
   z-index: 20;
   backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.82);
-  border-bottom: 1px solid rgba(229,231,235,0.8);
+  background: rgba(255, 255, 255, 0.82);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
 }
 
 .topbar-inner {
@@ -517,7 +408,7 @@ async function submitContact() {
 .brand-logo {
   width: 42px;
   height: 42px;
-  border-radius: 12px;
+  border-radius: 8px;
   background: #2563eb;
   color: #fff;
   display: flex;
@@ -548,9 +439,16 @@ async function submitContact() {
 
 .login-link {
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #111827;
   color: #fff !important;
+}
+
+.locale-select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
 }
 
 .hero {
@@ -579,7 +477,6 @@ async function submitContact() {
   margin: 0 0 18px;
   font-size: 54px;
   line-height: 1.08;
-  letter-spacing: -0.02em;
 }
 
 .hero-desc {
@@ -603,7 +500,7 @@ async function submitContact() {
 .primary-btn,
 .ghost-btn {
   text-decoration: none;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 13px 18px;
   font-weight: 700;
   display: inline-flex;
@@ -637,9 +534,15 @@ async function submitContact() {
   color: #374151;
 }
 
+.point-item::before {
+  content: "✓ ";
+  color: #16a34a;
+  font-weight: 800;
+}
+
 .showcase-card {
   background: #fff;
-  border-radius: 22px;
+  border-radius: 8px;
   box-shadow: 0 25px 60px rgba(15, 23, 42, 0.12);
   overflow: hidden;
   border: 1px solid #eef2f7;
@@ -657,6 +560,7 @@ async function submitContact() {
   display: inline-block;
   margin-right: 6px;
 }
+
 .red { background: #ef4444; }
 .yellow { background: #f59e0b; }
 .green { background: #10b981; }
@@ -675,9 +579,9 @@ async function submitContact() {
 
 .side-item {
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 8px;
-  color: rgba(255,255,255,0.78);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .side-item.active {
@@ -698,7 +602,7 @@ async function submitContact() {
 
 .mini-stat {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 14px;
 }
 
@@ -716,14 +620,14 @@ async function submitContact() {
 .chat-preview {
   margin-top: 16px;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 16px;
   min-height: 220px;
 }
 
 .bubble {
   max-width: 85%;
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 10px 12px;
   margin-bottom: 10px;
   line-height: 1.6;
@@ -742,18 +646,39 @@ async function submitContact() {
   padding-bottom: 10px;
 }
 
-.trust-grid {
+.trust-grid,
+.feature-grid,
+.usecase-grid,
+.steps-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 18px;
 }
 
-.trust-item {
+.trust-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.feature-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.usecase-grid,
+.steps-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.trust-item,
+.feature-card,
+.usecase-card,
+.step-card,
+.faq-item,
+.contact-info-card,
+.contact-form-card {
   background: #fff;
   border: 1px solid #eef2f7;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  border-radius: 8px;
+  padding: 22px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 .trust-item strong {
@@ -761,17 +686,21 @@ async function submitContact() {
   margin-bottom: 8px;
 }
 
-.trust-item span {
-  color: #6b7280;
-  line-height: 1.7;
-  font-size: 14px;
+.trust-item span,
+.feature-card p,
+.usecase-card p,
+.step-card p,
+.faq-item p {
+  color: #4b5563;
+  line-height: 1.8;
 }
 
 .section {
   padding: 76px 0;
 }
 
-.section.alt {
+.section.alt,
+.contact-section {
   background: #f8fafc;
 }
 
@@ -790,49 +719,11 @@ async function submitContact() {
   color: #6b7280;
 }
 
-.feature-grid,
-.usecase-grid,
-.steps-grid {
-  display: grid;
-  gap: 18px;
-}
-
-.feature-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.usecase-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.steps-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.feature-card,
-.usecase-card,
-.step-card,
-.faq-item {
-  background: #fff;
-  border: 1px solid #eef2f7;
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
-}
-
 .feature-card h3,
 .usecase-card h3,
 .step-card h3,
 .faq-item h3 {
   margin-top: 0;
-}
-
-.feature-card p,
-.usecase-card p,
-.step-card p,
-.faq-item p {
-  color: #4b5563;
-  line-height: 1.8;
 }
 
 .step-no {
@@ -853,23 +744,10 @@ async function submitContact() {
   gap: 14px;
 }
 
-.contact-section {
-  background: #f8fafc;
-}
-
 .contact-grid {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
   gap: 20px;
-}
-
-.contact-info-card,
-.contact-form-card {
-  background: #fff;
-  border: 1px solid #eef2f7;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 .contact-info-card h3,
@@ -915,7 +793,7 @@ async function submitContact() {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #d7dce5;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 12px 14px;
   font-size: 14px;
   background: #fff;
@@ -930,6 +808,11 @@ async function submitContact() {
   color: #15803d;
 }
 
+.error-box {
+  margin-top: 16px;
+  color: #dc2626;
+}
+
 .cta-section {
   padding: 10px 0 80px;
 }
@@ -937,13 +820,13 @@ async function submitContact() {
 .cta-card {
   background: linear-gradient(135deg, #111827, #1f2937);
   color: #fff;
-  border-radius: 24px;
+  border-radius: 8px;
   padding: 44px 28px;
   text-align: center;
 }
 
 .cta-card p {
-  color: rgba(255,255,255,0.78);
+  color: rgba(255, 255, 255, 0.78);
   line-height: 1.8;
 }
 
@@ -1073,11 +956,5 @@ async function submitContact() {
     flex-direction: column;
     align-items: flex-start;
   }
-  
-  .error-box {
-  margin-top: 16px;
-  color: #dc2626;
-}
-  
 }
 </style>

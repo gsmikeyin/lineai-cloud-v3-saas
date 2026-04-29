@@ -5,8 +5,8 @@ use App\Http\Controllers\Auth\LineAuthController;
 
 
 
-Route::get('/auth/line/redirect', [LineAuthController::class, 'redirect']);
-Route::get('/auth/line/callback', [LineAuthController::class, 'callback']);
+Route::get('/auth/line/redirect', [LineAuthController::class, 'redirect'])->name('line.redirect');
+Route::get('/auth/line/callback', [LineAuthController::class, 'callback'])->name('line.callback');
 
 
 Route::get('/{any?}', function () {
@@ -19,7 +19,6 @@ Route::get('/line/test', function () {
     return 'LINE webhook module ready';
 });
 */
-
 
 
 

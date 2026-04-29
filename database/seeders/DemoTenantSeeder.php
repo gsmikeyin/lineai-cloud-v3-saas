@@ -50,9 +50,9 @@ class DemoTenantSeeder extends Seeder
         TenantLineChannel::updateOrCreate(
             ['tenant_id' => $tenant->id, 'provider' => 'line'],
             [
-                'channel_name' => 'Demo LINE OA',
-                'channel_id' => 'demo-channel-id',
-                'channel_secret' => 'demo-secret',
+                'channel_name' => null,
+                'channel_id' => null,
+                'channel_secret' => null,
                 'channel_access_token' => 'demo-token',
                 'is_active' => true,
                 'is_verified' => true,

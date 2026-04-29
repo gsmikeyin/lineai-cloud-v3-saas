@@ -11,6 +11,8 @@ class LineBotSettingController extends Controller
     {
         $tenant = $request->user()->tenant;
         $tenant->load('lineChannel');
+        $this->clearGeneratedDefaults($tenant);
+        $tenant->load('lineChannel');
 
         return response()->json([
             'data' => $tenant->lineChannel,
@@ -37,8 +39,6 @@ class LineBotSettingController extends Controller
         'channel_id' => ['nullable', 'string', 'max:255'],
         'channel_secret' => ['nullable', 'string'],
         'channel_access_token' => ['nullable', 'string'],
-        'basic_id' => ['nullable', 'string', 'max:255'],
-        'bot_user_id' => ['nullable', 'string', 'max:255'],
         'is_active' => ['required', 'boolean'],
     ]);
 
@@ -55,6 +55,33 @@ class LineBotSettingController extends Controller
         'data' => $lineChannel,
         'webhook_url' => $lineChannel->webhook_url,
     ]);
+   }
+
+   protected function clearGeneratedDefaults($tenant): void
+   {
+    $lineChannel = $tenant->lineChannel;
+
+    if (!$lineChannel) {
+        return;
+    }
+
+    $updates = [];
+
+    if ($lineChannel->channel_name === $tenant->name . ' Bot') {
+        $updates['channel_name'] = null;
+    }
+
+    if (config('services.line_login.channel_id') && $lineChannel->channel_id === config('services.line_login.channel_id')) {
+        $updates['channel_id'] = null;
+    }
+
+    if (config('services.line_login.channel_secret') && $lineChannel->channel_secret === config('services.line_login.channel_secret')) {
+        $updates['channel_secret'] = null;
+    }
+
+    if ($updates) {
+        $lineChannel->update($updates);
+    }
    }
 
 

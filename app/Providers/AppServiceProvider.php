@@ -16,6 +16,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         VerifyEmail::createUrlUsing(function ($notifiable) {
+            $frontendUrl = rtrim(config('app.frontend_url') ?: config('app.url'), '/');
+            $appUrl = rtrim(config('app.url'), '/');
+
+            if (str_contains($frontendUrl, '127.0.0.1') || str_contains($frontendUrl, 'localhost')) {
+                $frontendUrl = $appUrl;
+            }
+
             $verifyUrl = URL::temporarySignedRoute(
                 'verification.verify',
                 now()->addMinutes(60),
@@ -25,9 +32,13 @@ class AppServiceProvider extends ServiceProvider
                 ]
             );
 
-            return config('app.frontend_url')
-                . '/app/verify-email?verify_url='
-                . urlencode($verifyUrl);
+            $parts = parse_url($verifyUrl);
+
+            return $frontendUrl
+                . '/app/verify-email?'
+                . ($parts['query'] ?? '')
+                . '&id=' . $notifiable->getKey()
+                . '&hash=' . sha1($notifiable->getEmailForVerification());
         });
     }
 }

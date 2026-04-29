@@ -1,56 +1,64 @@
 <template>
   <div class="login-page">
     <div class="login-card">
-      <h1>ServiceAI Cloud</h1>
-      <p class="subtitle">登入後台</p>
+      <div class="card-head">
+        <div>
+          <h1>ServiceAI Cloud</h1>
+          <p class="subtitle">{{ $t('auth.loginSubtitle') }}</p>
+        </div>
+
+        <select :value="locale" class="locale-select" @change="changeLocale($event.target.value)">
+          <option value="zh_TW">繁中</option>
+          <option value="en">English</option>
+        </select>
+      </div>
 
       <form @submit.prevent="handleLogin">
         <div class="form-group">
-          <label>電子郵件</label>
-          <input v-model="form.email" type="email" placeholder="請輸入 Email" />
+          <label>{{ $t('auth.email') }}</label>
+          <input v-model="form.email" type="email" :placeholder="$t('auth.emailPlaceholder')" />
         </div>
 
         <div class="form-group">
-          <label>密碼</label>
-          <input v-model="form.password" type="password" placeholder="請輸入密碼" />
+          <label>{{ $t('auth.password') }}</label>
+          <input v-model="form.password" type="password" :placeholder="$t('auth.passwordPlaceholder')" />
         </div>
 
         <div v-if="errorMessage" class="error-message">
           {{ errorMessage }}
-        </div>      
+        </div>
+
         <button type="submit" :disabled="loading">
-          {{ loading ? '登入中...' : '登入' }}
+          {{ loading ? $t('auth.loggingIn') : $t('auth.login') }}
         </button>
       </form>
 
-       <div class="login-actions">
-           <button class="line-btn" @click="loginWithLine">
-              使用 LINE 登入
-           </button>
+      <div class="login-actions">
+        <button class="line-btn" type="button" @click="loginWithLine">
+          {{ $t('auth.loginWithLine') }}
+        </button>
       </div>
 
-
-
       <div class="bottom-link">
-  <router-link to="/forgot-password">忘記密碼？</router-link>
-</div>
-
-
-      <div class="bottom-link">
-         還沒有帳號？
-         <router-link to="/register">立即註冊</router-link>
+        <router-link to="/forgot-password">{{ $t('auth.forgotPassword') }}</router-link>
       </div>
-     
+
+      <div class="bottom-link">
+        {{ $t('auth.noAccount') }}
+        <router-link to="/register">{{ $t('auth.createAccount') }}</router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import api from '../api'
 
 const router = useRouter()
+const { t, locale } = useI18n()
 
 const loading = ref(false)
 const errorMessage = ref('')
@@ -60,13 +68,14 @@ const form = reactive({
   password: '',
 })
 
-
+function changeLocale(value) {
+  locale.value = value
+  localStorage.setItem('locale', value)
+}
 
 function loginWithLine() {
   window.location.href = '/auth/line/redirect'
 }
-
-
 
 async function handleLogin() {
   loading.value = true
@@ -83,8 +92,7 @@ async function handleLogin() {
 
     router.push('/app')
   } catch (error) {
-    errorMessage.value =
-      error.response?.data?.message || '登入失敗，請稍後再試'
+    errorMessage.value = error.response?.data?.message || t('auth.loginFailed')
   } finally {
     loading.value = false
   }
@@ -105,9 +113,17 @@ async function handleLogin() {
   width: 100%;
   max-width: 420px;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 32px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 24px;
 }
 
 h1 {
@@ -116,8 +132,15 @@ h1 {
 }
 
 .subtitle {
-  margin: 0 0 24px;
+  margin: 0;
   color: #666;
+}
+
+.locale-select {
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
 }
 
 .form-group {
@@ -135,7 +158,7 @@ input {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #dcdfe6;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 14px;
   font-size: 14px;
 }
@@ -143,7 +166,7 @@ input {
 button {
   width: 100%;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 14px;
   font-size: 15px;
   cursor: pointer;
@@ -162,16 +185,6 @@ button:disabled {
   font-size: 14px;
 }
 
-.demo-box {
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 10px;
-  background: #f8fafc;
-  color: #555;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
 .bottom-link {
   margin-top: 18px;
   font-size: 14px;
@@ -179,18 +192,19 @@ button:disabled {
   text-align: center;
 }
 
+.bottom-link a {
+  color: #2563eb;
+  text-decoration: none;
+}
 
 .line-btn {
-  width: 100%;
-  border: 0;
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 15px;
-  cursor: pointer;
   background: #06c755;
-  color: #fff;
   margin-top: 12px;
 }
 
-
+@media (max-width: 520px) {
+  .card-head {
+    flex-direction: column;
+  }
+}
 </style>

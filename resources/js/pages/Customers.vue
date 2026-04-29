@@ -2,22 +2,22 @@
   <div class="page-card">
     <div class="page-head">
       <div>
-        <h2>客戶</h2>
-        <p>查看 LINE 客戶資料與互動紀錄。</p>
+        <h2>{{ $t('adminPages.customers.title') }}</h2>
+        <p>{{ $t('adminPages.customers.desc') }}</p>
       </div>
-      <button class="ghost-btn" type="button" @click="fetchCustomers">重新整理</button>
+      <button class="ghost-btn" type="button" @click="fetchCustomers">{{ $t('adminPages.customers.refresh') }}</button>
     </div>
 
     <div class="table-wrap">
       <table class="table">
         <thead>
           <tr>
-            <th>名稱</th>
-            <th>電話</th>
-            <th>Email</th>
-            <th>訊息數</th>
-            <th>最後互動</th>
-            <th>操作</th>
+            <th>{{ $t('adminPages.customers.name') }}</th>
+            <th>{{ $t('adminPages.customers.phone') }}</th>
+            <th>{{ $t('adminPages.customers.email') }}</th>
+            <th>{{ $t('adminPages.customers.totalMessages') }}</th>
+            <th>{{ $t('adminPages.customers.lastInteraction') }}</th>
+            <th>{{ $t('adminPages.customers.action') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -29,8 +29,14 @@
             <td>{{ formatDate(item.last_interaction_at) }}</td>
             <td>
               <router-link :to="`/app/customers/${item.id}`" class="view-link">
-                查看
+                {{ $t('adminPages.customers.view') }}
               </router-link>
+            </td>
+          </tr>
+
+          <tr v-if="customers.length === 0">
+            <td colspan="6">
+              <div class="empty-box">{{ $t('adminPages.customers.empty') }}</div>
             </td>
           </tr>
         </tbody>
@@ -61,52 +67,15 @@ onMounted(fetchCustomers)
 </script>
 
 <style scoped>
-.page-card {
-  background: #fff;
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-}
-.page-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.page-head h2 {
-  margin: 0 0 6px;
-}
-.page-head p {
-  margin: 0;
-  color: #6b7280;
-}
-.ghost-btn {
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 14px;
-  background: #eef2f7;
-  cursor: pointer;
-}
-.table-wrap {
-  overflow-x: auto;
-}
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.table th,
-.table td {
-  padding: 14px 12px;
-  border-bottom: 1px solid #eef2f7;
-  text-align: left;
-}
-.table th {
-  font-size: 13px;
-  color: #6b7280;
-}
-.view-link {
-  text-decoration: none;
-  color: #2563eb;
-  font-weight: 600;
-}
+.page-card { background:#fff; border-radius:8px; padding:24px; box-shadow:0 10px 30px rgba(15,23,42,.06); }
+.page-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; gap:16px; }
+.page-head h2 { margin:0 0 6px; }
+.page-head p { margin:0; color:#6b7280; }
+.ghost-btn { border:0; border-radius:8px; padding:10px 14px; background:#eef2f7; cursor:pointer; }
+.table-wrap { overflow-x:auto; }
+.table { width:100%; border-collapse:collapse; }
+.table th,.table td { padding:14px 12px; border-bottom:1px solid #eef2f7; text-align:left; }
+.table th { font-size:13px; color:#6b7280; }
+.view-link { text-decoration:none; color:#2563eb; font-weight:600; }
+.empty-box { color:#6b7280; text-align:center; padding:24px; }
 </style>

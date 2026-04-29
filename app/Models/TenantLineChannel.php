@@ -14,8 +14,6 @@ class TenantLineChannel extends Model
         'channel_id',
         'channel_secret',
         'channel_access_token',
-        'basic_id',
-        'bot_user_id',
         'webhook_url',
         'is_active',
         'is_verified',

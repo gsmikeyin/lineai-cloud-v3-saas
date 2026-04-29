@@ -3,5 +3,5 @@
 use Illuminate\Support\Facades\Artisan;
 
 Artisan::command('inspire', function () {
-    $this->comment('LineAI Cloud ready.');
+    $this->comment('ServiceAI Cloud ready.');
 });

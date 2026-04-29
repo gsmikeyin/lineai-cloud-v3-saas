@@ -4,40 +4,40 @@
 
     <div class="dashboard-grid">
       <div class="stat-card">
-        <div class="stat-title">對話</div>
+        <div class="stat-title">{{ $t('adminPages.dashboard.conversations') }}</div>
         <div class="stat-value">{{ stats.conversation_count }}</div>
-        <div class="stat-sub">本月累計對話</div>
+        <div class="stat-sub">{{ $t('adminPages.dashboard.conversationsSub') }}</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-title">未讀</div>
-         <div class="stat-value">{{ stats.conversation_count }}</div>
-        <div class="stat-sub">待處理訊息</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-title">客戶</div>
+        <div class="stat-title">{{ $t('adminPages.dashboard.unread') }}</div>
         <div class="stat-value">{{ stats.unread_count }}</div>
-        <div class="stat-sub">累積客戶數</div>
+        <div class="stat-sub">{{ $t('adminPages.dashboard.unreadSub') }}</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-title">AI 回覆</div>
+        <div class="stat-title">{{ $t('adminPages.dashboard.customers') }}</div>
         <div class="stat-value">{{ stats.customer_count }}</div>
-        <div class="stat-sub">AI 已回覆數</div>
+        <div class="stat-sub">{{ $t('adminPages.dashboard.customersSub') }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">{{ $t('adminPages.dashboard.aiReplies') }}</div>
+        <div class="stat-value">{{ stats.ai_reply_count }}</div>
+        <div class="stat-sub">{{ $t('adminPages.dashboard.aiRepliesSub') }}</div>
       </div>
 
       <div class="panel-card span-2">
-        <h3>系統概覽</h3>
-        <p>你現在可以從左側選單進入 對話、客戶、LINE Bot 設定、知識基礎 與 設定。</p>    
+        <h3>{{ $t('adminPages.dashboard.statusTitle') }}</h3>
+        <p>{{ $t('adminPages.dashboard.statusDesc') }}</p>
       </div>
 
       <div class="panel-card">
-        <h3>快速入口</h3>
+        <h3>{{ $t('adminPages.dashboard.quickLinks') }}</h3>
         <div class="quick-links">
-          <router-link to="/conversations" class="quick-link">進入 對話</router-link>
-          <router-link to="/customers" class="quick-link">進入 客戶</router-link>
-          <router-link to="/settings/line-bot" class="quick-link">設定 LINE Bot</router-link>
+          <router-link to="/app/conversations" class="quick-link">{{ $t('adminPages.dashboard.goConversations') }}</router-link>
+          <router-link to="/app/customers" class="quick-link">{{ $t('adminPages.dashboard.goCustomers') }}</router-link>
+          <router-link to="/app/settings/line-bot" class="quick-link">{{ $t('adminPages.dashboard.goLineBot') }}</router-link>
         </div>
       </div>
     </div>
@@ -45,8 +45,11 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import api from '../api'
+import EmailVerificationBanner from '../components/EmailVerificationBanner.vue'
+
+const emailVerified = ref(true)
 
 const stats = reactive({
   conversation_count: 0,
@@ -54,6 +57,15 @@ const stats = reactive({
   customer_count: 0,
   ai_reply_count: 0,
 })
+
+async function fetchMe() {
+  try {
+    const res = await api.get('/me')
+    emailVerified.value = Boolean(res.data.email_verified)
+  } catch (error) {
+    console.error('dashboard me error =', error.response?.data || error)
+  }
+}
 
 async function fetchStats() {
   try {
@@ -69,7 +81,10 @@ async function fetchStats() {
   }
 }
 
-onMounted(fetchStats)
+onMounted(() => {
+  fetchMe()
+  fetchStats()
+})
 </script>
 
 <style scoped>
@@ -78,63 +93,77 @@ onMounted(fetchStats)
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
+
 .stat-card,
 .panel-card {
   background: #fff;
-  border-radius: 18px;
+  border-radius: 8px;
   padding: 22px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
-.stat-title {
+
+.stat-title,
+.stat-sub {
   color: #6b7280;
   font-size: 13px;
 }
+
 .stat-value {
   font-size: 32px;
   font-weight: 800;
   margin-top: 10px;
 }
+
 .stat-sub {
   margin-top: 8px;
-  color: #6b7280;
-  font-size: 13px;
 }
+
 .panel-card h3 {
   margin-top: 0;
 }
+
+.panel-card p {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
 .span-2 {
   grid-column: span 2;
 }
+
 .quick-links {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
 .quick-link {
   text-decoration: none;
   color: #111827;
   background: #eef2f7;
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
-
+.quick-link:hover {
+  background: #e5e7eb;
+}
 
 @media (max-width: 1100px) {
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 700px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
+
   .span-2 {
     grid-column: span 1;
   }
 }
 </style>
-
-
-
-

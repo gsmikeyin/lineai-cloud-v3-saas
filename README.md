@@ -1,6 +1,6 @@
-# LineAI Cloud v3
+# ServiceAI Cloud v3
 
-Laravel 12 + Vue 3 starter for a LINE AI SaaS product.
+Laravel 12 + Vue 3 starter for a ServiceAI SaaS product.
 
 ## Requirements
 - PHP 8.2+

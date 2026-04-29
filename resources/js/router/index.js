@@ -1,20 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-
-
 import LandingPage from '../pages/LandingPage.vue'
-import Login from '../pages/login.vue'
-
-
+import Login from '../pages/Login.vue'
 import Dashboard from '../pages/Dashboard.vue'
-
 import Conversations from '../pages/Conversations.vue'
 import Customers from '../pages/Customers.vue'
 import LineBotSettings from '../pages/LineBotSettings.vue'
 import KnowledgeBase from '../pages/KnowledgeBase.vue'
 import Settings from '../pages/Settings.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
-import KnowledgeMatcherTest from '../pages/KnowledgeMatcherTest.vue'
 import Register from '../pages/Register.vue'
 import CustomerDetail from '../pages/CustomerDetail.vue'
 import ForgotPassword from '../pages/ForgotPassword.vue'
@@ -23,55 +17,50 @@ import VerifyEmail from '../pages/VerifyEmail.vue'
 import ContactLeads from '../pages/ContactLeads.vue'
 import LoginSuccess from '../pages/LoginSuccess.vue'
 import KnowledgeUpload from '../pages/KnowledgeUpload.vue'
-
-import DifyAppPools from '../pages/DifyAppPools.vue'
-
-import DifyBindingHelper from '../pages/DifyBindingHelper.vue'
+import ManualDownload from '../pages/ManualDownload.vue'
 import DifyAppPoolManager from '../pages/DifyAppPoolManager.vue'
 import KnowledgeHitTest from '../pages/KnowledgeHitTest.vue'
 
 import { getAuthUser, hasRole } from '../utils/auth'
 
-
-
 const routes = [
-   {
+  {
     path: '/',
     name: 'landing',
     component: LandingPage,
-    meta: { title: 'LineAI Cloud' },
-  },  
+    meta: { title: 'ServiceAI Cloud' },
+  },
   {
     path: '/login',
     name: 'login',
     component: Login,
-    meta: { guestOnly: true, title: 'Login' },
-  },  
-  {
-         path: '/login/success',
-         name: 'login-success',
-         component: LoginSuccess,
-         meta: { title: 'LINE Login Success' },         
+    meta: { guestOnly: true, titleKey: 'nav.login' },
   },
   {
-      path: '/register',
-      name: 'register',
-      component: Register,
-      meta: { guestOnly: true, title: 'Register' },
+    path: '/login/success',
+    name: 'login-success',
+    component: LoginSuccess,
+    meta: { title: 'LINE Login Success' },
   },
   {
-  path: '/forgot-password',
-  name: 'forgot-password',
-  component: ForgotPassword,
-  meta: { guestOnly: true, title: 'Forgot Password' },
-},
-{
-  path: '/reset-password',
-  name: 'reset-password',
-  component: ResetPassword,
-  meta: { guestOnly: true, title: 'Reset Password' },
-},
-   {
+    path: '/register',
+    name: 'register',
+    component: Register,
+    meta: { guestOnly: true, titleKey: 'nav.register' },
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: ForgotPassword,
+    meta: { guestOnly: true, title: 'Forgot Password' },
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: ResetPassword,
+    meta: { guestOnly: true, title: 'Reset Password' },
+  },
+  {
     path: '/app',
     component: AdminLayout,
     meta: { requiresAuth: true },
@@ -80,44 +69,44 @@ const routes = [
         path: '',
         name: 'dashboard',
         component: Dashboard,
-        meta: { title: 'Dashboard' },
+        meta: { titleKey: 'nav.dashboard' },
       },
       {
         path: 'conversations',
         name: 'conversations',
         component: Conversations,
-        meta: { title: '對話' },
+        meta: { titleKey: 'nav.conversations' },
       },
       {
         path: 'customers',
         name: 'customers',
         component: Customers,
-        meta: { title: '客戶' },
+        meta: { titleKey: 'nav.customers' },
       },
       {
         path: 'settings/line-bot',
         name: 'line-bot-settings',
         component: LineBotSettings,
-        meta: { title: 'LINE Bot 設定' },
+        meta: { titleKey: 'nav.lineBot' },
       },
       {
         path: 'knowledge-base',
         name: 'knowledge-base',
         component: KnowledgeBase,
-        meta: { title: '知識基礎' },
+        meta: { titleKey: 'nav.knowledgeUpload' },
       },
       {
         path: 'settings',
         name: 'settings',
         component: Settings,
-        meta: { title: '設定' },
+        meta: { titleKey: 'nav.settings' },
       },
       {
         path: 'knowledge-hit-test',
         name: 'knowledge-hit-test',
         component: KnowledgeHitTest,
-        meta: { title: 'Dify 知識命中測試' },
-      }, 
+        meta: { titleKey: 'nav.knowledgeHitTest' },
+      },
       {
         path: 'customers/:id',
         name: 'customer-detail',
@@ -129,33 +118,31 @@ const routes = [
         name: 'verify-email',
         component: VerifyEmail,
         meta: { title: 'Verify Email' },
-     },
-     
-     {
+      },
+      {
         path: 'contact-leads',
         name: 'contact-leads',
         component: ContactLeads,
-        meta: { title: 'Contact Leads' },
-    },
-    {
-         path: 'knowledge-upload',
-         name: 'knowledge-upload',
-         component: KnowledgeUpload,
-         meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'owner'] },
-    },
-    {
+        meta: { titleKey: 'nav.contactLeads' },
+      },
+      {
+        path: 'knowledge-upload',
+        name: 'knowledge-upload',
+        component: KnowledgeUpload,
+        meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'owner'], titleKey: 'nav.knowledgeUpload' },
+      },
+      {
         path: 'dify-app-pools',
         name: 'dify-app-pools',
         component: DifyAppPoolManager,
-        meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
-    },    
-{
-  path: 'dify-binding',
-  name: 'dify-binding',
-  component: DifyBindingHelper,
-  meta: { requiresAuth: true, roles: ['super_admin', 'admin'] },
-},
-
+        meta: { requiresAuth: true, roles: ['super_admin', 'admin'], titleKey: 'nav.difyAppPools' },
+      },
+      {
+        path: 'manual',
+        name: 'manual',
+        component: ManualDownload,
+        meta: { titleKey: 'nav.manual' },
+      },
     ],
   },
 ]
@@ -166,8 +153,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-
-   const user = getAuthUser()
+  const user = getAuthUser()
 
   if (to.meta.requiresAuth && !user) {
     return next('/login')
@@ -176,8 +162,8 @@ router.beforeEach((to, from, next) => {
   if (to.meta.roles && !hasRole(to.meta.roles)) {
     return next('/app')
   }
-  next()
 
+  next()
 })
 
 export default router

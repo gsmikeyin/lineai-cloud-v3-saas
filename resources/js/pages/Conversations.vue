@@ -3,16 +3,16 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div>
-          <h2>對話</h2>
-          <p>{{ conversations.length }} 筆對話</p>
+          <h2>{{ $t('adminPages.conversations.title') }}</h2>
+          <p>{{ t('adminPages.conversations.count', { count: conversations.length }) }}</p>
         </div>
         <button class="ghost-btn" type="button" :disabled="refreshing" @click="manualRefresh">
-          {{ refreshing ? '更新中...' : '重新整理' }}
+          {{ refreshing ? $t('adminPages.conversations.refreshing') : $t('adminPages.conversations.refresh') }}
         </button>
       </div>
 
       <div class="sidebar-search">
-        <input v-model="keyword" placeholder="搜尋姓名 / 電話 / Email" />
+        <input v-model="keyword" :placeholder="$t('adminPages.conversations.searchPlaceholder')" />
       </div>
 
       <div class="filter-tabs">
@@ -34,10 +34,7 @@
           v-for="item in filteredConversations"
           :key="item.id"
           class="conversation-card"
-          :class="{
-            active: currentConversationId === item.id,
-            unread: item.unread_count > 0,
-          }"
+          :class="{ active: currentConversationId === item.id, unread: item.unread_count > 0 }"
           type="button"
           @click="selectConversation(item.id)"
         >
@@ -49,26 +46,30 @@
           <div class="conversation-meta">
             <div class="top-row">
               <div class="name-wrap">
-                <div class="name">{{ item.customer?.display_name || 'Unknown' }}</div>
+                <div class="name">{{ item.customer?.display_name || $t('adminPages.conversations.unknown') }}</div>
                 <span v-if="item.unread_count > 0" class="unread-badge">
                   {{ item.unread_count > 99 ? '99+' : item.unread_count }}
                 </span>
               </div>
               <span class="status-badge" :class="isHumanMode(item) ? 'human' : 'ai'">
-                {{ isHumanMode(item) ? '人工' : 'AI' }}
+                {{ isHumanMode(item) ? $t('adminPages.conversations.human') : 'AI' }}
               </span>
             </div>
 
             <div class="sub-row">
-              <span>{{ item.assignedUser?.name || item.assigned_user?.name || '未指派' }}</span>
+              <span>{{ item.assignedUser?.name || item.assigned_user?.name || $t('adminPages.conversations.unassigned') }}</span>
               <span>{{ formatDate(item.last_message_at) }}</span>
             </div>
 
             <div class="tag-row">
-              <span v-if="(item.unread_count || 0) > 0" class="mini-tag unread-tag">未讀 {{ item.unread_count }}</span>
-              <span v-if="!item.assignedUser && !item.assigned_user" class="mini-tag wait-tag">未指派</span>
+              <span v-if="(item.unread_count || 0) > 0" class="mini-tag unread-tag">
+                {{ t('adminPages.conversations.unread', { count: item.unread_count }) }}
+              </span>
+              <span v-if="!item.assignedUser && !item.assigned_user" class="mini-tag wait-tag">
+                {{ $t('adminPages.conversations.unassigned') }}
+              </span>
               <span class="mini-tag" :class="isHumanMode(item) ? 'human-tag' : 'ai-tag'">
-                {{ isHumanMode(item) ? '人工中' : 'AI 中' }}
+                {{ isHumanMode(item) ? $t('adminPages.conversations.humanActive') : $t('adminPages.conversations.aiActive') }}
               </span>
             </div>
           </div>
@@ -85,37 +86,32 @@
           </div>
 
           <div>
-            <h3>{{ currentConversation.customer?.display_name || 'Unknown' }}</h3>
+            <h3>{{ currentConversation.customer?.display_name || $t('adminPages.conversations.unknown') }}</h3>
             <div class="header-sub">
               <span class="mode-pill" :class="isHumanMode(currentConversation) ? 'human' : 'ai'">
-                {{ isHumanMode(currentConversation) ? '人工客服中' : 'AI 回覆中' }}
+                {{ isHumanMode(currentConversation) ? $t('adminPages.conversations.humanMode') : $t('adminPages.conversations.aiMode') }}
               </span>
-              <span>負責人：{{ currentConversation.assignedUser?.name || currentConversation.assigned_user?.name || '未指派' }}</span>
+              <span>
+                {{ t('adminPages.conversations.assignedTo', { name: currentConversation.assignedUser?.name || currentConversation.assigned_user?.name || $t('adminPages.conversations.unassigned') }) }}
+              </span>
             </div>
           </div>
         </div>
 
         <div class="chat-header-actions">
           <button class="secondary-btn" type="button" :disabled="loadingAction" @click="handoff">
-            交給人工
+            {{ $t('adminPages.conversations.handoff') }}
           </button>
           <button class="primary-btn" type="button" :disabled="loadingAction" @click="resumeAi">
-            恢復 AI
+            {{ $t('adminPages.conversations.resumeAi') }}
           </button>
         </div>
       </div>
 
-      <div v-if="errorMessage" class="error-banner">
-        {{ errorMessage }}
-      </div>
+      <div v-if="errorMessage" class="error-banner">{{ errorMessage }}</div>
 
       <div ref="messagePanelRef" class="message-panel">
-        <div
-          v-for="msg in currentConversation.messages"
-          :key="msg.id"
-          class="message-row"
-          :class="msg.direction"
-        >
+        <div v-for="msg in currentConversation.messages" :key="msg.id" class="message-row" :class="msg.direction">
           <div class="message-bubble" :class="msg.sender_type">
             <div class="message-role">{{ senderLabel(msg.sender_type) }}</div>
             <div class="message-content">{{ msg.content }}</div>
@@ -128,17 +124,17 @@
         <textarea
           v-model="replyText"
           rows="3"
-          placeholder="輸入人工客服回覆..."
+          :placeholder="$t('adminPages.conversations.replyPlaceholder')"
           @focus="isTyping = true"
           @blur="handleTypingBlur"
         />
         <div class="reply-actions">
           <span class="refresh-note">{{ autoRefreshLabel }}</span>
           <button type="button" class="ghost-btn" :disabled="refreshing" @click="manualRefresh">
-            {{ refreshing ? '更新中...' : '重新整理' }}
+            {{ refreshing ? $t('adminPages.conversations.refreshing') : $t('adminPages.conversations.refresh') }}
           </button>
           <button type="submit" class="primary-btn" :disabled="sending || !replyText.trim()">
-            {{ sending ? '送出中...' : '送出回覆' }}
+            {{ sending ? $t('adminPages.conversations.sending') : $t('adminPages.conversations.send') }}
           </button>
         </div>
       </form>
@@ -146,26 +142,26 @@
 
     <section class="customer-panel" v-if="currentConversation">
       <div class="panel-card">
-        <h3>客戶資料</h3>
+        <h3>{{ $t('adminPages.conversations.customerInfo') }}</h3>
 
         <div class="info-item">
-          <label>名稱</label>
+          <label>{{ $t('adminPages.conversations.name') }}</label>
           <div>{{ currentConversation.customer?.display_name || '-' }}</div>
         </div>
         <div class="info-item">
-          <label>電話</label>
+          <label>{{ $t('adminPages.conversations.phone') }}</label>
           <div>{{ currentConversation.customer?.phone || '-' }}</div>
         </div>
         <div class="info-item">
-          <label>Email</label>
+          <label>{{ $t('adminPages.conversations.email') }}</label>
           <div>{{ currentConversation.customer?.email || '-' }}</div>
         </div>
         <div class="info-item">
-          <label>訊息數</label>
+          <label>{{ $t('adminPages.conversations.totalMessages') }}</label>
           <div>{{ currentConversation.customer?.total_messages ?? 0 }}</div>
         </div>
         <div class="info-item">
-          <label>最後互動</label>
+          <label>{{ $t('adminPages.conversations.lastInteraction') }}</label>
           <div>{{ formatDate(currentConversation.customer?.last_interaction_at) }}</div>
         </div>
       </div>
@@ -173,8 +169,8 @@
 
     <main class="chat-panel empty" v-else>
       <div class="empty-box">
-        <h3>請選擇一筆對話</h3>
-        <p>左側列表會顯示 LINE 對話。</p>
+        <h3>{{ $t('adminPages.conversations.emptyTitle') }}</h3>
+        <p>{{ $t('adminPages.conversations.emptyDesc') }}</p>
       </div>
     </main>
   </div>
@@ -182,8 +178,10 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import api from '../api'
 
+const { t } = useI18n()
 const conversations = ref([])
 const currentConversation = ref(null)
 const currentConversationId = ref(null)
@@ -200,17 +198,16 @@ const errorMessage = ref('')
 
 const POLL_INTERVAL = 5000
 const activeFilter = ref('all')
-const filterOptions = [
-  { key: 'all', label: '全部' },
-  { key: 'unread', label: '未讀' },
-  { key: 'human', label: '人工' },
-  { key: 'ai', label: 'AI' },
-  { key: 'unassigned', label: '未指派' },
-]
+const filterOptions = computed(() => [
+  { key: 'all', label: t('adminPages.conversations.filters.all') },
+  { key: 'unread', label: t('adminPages.conversations.filters.unread') },
+  { key: 'human', label: t('adminPages.conversations.filters.human') },
+  { key: 'ai', label: t('adminPages.conversations.filters.ai') },
+  { key: 'unassigned', label: t('adminPages.conversations.filters.unassigned') },
+])
 
 const filteredConversations = computed(() => {
   let list = [...conversations.value]
-
   if (activeFilter.value === 'unread') list = list.filter((item) => (item.unread_count || 0) > 0)
   if (activeFilter.value === 'human') list = list.filter(isHumanMode)
   if (activeFilter.value === 'ai') list = list.filter((item) => !isHumanMode(item))
@@ -225,13 +222,11 @@ const filteredConversations = computed(() => {
       return name.toLowerCase().includes(q) || phone.toLowerCase().includes(q) || email.toLowerCase().includes(q)
     })
   }
-
   return list
 })
 
 const filterCounts = computed(() => {
   const items = conversations.value
-
   return {
     all: items.length,
     unread: items.filter((item) => (item.unread_count || 0) > 0).length,
@@ -242,11 +237,11 @@ const filterCounts = computed(() => {
 })
 
 const autoRefreshLabel = computed(() => {
-  if (sending.value) return '正在送出回覆'
-  if (loadingAction.value) return '正在更新狀態'
-  if (isTyping.value) return '輸入中，暫停自動刷新內容'
-  if (isPolling.value) return '自動刷新中'
-  return '每 5 秒自動刷新'
+  if (sending.value) return t('adminPages.conversations.autoSending')
+  if (loadingAction.value) return t('adminPages.conversations.autoUpdating')
+  if (isTyping.value) return t('adminPages.conversations.autoTyping')
+  if (isPolling.value) return t('adminPages.conversations.autoPolling')
+  return t('adminPages.conversations.autoIdle')
 })
 
 function isHumanMode(item) {
@@ -259,26 +254,19 @@ function getInitial(name) {
 }
 
 function senderLabel(type) {
-  if (type === 'customer') return '客戶'
-  if (type === 'ai') return 'AI'
-  if (type === 'agent') return '客服'
-  return type || '系統'
+  if (type === 'customer') return t('adminPages.conversations.senderCustomer')
+  if (type === 'ai') return t('adminPages.conversations.senderAi')
+  if (type === 'agent') return t('adminPages.conversations.senderAgent')
+  return type || t('adminPages.conversations.senderSystem')
 }
 
 function formatDate(value, short = false) {
   if (!value) return '-'
   const d = new Date(value)
   if (Number.isNaN(d.getTime())) return value
-
   if (short) {
-    return d.toLocaleString('zh-TW', {
-      hour: '2-digit',
-      minute: '2-digit',
-      month: '2-digit',
-      day: '2-digit',
-    })
+    return d.toLocaleString('zh-TW', { hour: '2-digit', minute: '2-digit', month: '2-digit', day: '2-digit' })
   }
-
   return d.toLocaleString('zh-TW')
 }
 
@@ -323,7 +311,7 @@ async function handoff() {
     await refreshCurrentConversation(true)
     await fetchConversations()
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '交給人工失敗'
+    errorMessage.value = error.response?.data?.message || t('adminPages.conversations.handoffFailed')
   } finally {
     loadingAction.value = false
   }
@@ -338,7 +326,7 @@ async function resumeAi() {
     await refreshCurrentConversation(true)
     await fetchConversations()
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '恢復 AI 失敗'
+    errorMessage.value = error.response?.data?.message || t('adminPages.conversations.resumeAiFailed')
   } finally {
     loadingAction.value = false
   }
@@ -349,16 +337,13 @@ async function sendReply() {
   sending.value = true
   errorMessage.value = ''
   try {
-    await api.post(`/conversations/${currentConversation.value.id}/reply`, {
-      message: replyText.value.trim(),
-    })
-
+    await api.post(`/conversations/${currentConversation.value.id}/reply`, { message: replyText.value.trim() })
     replyText.value = ''
     isTyping.value = false
     await refreshCurrentConversation(true)
     await fetchConversations()
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '送出回覆失敗'
+    errorMessage.value = error.response?.data?.message || t('adminPages.conversations.replyFailed')
   } finally {
     sending.value = false
   }
@@ -366,10 +351,7 @@ async function sendReply() {
 
 async function refreshCurrentConversation(forceScrollBottom = false) {
   if (!currentConversationId.value) return
-  await loadConversation(currentConversationId.value, {
-    preserveScroll: !forceScrollBottom,
-    forceScrollBottom,
-  })
+  await loadConversation(currentConversationId.value, { preserveScroll: !forceScrollBottom, forceScrollBottom })
 }
 
 async function manualRefresh() {
@@ -379,7 +361,7 @@ async function manualRefresh() {
     await fetchConversations()
     await refreshCurrentConversation(false)
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '重新整理失敗'
+    errorMessage.value = error.response?.data?.message || t('adminPages.conversations.refreshFailed')
   } finally {
     refreshing.value = false
   }
@@ -398,7 +380,6 @@ async function poll() {
     await fetchConversations()
     if (currentConversationId.value && !isTyping.value) await refreshCurrentConversation(false)
   } catch {
-    // Keep background polling quiet; manual refresh shows errors.
   } finally {
     isPolling.value = false
   }
@@ -406,9 +387,7 @@ async function poll() {
 
 function startPolling() {
   stopPolling()
-  pollTimer.value = window.setInterval(() => {
-    poll()
-  }, POLL_INTERVAL)
+  pollTimer.value = window.setInterval(() => { poll() }, POLL_INTERVAL)
 }
 
 function stopPolling() {
@@ -434,7 +413,7 @@ onMounted(async () => {
     startPolling()
     document.addEventListener('visibilitychange', handleVisibilityChange)
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '讀取對話失敗'
+    errorMessage.value = error.response?.data?.message || t('adminPages.conversations.loadFailed')
   }
 })
 
@@ -445,392 +424,72 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.chat-layout {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 320px 1fr 320px;
-  background: #f3f6fb;
-}
-.sidebar {
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.sidebar-header {
-  padding: 20px;
-  border-bottom: 1px solid #eef2f7;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.sidebar-header h2 {
-  margin: 0 0 6px;
-  font-size: 20px;
-}
-.sidebar-header p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 13px;
-}
-.sidebar-search {
-  padding: 14px 20px;
-  border-bottom: 1px solid #eef2f7;
-}
-.sidebar-search input {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #d8dee9;
-  border-radius: 10px;
-  padding: 10px 12px;
-  background: #f9fbfd;
-}
-.filter-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px 20px 4px;
-  border-bottom: 1px solid #eef2f7;
-}
-.filter-tab {
-  border: 0;
-  background: #eef2f7;
-  color: #111827;
-  padding: 8px 10px;
-  border-radius: 999px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-}
-.filter-tab.active {
-  background: #111827;
-  color: #fff;
-}
-.filter-count {
-  background: rgba(255, 255, 255, 0.25);
-  min-width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  font-size: 11px;
-}
-.filter-tab:not(.active) .filter-count {
-  background: #dbe4ee;
-}
-.conversation-list {
-  overflow-y: auto;
-  padding: 14px;
-}
-.conversation-card {
-  width: 100%;
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 14px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  margin-bottom: 10px;
-  background: #fff;
-  text-align: left;
-}
-.conversation-card:hover,
-.conversation-card.active {
-  background: #f8fafc;
-}
-.conversation-card.active {
-  border-color: #111827;
-}
-.conversation-card.unread {
-  border-color: #fecaca;
-  background: #fff7f7;
-}
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  background: #111827;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.avatar.large {
-  width: 52px;
-  height: 52px;
-}
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.conversation-meta {
-  flex: 1;
-  min-width: 0;
-}
-.top-row,
-.sub-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-.name-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-.name {
-  font-weight: 700;
-  color: #111827;
-}
-.sub-row {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #6b7280;
-}
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-.mini-tag {
-  font-size: 11px;
-  padding: 3px 7px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-.unread-badge {
-  min-width: 22px;
-  height: 22px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.unread-tag {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-.wait-tag {
-  background: #ede9fe;
-  color: #6d28d9;
-}
-.human-tag,
-.status-badge.human,
-.mode-pill.human {
-  background: #fef3c7;
-  color: #92400e;
-}
-.ai-tag,
-.status-badge.ai,
-.mode-pill.ai {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-.status-badge,
-.mode-pill {
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  white-space: nowrap;
-}
-.chat-panel {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.chat-header {
-  padding: 20px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.chat-header-left {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-.chat-header-left h3 {
-  margin: 0 0 8px;
-}
-.header-sub {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: #6b7280;
-  font-size: 13px;
-  flex-wrap: wrap;
-}
-.chat-header-actions {
-  display: flex;
-  gap: 10px;
-}
-.error-banner {
-  margin: 12px 24px 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #fee2e2;
-  color: #991b1b;
-}
-.message-panel {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-}
-.message-row {
-  display: flex;
-  margin-bottom: 14px;
-}
-.message-row.inbound {
-  justify-content: flex-start;
-}
-.message-row.outbound {
-  justify-content: flex-end;
-}
-.message-bubble {
-  max-width: 72%;
-  border-radius: 18px;
-  padding: 12px 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-}
-.message-bubble.customer {
-  background: #fff;
-}
-.message-bubble.ai {
-  background: #eef2ff;
-}
-.message-bubble.agent {
-  background: #dcfce7;
-}
-.message-role {
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #374151;
-}
-.message-content {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  color: #111827;
-}
-.message-time {
-  margin-top: 8px;
-  font-size: 11px;
-  color: #6b7280;
-}
-.reply-panel {
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  padding: 18px 24px;
-}
-.reply-panel textarea {
-  width: 100%;
-  resize: vertical;
-  box-sizing: border-box;
-  border: 1px solid #d8dee9;
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 14px;
-  min-height: 96px;
-}
-.reply-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 12px;
-  align-items: center;
-}
-.refresh-note {
-  margin-right: auto;
-  color: #6b7280;
-  font-size: 12px;
-}
-.customer-panel {
-  border-left: 1px solid #e5e7eb;
-  background: #fff;
-  padding: 20px;
-}
-.panel-card h3 {
-  margin-top: 0;
-  margin-bottom: 18px;
-}
-.info-item {
-  margin-bottom: 16px;
-}
-.info-item label {
-  display: block;
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 6px;
-}
-.primary-btn,
-.secondary-btn,
-.ghost-btn {
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 14px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.primary-btn {
-  background: #111827;
-  color: #fff;
-}
-.secondary-btn {
-  background: #f59e0b;
-  color: #fff;
-}
-.ghost-btn {
-  background: #eef2f7;
-  color: #111827;
-}
-.primary-btn:disabled,
-.secondary-btn:disabled,
-.ghost-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.empty-box {
-  text-align: center;
-  color: #6b7280;
-}
-@media (max-width: 1280px) {
-  .chat-layout {
-    grid-template-columns: 280px 1fr;
-  }
-  .customer-panel {
-    display: none;
-  }
-}
-@media (max-width: 900px) {
-  .chat-layout {
-    grid-template-columns: 1fr;
-  }
-  .sidebar {
-    display: none;
-  }
-}
+.chat-layout { min-height:100vh; display:grid; grid-template-columns:320px 1fr 320px; background:#f3f6fb; }
+.sidebar { background:#fff; border-right:1px solid #e5e7eb; display:flex; flex-direction:column; overflow:hidden; }
+.sidebar-header { padding:20px; border-bottom:1px solid #eef2f7; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.sidebar-header h2 { margin:0 0 6px; font-size:20px; }
+.sidebar-header p { margin:0; color:#6b7280; font-size:13px; }
+.sidebar-search { padding:14px 20px; border-bottom:1px solid #eef2f7; }
+.sidebar-search input { width:100%; box-sizing:border-box; border:1px solid #d8dee9; border-radius:8px; padding:10px 12px; background:#f9fbfd; }
+.filter-tabs { display:flex; flex-wrap:wrap; gap:8px; padding:12px 20px 4px; border-bottom:1px solid #eef2f7; }
+.filter-tab { border:0; background:#eef2f7; color:#111827; padding:8px 10px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:12px; }
+.filter-tab.active { background:#111827; color:#fff; }
+.filter-count { background:rgba(255,255,255,.25); min-width:18px; height:18px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; font-size:11px; }
+.filter-tab:not(.active) .filter-count { background:#dbe4ee; }
+.conversation-list { overflow-y:auto; padding:14px; }
+.conversation-card { width:100%; display:flex; gap:12px; padding:12px; border-radius:8px; cursor:pointer; border:1px solid transparent; margin-bottom:10px; background:#fff; text-align:left; }
+.conversation-card:hover,.conversation-card.active { background:#f8fafc; }
+.conversation-card.active { border-color:#111827; }
+.conversation-card.unread { border-color:#fecaca; background:#fff7f7; }
+.avatar { width:42px; height:42px; border-radius:999px; background:#111827; color:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; font-weight:700; flex-shrink:0; }
+.avatar.large { width:52px; height:52px; }
+.avatar img { width:100%; height:100%; object-fit:cover; }
+.conversation-meta { flex:1; min-width:0; }
+.top-row,.sub-row { display:flex; justify-content:space-between; gap:10px; }
+.name-wrap { display:flex; align-items:center; gap:8px; min-width:0; }
+.name { font-weight:700; color:#111827; }
+.sub-row { margin-top:8px; font-size:12px; color:#6b7280; }
+.tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.mini-tag { font-size:11px; padding:3px 7px; border-radius:999px; white-space:nowrap; }
+.unread-badge { min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:#ef4444; color:#fff; font-size:12px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.unread-tag { background:#fee2e2; color:#b91c1c; }
+.wait-tag { background:#ede9fe; color:#6d28d9; }
+.human-tag,.status-badge.human,.mode-pill.human { background:#fef3c7; color:#92400e; }
+.ai-tag,.status-badge.ai,.mode-pill.ai { background:#e0f2fe; color:#0369a1; }
+.status-badge,.mode-pill { padding:4px 8px; border-radius:999px; font-size:12px; white-space:nowrap; }
+.chat-panel { display:flex; flex-direction:column; min-width:0; }
+.chat-header { padding:20px 24px; background:#fff; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.chat-header-left { display:flex; gap:14px; align-items:center; }
+.chat-header-left h3 { margin:0 0 8px; }
+.header-sub { display:flex; gap:10px; align-items:center; color:#6b7280; font-size:13px; flex-wrap:wrap; }
+.chat-header-actions { display:flex; gap:10px; }
+.error-banner { margin:12px 24px 0; padding:10px 12px; border-radius:8px; background:#fee2e2; color:#991b1b; }
+.message-panel { flex:1; overflow-y:auto; padding:24px; }
+.message-row { display:flex; margin-bottom:14px; }
+.message-row.inbound { justify-content:flex-start; }
+.message-row.outbound { justify-content:flex-end; }
+.message-bubble { max-width:72%; border-radius:8px; padding:12px 14px; box-shadow:0 6px 18px rgba(15,23,42,.06); }
+.message-bubble.customer { background:#fff; }
+.message-bubble.ai { background:#eef2ff; }
+.message-bubble.agent { background:#dcfce7; }
+.message-role { font-size:12px; font-weight:700; margin-bottom:6px; color:#374151; }
+.message-content { white-space:pre-wrap; line-height:1.6; color:#111827; }
+.message-time { margin-top:8px; font-size:11px; color:#6b7280; }
+.reply-panel { background:#fff; border-top:1px solid #e5e7eb; padding:18px 24px; }
+.reply-panel textarea { width:100%; resize:vertical; box-sizing:border-box; border:1px solid #d8dee9; border-radius:8px; padding:14px; font-size:14px; min-height:96px; }
+.reply-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:12px; align-items:center; }
+.refresh-note { margin-right:auto; color:#6b7280; font-size:12px; }
+.customer-panel { border-left:1px solid #e5e7eb; background:#fff; padding:20px; }
+.panel-card h3 { margin-top:0; margin-bottom:18px; }
+.info-item { margin-bottom:16px; }
+.info-item label { display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
+.primary-btn,.secondary-btn,.ghost-btn { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-size:14px; }
+.primary-btn { background:#111827; color:#fff; }
+.secondary-btn { background:#f59e0b; color:#fff; }
+.ghost-btn { background:#eef2f7; color:#111827; }
+.primary-btn:disabled,.secondary-btn:disabled,.ghost-btn:disabled { opacity:.6; cursor:not-allowed; }
+.empty { display:flex; align-items:center; justify-content:center; }
+.empty-box { text-align:center; color:#6b7280; }
+@media (max-width:1280px) { .chat-layout { grid-template-columns:280px 1fr; } .customer-panel { display:none; } }
+@media (max-width:900px) { .chat-layout { grid-template-columns:1fr; } .sidebar { display:none; } }
 </style>

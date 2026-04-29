@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 class KnowledgeUploadController extends Controller
 {
     private const MAX_DOCUMENTS_PER_TENANT = 2;
+    private const MAX_FILE_SIZE_KB = 10240;
 
     public function __construct(
         protected DifyKnowledgeService $difyKnowledgeService
@@ -41,7 +42,9 @@ class KnowledgeUploadController extends Controller
         }
 
         $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md'],
+            'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md', 'max:' . self::MAX_FILE_SIZE_KB],
+        ], [
+            'file.max' => 'Each knowledge document must not be larger than 10MB.',
         ]);
 
         $file = $request->file('file');

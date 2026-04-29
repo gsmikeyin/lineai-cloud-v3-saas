@@ -5,20 +5,32 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Tenant;
+use App\Models\TenantLineChannel;
 use App\Models\User;
+use App\Services\AI\TenantDifyProvisioningService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Str;
 
 class LineAuthController extends Controller
 {
+    public function __construct(
+        protected TenantDifyProvisioningService $tenantDifyProvisioningService
+    ) {}
+
     public function redirect(Request $request)
-    {       
+    {
+        abort_unless(
+            config('services.line_login.channel_id') &&
+            config('services.line_login.channel_secret') &&
+            config('services.line_login.redirect'),
+            500,
+            'LINE Login is not configured.'
+        );
+
         $state = Str::random(40);
-        error_log( $state);
         session(['line_login_state' => $state]);
 
         $query = http_build_query([
@@ -40,18 +52,11 @@ class LineAuthController extends Controller
             'Missing LINE callback parameters.'
         );
 
-
-       // Log::error("callback " . ((string) session('line_login_state')));
-      Log::error("callback 0");
-
         abort_unless(
             hash_equals((string) session('line_login_state'), (string) $request->state),
             403,
             'Invalid LINE login state.'
         );
-
-
-        Log::error("callback-1");
 
         $tokenResponse = Http::asForm()->post(
             'https://api.line.me/oauth2/v2.1/token',
@@ -64,14 +69,11 @@ class LineAuthController extends Controller
             ]
         )->throw()->json();
 
-        Log::error("callback0");
-
         $idToken = $tokenResponse['id_token'] ?? null;
         $accessToken = $tokenResponse['access_token'] ?? null;
 
         abort_unless($idToken && $accessToken, 400, 'LINE token response invalid.');
 
-        // 官方提供 verify endpoint，可直接驗證 id_token 並拿 profile/email
         $verifyResponse = Http::asForm()->post(
             'https://api.line.me/oauth2/v2.1/verify',
             [
@@ -80,14 +82,11 @@ class LineAuthController extends Controller
             ]
         )->throw()->json();
 
-        Log::error("callback1");
-
         $lineUserId = $verifyResponse['sub'] ?? null;
         $displayName = $verifyResponse['name'] ?? null;
         $picture = $verifyResponse['picture'] ?? null;
         $email = $verifyResponse['email'] ?? null;
 
-        // 若 verify 沒回完整 profile，可再用 access token 打 profile endpoint
         if (!$displayName || !$lineUserId) {
             $profileResponse = Http::withToken($accessToken)
                 ->get('https://api.line.me/v2/profile')
@@ -99,46 +98,65 @@ class LineAuthController extends Controller
             $picture = $profileResponse['pictureUrl'] ?? $picture;
         }
 
-        Log::error("callback2");
-
         abort_unless($lineUserId, 400, 'Unable to retrieve LINE user ID.');
 
         $result = DB::transaction(function () use ($lineUserId, $displayName, $picture, $email) {
             $user = User::query()
                 ->where('line_user_id', $lineUserId)
-                ->orWhere(function ($q) use ($email) {
-                    if ($email) {
-                        $q->where('email', $email);
-                    }
-                })
+                ->when($email, fn ($query) => $query->orWhere('email', $email))
                 ->first();
 
-            if (!$user) {
-                // 單租戶 / demo 版：若沒有 tenant，就掛到第一個 active tenant
-                $tenant = Tenant::query()->orderBy('id')->first();
+            $tenant = null;
+            $shouldProvisionDify = false;
 
-                abort_unless($tenant, 500, 'No tenant available for LINE login.');
+            if (!$user) {
+                $tenant = $this->createTenantForLineUser($displayName, $email);
+                $shouldProvisionDify = true;
 
                 $user = User::create([
                     'tenant_id' => $tenant->id,
                     'name' => $displayName ?: 'LINE User',
                     'email' => $email ?: ('line_' . Str::lower(Str::random(12)) . '@line.local'),
                     'password' => Str::random(32),
-                    'role' => User::ROLE_OWNER ?? 'owner',
-                    'status' => User::STATUS_ACTIVE ?? 'active',
+                    'role' => User::ROLE_OWNER,
+                    'status' => User::STATUS_ACTIVE,
                     'line_user_id' => $lineUserId,
                     'avatar' => $picture,
-                    'email_verified_at' => $email ? now() : null,
+                    'email_verified_at' => now(),
                 ]);
+
+                $tenant->update([
+                    'owner_user_id' => $user->id,
+                    'contact_name' => $user->name,
+                    'contact_email' => $user->email,
+                ]);
+
+                $lineChannel = TenantLineChannel::firstOrCreate(
+                    ['tenant_id' => $tenant->id],
+                    [
+                        'provider' => 'line',
+                        'is_active' => false,
+                        'is_verified' => false,
+                        'webhook_url' => rtrim(config('app.url'), '/') . '/api/line/webhook/' . $tenant->webhook_key,
+                    ]
+                );
+                $this->clearLineBotGeneratedDefaults($tenant, $lineChannel);
             } else {
                 $user->update([
                     'line_user_id' => $lineUserId,
                     'avatar' => $picture ?: $user->avatar,
                     'name' => $displayName ?: $user->name,
+                    'email_verified_at' => $user->email_verified_at ?: now(),
                 ]);
+
+                $tenant = $user->tenant;
+                $shouldProvisionDify = $tenant && ! $tenant->aiSetting()->exists();
+
+                if ($tenant?->lineChannel) {
+                    $this->clearLineBotGeneratedDefaults($tenant, $tenant->lineChannel);
+                }
             }
 
-            // CRM 綁定：若同 tenant 下沒有 customer，就自動建立
             if ($user->tenant_id) {
                 Customer::firstOrCreate(
                     [
@@ -157,11 +175,81 @@ class LineAuthController extends Controller
 
             $token = $user->createToken('line-login')->plainTextToken;
 
-            return compact('user', 'token');
+            return compact('user', 'token', 'tenant', 'shouldProvisionDify');
         });
 
+        if ($result['shouldProvisionDify'] && $result['tenant'] && config('services.dify.enabled')) {
+            try {
+                $this->tenantDifyProvisioningService->provision($result['tenant']);
+            } catch (\Throwable $e) {
+                report($e);
+                Log::error('LINE login tenant Dify provisioning failed', [
+                    'tenant_id' => $result['tenant']->id,
+                    'user_id' => $result['user']->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         return redirect(
-            rtrim(config('app.frontend_url'), '/') . '/login/success?token=' . urlencode($result['token'])
+            $this->frontendUrl() . '/login/success?token=' . urlencode($result['token'])
         );
+    }
+
+    protected function createTenantForLineUser(?string $displayName, ?string $email): Tenant
+    {
+        $companyName = $displayName ? "{$displayName} Workspace" : 'LINE Workspace';
+        $baseSlug = Str::slug($companyName) ?: 'line-workspace';
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (Tenant::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return Tenant::create([
+            'name' => $companyName,
+            'slug' => $slug,
+            'company_name' => $companyName,
+            'contact_name' => $displayName,
+            'contact_email' => $email,
+            'status' => Tenant::STATUS_ACTIVE,
+            'timezone' => 'Asia/Taipei',
+            'locale' => 'zh_TW',
+            'currency' => 'TWD',
+        ]);
+    }
+
+    protected function frontendUrl(): string
+    {
+        $frontendUrl = rtrim(config('app.frontend_url') ?: config('app.url'), '/');
+
+        if (str_contains($frontendUrl, '127.0.0.1') || str_contains($frontendUrl, 'localhost')) {
+            return rtrim(config('app.url'), '/');
+        }
+
+        return $frontendUrl;
+    }
+
+    protected function clearLineBotGeneratedDefaults(Tenant $tenant, TenantLineChannel $lineChannel): void
+    {
+        $updates = [];
+
+        if ($lineChannel->channel_name === $tenant->name . ' Bot') {
+            $updates['channel_name'] = null;
+        }
+
+        if (config('services.line_login.channel_id') && $lineChannel->channel_id === config('services.line_login.channel_id')) {
+            $updates['channel_id'] = null;
+        }
+
+        if (config('services.line_login.channel_secret') && $lineChannel->channel_secret === config('services.line_login.channel_secret')) {
+            $updates['channel_secret'] = null;
+        }
+
+        if ($updates) {
+            $lineChannel->update($updates);
+        }
     }
 }

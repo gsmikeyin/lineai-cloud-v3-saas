@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Models\TenantLineChannel;
-use App\Models\TenantAiSetting;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -13,16 +12,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Services\AI\DifyDatasetProvisionService;
-use App\Services\DifyAppDeployService;
-use App\Models\DifyAppPool;
+use App\Services\AI\TenantDifyProvisioningService;
 
 
 class AuthController extends Controller
 {
 
     public function __construct(
-        protected DifyDatasetProvisionService $difyDatasetProvisionService
+        protected TenantDifyProvisioningService $tenantDifyProvisioningService
     ) {}
 
     public function register(Request $request)
@@ -73,7 +70,6 @@ class AuthController extends Controller
                 ['tenant_id' => $tenant->id],
                 [
                     'provider' => 'line',
-                    'channel_name' => $tenant->name . ' Bot',
                     'is_active' => false,
                     'is_verified' => false,
                     'webhook_url' => rtrim(config('app.url'), '/') . '/api/line/webhook/' . $tenant->webhook_key,
@@ -90,7 +86,7 @@ class AuthController extends Controller
 
         if (config('services.dify.enabled')) {
             try {
-                $aiSetting = $this->provisionDifyForTenant($result['tenant']);
+                $aiSetting = $this->tenantDifyProvisioningService->provision($result['tenant']);
                 $provisioningStatus = 'ready';
             } catch (\Throwable $e) {
                 report($e);
@@ -113,63 +109,6 @@ class AuthController extends Controller
             'dify_provisioning_status' => $provisioningStatus,
             'email_verification_required' => true,
         ], 201);
-    }
-
-    protected function provisionDifyForTenant(Tenant $tenant): TenantAiSetting
-    {
-        $datasetName = "{$tenant->name} KB ({$tenant->id})";
-
-        $dataset = $this->difyDatasetProvisionService->createEmptyDataset(
-            name: $datasetName,
-            description: "Tenant {$tenant->id} knowledge base"
-        );
-
-        $difyApp = $this->createTenantApp([
-            'id' => $tenant->id,
-            'name' => "CHATBOT{$tenant->name}-{$tenant->id}",
-            'name_title' => "CHATBOT_{$tenant->contact_name}-{$tenant->contact_email}",
-            'dataset_id' => $dataset['id'],
-        ]);
-
-        $pool = DifyAppPool::create([
-            'app_name' => $difyApp['app_name'],
-            'app_api_key' => $difyApp['api_key'],
-            'app_mode' => 'chat',
-            'status' => 'assigned',
-            'assigned_tenant_id' => $tenant->id,
-        ]);
-
-        return TenantAiSetting::updateOrCreate(
-            ['tenant_id' => $tenant->id],
-            [
-                'provider' => 'dify',
-                'dify_dataset_id' => $dataset['id'],
-                'dify_dataset_name' => $dataset['name'],
-                'dify_app_api_key' => $pool->app_api_key,
-                'dify_app_name' => $pool->app_name,
-                'dify_app_mode' => $pool->app_mode,
-                'is_active' => true,
-                'dataset_bound' => false,
-            ]
-        );
-    }
-    
-
-    public function createTenantApp(array $tenantData)
-    {
-        $service = app(DifyAppDeployService::class);
-
-        return $service->deployApp(
-
-            inputDsl: storage_path('app/dify/template.yml'),
-            outputDsl: storage_path("app/dify/output/tenant_{$tenantData['id']}.yml"),
-            
-            datasetIds: [$tenantData['dataset_id']],
-            name: "{$tenantData['name_title']}",            
-            description: "Tenant {$tenantData['name']} AI App",
-
-            keyName: "tenant-{$tenantData['id']}-key"
-        );
     }
 
 

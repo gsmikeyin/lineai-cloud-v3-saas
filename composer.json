@@ -1,7 +1,7 @@
 {
   "name": "lineai/cloud",
   "type": "project",
-  "description": "LINE AI SaaS starter for Laravel 12 and PHP 8.2",
+  "description": "ServiceAI SaaS starter for Laravel 12 and PHP 8.2",
   "license": "MIT",
   "require": {
     "php": "^8.2",

@@ -38,11 +38,38 @@ class DifyTestController extends Controller
             message: $validated['message']
         );
 
-        return response()->json([
+        $record = [
             'message' => $validated['message'],
             'answer' => $result['answer'] ?? null,
             'conversation_id' => $result['conversation_id'] ?? null,
             'raw' => $result['raw'] ?? [],
+            'tested_at' => now()->toISOString(),
+            'tested_by' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ];
+
+        $settings = $tenant->settings ?? [];
+        $settings['dify_last_test'] = $record;
+        $tenant->forceFill(['settings' => $settings])->save();
+
+        return response()->json($record);
+    }
+
+    public function last(Request $request)
+    {
+        $tenant = $request->user()?->tenant;
+
+        if (! $tenant) {
+            return response()->json([
+                'message' => 'Tenant not found for current user.',
+            ], 422);
+        }
+
+        return response()->json([
+            'data' => data_get($tenant->settings ?? [], 'dify_last_test'),
         ]);
     }
 }

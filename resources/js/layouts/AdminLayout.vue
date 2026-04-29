@@ -2,10 +2,10 @@
   <div class="admin-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-logo">L</div>
+        <div class="brand-logo">S</div>
         <div>
           <div class="brand-title">ServiceAI Cloud</div>
-          <div class="brand-sub">Admin 儀表板</div>
+          <div class="brand-sub">Admin Console</div>
         </div>
       </div>
 
@@ -14,59 +14,41 @@
           <span>{{ $t('nav.dashboard') }}</span>
         </router-link>
 
-        <router-link v-if="isOwner()"  to="/app/conversations" class="nav-item">
-          <span>對話</span>
+        <router-link v-if="isOwner()" to="/app/conversations" class="nav-item">
+          <span>{{ $t('nav.conversations') }}</span>
         </router-link>
 
         <router-link v-if="isOwner()" to="/app/customers" class="nav-item">
-          <span>客戶</span>
+          <span>{{ $t('nav.customers') }}</span>
         </router-link>
 
         <router-link to="/app/settings/line-bot" class="nav-item">
-          <span>LINE Bot 設定</span>
+          <span>{{ $t('nav.lineBot') }}</span>
         </router-link>
 
-    
-
-
-         <router-link v-if="isOwner()" to="/app/knowledge-upload" class="nav-item">
-             <span>知識上傳</span>
+        <router-link v-if="isOwner()" to="/app/knowledge-upload" class="nav-item">
+          <span>{{ $t('nav.knowledgeUpload') }}</span>
         </router-link>
-
-
 
         <router-link to="/app/knowledge-hit-test" class="nav-item">
-             <span>知識命中測試</span>
+          <span>{{ $t('nav.knowledgeHitTest') }}</span>
         </router-link>
 
-
-        <router-link v-if="isAdmin()"  to="/app/settings" class="nav-item">
-          <span>設定</span>
+        <router-link v-if="isAdmin()" to="/app/settings" class="nav-item">
+          <span>{{ $t('nav.settings') }}</span>
         </router-link>
-
 
         <router-link v-if="isAdmin()" to="/app/contact-leads" class="nav-item">
-            <span>潛在客戶列表</span>
+          <span>{{ $t('nav.contactLeads') }}</span>
         </router-link>
-        
 
+        <router-link v-if="isAdmin()" to="/app/dify-app-pools" class="nav-item">
+          <span>{{ $t('nav.difyAppPools') }}</span>
+        </router-link>
 
-<router-link v-if="isAdmin()" to="/app/dify-binding" class="nav-item">
-  <span>Dify 綁定助手</span>
-</router-link>
-
-<router-link v-if="isAdmin()" to="/app/dify-app-pools" class="nav-item">
-  <span>Dify App Pools</span>
-</router-link>
-        
-       
-       
-
-       <a href="/files/manual.pdf" download class="nav-item">
-               下載使用說明
-        </a>
-        
-        
+        <router-link to="/app/manual" class="nav-item">
+          <span>{{ $t('nav.manual') }}</span>
+        </router-link>
       </nav>
     </aside>
 
@@ -74,15 +56,23 @@
       <header class="topbar">
         <div>
           <h1 class="topbar-title">{{ pageTitle }}</h1>
-          <p class="topbar-sub">LINE AI SaaS 後台管理系統</p>
+          <p class="topbar-sub">{{ $t('admin.subtitle') }}</p>
         </div>
 
         <div class="topbar-actions">
+          <label class="locale-control">
+            <span>{{ $t('admin.language') }}</span>
+            <select :value="locale" @change="changeLocale($event.target.value)">
+              <option value="zh_TW">繁中</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+
           <div class="user-box">
             <div class="user-name">{{ userName }}</div>
-            <div class="user-role">Tenant Admin</div>
+            <div class="user-role">{{ $t('admin.role') }}</div>
           </div>
-          <button class="logout-btn" @click="logout">登出</button>
+          <button class="logout-btn" type="button" @click="logout">{{ $t('nav.logout') }}</button>
         </div>
       </header>
 
@@ -95,16 +85,21 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
 import { isAdmin, isOwner } from '../utils/auth'
 
-
 const route = useRoute()
 const router = useRouter()
+const { locale, t } = useI18n()
 
 const pageTitle = computed(() => {
-  return route.meta?.title || 'Dashboard'
+  if (route.meta?.titleKey) {
+    return t(route.meta.titleKey)
+  }
+
+  return route.meta?.title || t('nav.dashboard')
 })
 
 const userName = computed(() => {
@@ -116,17 +111,24 @@ const userName = computed(() => {
   }
 })
 
+async function changeLocale(value) {
+  locale.value = value
+  localStorage.setItem('locale', value)
+
+  try {
+    await api.put('/me/locale', { locale: value })
+  } catch (e) {
+  }
+}
+
 async function logout() {
   try {
     await api.post('/logout')
   } catch (e) {
   } finally {
-
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     router.push('/login')
-
-
   }
 }
 </script>
@@ -145,7 +147,7 @@ async function logout() {
   padding: 22px 16px;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .brand {
@@ -153,14 +155,14 @@ async function logout() {
   align-items: center;
   gap: 12px;
   padding: 8px 10px 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 18px;
 }
 
 .brand-logo {
   width: 42px;
   height: 42px;
-  border-radius: 12px;
+  border-radius: 8px;
   background: #2563eb;
   display: flex;
   align-items: center;
@@ -176,7 +178,7 @@ async function logout() {
 
 .brand-sub {
   font-size: 12px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
   margin-top: 2px;
 }
 
@@ -188,15 +190,15 @@ async function logout() {
 
 .nav-item {
   text-decoration: none;
-  color: rgba(255,255,255,0.88);
+  color: rgba(255, 255, 255, 0.88);
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: 8px;
   transition: all 0.2s ease;
   display: block;
 }
 
 .nav-item:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
 }
 
@@ -219,6 +221,7 @@ async function logout() {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 }
 
 .topbar-title {
@@ -238,6 +241,21 @@ async function logout() {
   gap: 14px;
 }
 
+.locale-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.locale-control select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
 .user-box {
   text-align: right;
 }
@@ -254,7 +272,7 @@ async function logout() {
 
 .logout-btn {
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px 14px;
   background: #111827;
   color: #fff;
@@ -276,6 +294,14 @@ async function logout() {
 
   .topbar {
     padding: 18px 20px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .content {

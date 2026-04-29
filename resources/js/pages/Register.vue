@@ -1,33 +1,42 @@
 <template>
   <div class="register-page">
     <div class="register-card">
-      <h1>LineAI Cloud</h1>
-      <p class="subtitle">建立你的 SaaS 帳號</p>
+      <div class="card-head">
+        <div>
+          <h1>ServiceAI Cloud</h1>
+          <p class="subtitle">{{ $t('auth.registerSubtitle') }}</p>
+        </div>
+
+        <select :value="locale" class="locale-select" @change="changeLocale($event.target.value)">
+          <option value="zh_TW">繁中</option>
+          <option value="en">English</option>
+        </select>
+      </div>
 
       <form @submit.prevent="handleRegister">
         <div class="form-group">
-          <label>公司名稱</label>
-          <input v-model="form.company_name" type="text" placeholder="請輸入公司名稱" />
+          <label>{{ $t('auth.companyName') }}</label>
+          <input v-model="form.company_name" type="text" :placeholder="$t('auth.companyNamePlaceholder')" />
         </div>
 
         <div class="form-group">
-          <label>管理者姓名</label>
-          <input v-model="form.name" type="text" placeholder="請輸入姓名" />
+          <label>{{ $t('auth.name') }}</label>
+          <input v-model="form.name" type="text" :placeholder="$t('auth.namePlaceholder')" />
         </div>
 
         <div class="form-group">
-          <label>Email</label>
-          <input v-model="form.email" type="email" placeholder="請輸入 Email" />
+          <label>{{ $t('auth.email') }}</label>
+          <input v-model="form.email" type="email" :placeholder="$t('auth.emailPlaceholder')" />
         </div>
 
         <div class="form-group">
-          <label>Password</label>
-          <input v-model="form.password" type="password" placeholder="至少 8 碼" />
+          <label>{{ $t('auth.password') }}</label>
+          <input v-model="form.password" type="password" :placeholder="$t('auth.passwordPlaceholder')" />
         </div>
 
         <div class="form-group">
-          <label>確認密碼</label>
-          <input v-model="form.password_confirmation" type="password" placeholder="再次輸入密碼" />
+          <label>{{ $t('auth.confirmPassword') }}</label>
+          <input v-model="form.password_confirmation" type="password" :placeholder="$t('auth.confirmPasswordPlaceholder')" />
         </div>
 
         <div v-if="errorMessage" class="error-message">
@@ -35,13 +44,13 @@
         </div>
 
         <button type="submit" :disabled="loading">
-          {{ loading ? '註冊中...' : '註冊並登入' }}
+          {{ loading ? $t('auth.registering') : $t('auth.register') }}
         </button>
       </form>
 
       <div class="bottom-link">
-        已有帳號？
-        <router-link to="/login">前往登入</router-link>
+        {{ $t('auth.hasAccount') }}
+        <router-link to="/login">{{ $t('auth.goLogin') }}</router-link>
       </div>
     </div>
   </div>
@@ -49,10 +58,12 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import api from '../api'
 
 const router = useRouter()
+const { t, locale } = useI18n()
 const loading = ref(false)
 const errorMessage = ref('')
 
@@ -64,6 +75,11 @@ const form = reactive({
   password_confirmation: '',
 })
 
+function changeLocale(value) {
+  locale.value = value
+  localStorage.setItem('locale', value)
+}
+
 async function handleRegister() {
   loading.value = true
   errorMessage.value = ''
@@ -71,29 +87,21 @@ async function handleRegister() {
   try {
     const res = await api.post('/register', form)
 
-
     localStorage.removeItem('token')
     localStorage.removeItem('user')
-
-
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
 
     api.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
-    
-
-    //window.location.href = '/app'
     router.push('/app')
-    
   } catch (error) {
-    
     const data = error.response?.data
 
     if (data?.errors) {
       const firstKey = Object.keys(data.errors)[0]
       errorMessage.value = data.errors[firstKey][0]
     } else {
-      errorMessage.value = data?.message || '註冊失敗，請稍後再試'
+      errorMessage.value = data?.message || t('auth.registerFailed')
     }
   } finally {
     loading.value = false
@@ -115,9 +123,17 @@ async function handleRegister() {
   width: 100%;
   max-width: 460px;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 32px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 24px;
 }
 
 h1 {
@@ -126,8 +142,15 @@ h1 {
 }
 
 .subtitle {
-  margin: 0 0 24px;
+  margin: 0;
   color: #666;
+}
+
+.locale-select {
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
 }
 
 .form-group {
@@ -145,7 +168,7 @@ input {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #dcdfe6;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 14px;
   font-size: 14px;
 }
@@ -153,7 +176,7 @@ input {
 button {
   width: 100%;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 14px;
   font-size: 15px;
   cursor: pointer;
@@ -177,5 +200,16 @@ button:disabled {
   font-size: 14px;
   color: #666;
   text-align: center;
+}
+
+.bottom-link a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+@media (max-width: 520px) {
+  .card-head {
+    flex-direction: column;
+  }
 }
 </style>
