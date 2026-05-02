@@ -28,7 +28,6 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-left">
-          <div class="hero-badge">{{ $t('landing.badge') }}</div>
           <h1>{{ $t('landing.heroTitle1') }}<br />{{ $t('landing.heroTitle2') }}</h1>
           <p class="hero-desc">{{ $t('landing.heroDesc') }}</p>
 
@@ -189,7 +188,7 @@
             <div class="contact-info-list">
               <div class="contact-info-item">
                 <label>Email</label>
-                <div>service@serviceaicloud.com</div>
+                <div>service@greatsoft.com.tw</div>
               </div>
               <div class="contact-info-item">
                 <label>{{ $t('landing.serviceHours') }}</label>
@@ -289,13 +288,13 @@
 
         <div class="footer-col">
           <h4>{{ $t('nav.contact') }}</h4>
-          <a href="mailto:service@serviceaicloud.com">service@serviceaicloud.com</a>
+          <a href="mailto:service@greatsoft.com.tw">service@greatsoft.com.tw</a>
           <a href="#contact">{{ $t('landing.contactFormTitle') }}</a>
         </div>
       </div>
 
       <div class="container footer-bottom">
-        <span>© 2026 ServiceAI Cloud. All rights reserved.</span>
+        <span>© 2026 Greatsoft. All rights reserved.</span>
         <div class="footer-bottom-links">
           <a href="#">{{ $t('common.privacy') }}</a>
           <a href="#">{{ $t('common.terms') }}</a>
@@ -460,17 +459,6 @@ async function submitContact() {
   grid-template-columns: 1.05fr 0.95fr;
   gap: 36px;
   align-items: center;
-}
-
-.hero-badge {
-  display: inline-flex;
-  background: #dbeafe;
-  color: #1d4ed8;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 16px;
 }
 
 .hero h1 {
