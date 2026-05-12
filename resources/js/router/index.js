@@ -20,6 +20,10 @@ import KnowledgeUpload from '../pages/KnowledgeUpload.vue'
 import ManualDownload from '../pages/ManualDownload.vue'
 import DifyAppPoolManager from '../pages/DifyAppPoolManager.vue'
 import KnowledgeHitTest from '../pages/KnowledgeHitTest.vue'
+import PageViewAnalytics from '../pages/PageViewAnalytics.vue'
+import AuthAnalytics from '../pages/AuthAnalytics.vue'
+import UserRoleManager from '../pages/UserRoleManager.vue'
+import api from '../api'
 
 import { getAuthUser, hasRole } from '../utils/auth'
 
@@ -138,6 +142,24 @@ const routes = [
         meta: { requiresAuth: true, roles: ['super_admin', 'admin'], titleKey: 'nav.difyAppPools' },
       },
       {
+        path: 'analytics/page-views',
+        name: 'page-view-analytics',
+        component: PageViewAnalytics,
+        meta: { requiresAuth: true, roles: ['super_admin', 'admin'], titleKey: 'nav.pageViews' },
+      },
+      {
+        path: 'analytics/auth',
+        name: 'auth-analytics',
+        component: AuthAnalytics,
+        meta: { requiresAuth: true, roles: ['super_admin', 'admin'], titleKey: 'nav.authAnalytics' },
+      },
+      {
+        path: 'admin/user-roles',
+        name: 'user-role-manager',
+        component: UserRoleManager,
+        meta: { requiresAuth: true, roles: ['super_admin'], titleKey: 'nav.userRoles' },
+      },
+      {
         path: 'manual',
         name: 'manual',
         component: ManualDownload,
@@ -164,6 +186,17 @@ router.beforeEach((to, from, next) => {
   }
 
   next()
+})
+
+router.afterEach((to) => {
+  if (!to.path.startsWith('/app')) return
+  if (!getAuthUser()) return
+
+  api.post('/analytics/page-views', {
+    path: to.path,
+    route_name: to.name || null,
+    page_title: to.meta?.titleKey || to.meta?.title || null,
+  }).catch(() => {})
 })
 
 export default router

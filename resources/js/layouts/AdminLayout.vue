@@ -46,6 +46,18 @@
           <span>{{ $t('nav.difyAppPools') }}</span>
         </router-link>
 
+        <router-link v-if="isAdmin()" to="/app/analytics/page-views" class="nav-item">
+          <span>{{ $t('nav.pageViews') }}</span>
+        </router-link>
+
+        <router-link v-if="isAdmin()" to="/app/analytics/auth" class="nav-item">
+          <span>{{ $t('nav.authAnalytics') }}</span>
+        </router-link>
+
+        <router-link v-if="isSuperAdmin()" to="/app/admin/user-roles" class="nav-item">
+          <span>{{ $t('nav.userRoles') }}</span>
+        </router-link>
+
         <router-link to="/app/manual" class="nav-item">
           <span>{{ $t('nav.manual') }}</span>
         </router-link>
@@ -88,7 +100,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
-import { isAdmin, isOwner } from '../utils/auth'
+import { isAdmin, isOwner, isSuperAdmin } from '../utils/auth'
 
 const route = useRoute()
 const router = useRouter()

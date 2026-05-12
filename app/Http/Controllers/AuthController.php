@@ -99,6 +99,7 @@ class AuthController extends Controller
         }
 
         $token = $result['user']->createToken('lineai-web')->plainTextToken;
+        AuthAnalyticsController::record($result['user'], \App\Models\AuthEvent::TYPE_REGISTER, 'email', $request);
 
         return response()->json([
             'success' => true,
@@ -146,6 +147,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('lineai-web')->plainTextToken;
+        AuthAnalyticsController::record($user, \App\Models\AuthEvent::TYPE_LOGIN, 'email', $request);
 
         return response()->json([
             'success' => true,

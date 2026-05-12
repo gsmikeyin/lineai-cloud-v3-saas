@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\AuthAnalyticsController;
+use App\Models\AuthEvent;
 use App\Models\Customer;
 use App\Models\Tenant;
 use App\Models\TenantLineChannel;
@@ -174,9 +176,11 @@ class LineAuthController extends Controller
             }
 
             $token = $user->createToken('line-login')->plainTextToken;
+            $user->update(['last_login_at' => now()]);
 
             return compact('user', 'token', 'tenant', 'shouldProvisionDify');
         });
+        AuthAnalyticsController::record($result['user'], AuthEvent::TYPE_LOGIN, 'line', $request);
 
         if ($result['shouldProvisionDify'] && $result['tenant'] && config('services.dify.enabled')) {
             try {

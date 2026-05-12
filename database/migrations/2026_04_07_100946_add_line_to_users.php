@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
-            $table->string('line_user_id')->nullable()->unique();
-            $table->string('avatar')->nullable();
+            if (!Schema::hasColumn('users', 'line_user_id')) {
+                $table->string('line_user_id')->nullable()->unique();
+            }
 
+            if (!Schema::hasColumn('users', 'avatar')) {
+                $table->string('avatar')->nullable();
+            }
         });
     }
 
@@ -24,6 +27,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'avatar')) {
+                $table->dropColumn('avatar');
+            }
+
+            if (Schema::hasColumn('users', 'line_user_id')) {
+                $table->dropColumn('line_user_id');
+            }
+        });
     }
 };

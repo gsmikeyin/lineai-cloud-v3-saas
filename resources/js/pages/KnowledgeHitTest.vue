@@ -66,7 +66,7 @@
           </div>
 
           <div class="candidate-meta">
-            <span class="badge">{{ item.dataset_name || 'dataset' }}</span>
+            <span class="badge">{{ item.dataset_name || '智識庫' }}</span>
             <span>{{ item.document_id || '-' }}</span>
           </div>
 

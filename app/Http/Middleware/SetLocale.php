@@ -16,7 +16,7 @@ class SetLocale
             ?? $request->input('locale')
             ?? config('app.locale');
 
-        if (!in_array($locale, ['zh_TW', 'en', 'ja'])) {
+        if (!in_array($locale, ['zh_TW', 'en', 'ja'], true)) {
             $locale = 'zh_TW';
         }
 

@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
-          $table->string('locale', 10)->default('zh_TW');
+            if (!Schema::hasColumn('users', 'locale')) {
+                $table->string('locale', 10)->default('zh_TW');
+            }
         });
     }
 
@@ -23,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('users', 'locale')) {
+                $table->dropColumn('locale');
+            }
         });
     }
 };

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\KnowledgeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthAnalyticsController;
 use App\Http\Controllers\AuthPasswordController;
 use App\Http\Controllers\AuthVerificationController;
 use App\Http\Controllers\ContactLeadController;
@@ -18,6 +19,8 @@ use App\Http\Controllers\KnowledgeMatcherTestController;
 use App\Http\Controllers\KnowledgeUploadController;
 use App\Http\Controllers\LineBotSettingController;
 use App\Http\Controllers\LineWebhookController;
+use App\Http\Controllers\PageViewController;
+use App\Http\Controllers\UserRoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +51,13 @@ Route::middleware('auth:sanctum', 'role:super_admin,admin')->group(function () {
     Route::get('/dify-app-pools', [DifyAppPoolUiController::class, 'index']);
     Route::delete('/dify-app-pools/{difyAppPool}', [DifyAppPoolUiController::class, 'destroy']);
     Route::put('/dify-app-pools/{difyAppPool}', [DifyAppPoolController::class, 'update']);
+    Route::get('/analytics/page-views', [PageViewController::class, 'index']);
+    Route::get('/analytics/auth', [AuthAnalyticsController::class, 'index']);
+});
+
+Route::middleware('auth:sanctum', 'role:super_admin')->group(function () {
+    Route::get('/admin/users/roles', [UserRoleController::class, 'index']);
+    Route::put('/admin/users/{user}/role', [UserRoleController::class, 'update']);
 });
 
 Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner,sta'])->group(function () {
@@ -55,6 +65,7 @@ Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner,sta'])->group(f
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
+    Route::post('/analytics/page-views', [PageViewController::class, 'store']);
 
     Route::get('/customers', [CustomerController::class, 'index']);
     Route::get('/customers/{customer}', [CustomerController::class, 'show']);
