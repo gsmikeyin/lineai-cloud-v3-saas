@@ -60,6 +60,8 @@ class ContactLeadController extends Controller
         $request->validate([
             'status' => ['nullable', 'in:new,contacted,closed'],
             'keyword' => ['nullable', 'string', 'max:255'],
+            'page' => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
         ]);
 
         $query = ContactLead::query()->latest('id');
@@ -80,7 +82,7 @@ class ContactLeadController extends Controller
             });
         }
 
-        return response()->json($query->paginate(20));
+        return response()->json($query->paginate((int) $request->input('per_page', 20)));
     }
 
     public function show(ContactLead $contactLead)

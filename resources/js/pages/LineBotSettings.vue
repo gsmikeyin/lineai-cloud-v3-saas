@@ -198,11 +198,11 @@ onMounted(fetchSettings)
 </script>
 
 <style scoped>
-.page { display:grid; gap:18px; padding:32px; background:#f4f7fb; min-height:100vh; }
-.page-header { margin-bottom:6px; }
-.page-header h1 { margin:0 0 8px; }
-.page-header p { margin:0; color:#6b7280; }
-.lock-box { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius:8px; padding:14px 16px; }
+.page { display:grid; gap:8px; padding:16px 32px 32px; background:#f4f7fb; min-height:100vh; }
+.page-header { margin-bottom:0; }
+.page-header h1 { margin:0 0 4px; font-size:22px; line-height:1.25; }
+.page-header p { margin:0; color:#6b7280; font-size:13px; line-height:1.5; }
+.lock-box { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius:8px; padding:10px 14px; }
 .grid { display:grid; grid-template-columns:1.1fr .9fr; gap:20px; }
 .grid.disabled { opacity:.85; }
 .card { background:#fff; border-radius:8px; padding:24px; box-shadow:0 10px 30px rgba(15,23,42,.06); }

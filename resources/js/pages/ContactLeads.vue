@@ -60,6 +60,30 @@
       </table>
     </div>
 
+    <div v-if="pagination.total > 0" class="pagination">
+      <div class="page-info">
+        第 {{ pagination.currentPage }} / {{ pagination.lastPage }} 頁，共 {{ pagination.total }} 筆
+      </div>
+
+      <div class="page-actions">
+        <label>
+          每頁
+          <select v-model.number="pagination.perPage" @change="goPage(1)">
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </label>
+
+        <button class="ghost-btn" type="button" :disabled="pagination.currentPage === 1" @click="goPage(pagination.currentPage - 1)">
+          上一頁
+        </button>
+        <button class="ghost-btn" type="button" :disabled="pagination.currentPage === pagination.lastPage" @click="goPage(pagination.currentPage + 1)">
+          下一頁
+        </button>
+      </div>
+    </div>
+
     <div v-if="selectedLead" class="modal-mask" @click.self="selectedLead = null">
       <div class="modal-card">
         <div class="modal-header">
@@ -94,18 +118,37 @@ const filters = reactive({
   status: '',
 })
 
+const pagination = reactive({
+  currentPage: 1,
+  lastPage: 1,
+  perPage: 20,
+  total: 0,
+})
+
 async function fetchLeads() {
   const res = await api.get('/contact-leads', {
     params: {
       keyword: filters.keyword || undefined,
       status: filters.status || undefined,
+      page: pagination.currentPage,
+      per_page: pagination.perPage,
     },
   })
 
   leads.value = res.data.data || []
+  pagination.currentPage = res.data.current_page || 1
+  pagination.lastPage = res.data.last_page || 1
+  pagination.perPage = Number(res.data.per_page || pagination.perPage)
+  pagination.total = res.data.total || 0
 }
 
 async function search() {
+  pagination.currentPage = 1
+  await fetchLeads()
+}
+
+async function goPage(page) {
+  pagination.currentPage = Math.min(Math.max(page, 1), pagination.lastPage)
   await fetchLeads()
 }
 
@@ -141,6 +184,11 @@ onMounted(fetchLeads)
 .table th,.table td { padding:14px 12px; border-bottom:1px solid #eef2f7; text-align:left; vertical-align:top; }
 .table th { font-size:13px; color:#6b7280; }
 .empty-box { color:#6b7280; text-align:center; padding:24px; }
+.pagination { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:16px; color:#6b7280; font-size:14px; }
+.page-actions { display:flex; align-items:center; gap:10px; }
+.page-actions label { display:flex; align-items:center; gap:8px; }
+.page-actions select { border:1px solid #d1d5db; border-radius:8px; padding:8px 10px; background:#fff; }
+.page-actions .ghost-btn:disabled { opacity:.5; cursor:not-allowed; }
 .modal-mask { position:fixed; inset:0; background:rgba(15,23,42,.45); display:flex; align-items:center; justify-content:center; padding:24px; }
 .modal-card { width:100%; max-width:760px; background:#fff; border-radius:8px; padding:24px; }
 .modal-header { display:flex; justify-content:space-between; margin-bottom:18px; }
@@ -149,4 +197,5 @@ onMounted(fetchLeads)
 .full { grid-column:span 2; }
 .message-box { background:#f8fafc; border-radius:8px; padding:14px; line-height:1.8; white-space:pre-wrap; }
 @media (max-width:900px) { .toolbar,.detail-grid { grid-template-columns:1fr; } .full { grid-column:span 1; } }
+@media (max-width:700px) { .pagination,.page-actions { flex-direction:column; align-items:flex-start; } }
 </style>

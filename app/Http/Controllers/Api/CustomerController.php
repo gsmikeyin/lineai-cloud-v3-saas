@@ -11,12 +11,18 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
+        $validated = $request->validate([
+            'page' => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
+        ]);
+
         $tenantId = $request->user()->tenant_id;
+        $perPage = (int) ($validated['per_page'] ?? 20);
 
         $items = Customer::query()
             ->where('tenant_id', $tenantId)
             ->latest('last_interaction_at')
-            ->paginate(20);
+            ->paginate($perPage);
 
         return response()->json($items);
     }

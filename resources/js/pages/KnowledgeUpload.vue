@@ -19,7 +19,7 @@
         </div>
 
         <div class="limit-info" :class="{ reached: uploadLimitReached }">
-          {{ t('adminPages.knowledgeUpload.limitInfo', { count: documents.length, max: MAX_DOCUMENTS, size: formatSize(MAX_FILE_SIZE_BYTES) }) }}
+          {{ t('adminPages.knowledgeUpload.limitInfo', { count: documents.length, max: maxDocuments, size: formatSize(MAX_FILE_SIZE_BYTES) }) }}
         </div>
 
         <div v-if="selectedFile" class="file-info">
@@ -76,7 +76,7 @@ import { useI18n } from 'vue-i18n'
 import api from '../api'
 
 const { t } = useI18n()
-const MAX_DOCUMENTS = 2
+const maxDocuments = ref(2)
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
 const loading = ref(false)
 const uploading = ref(false)
@@ -86,7 +86,7 @@ const documents = ref([])
 const fileInput = ref(null)
 const successMessage = ref('')
 const errorMessage = ref('')
-const uploadLimitReached = computed(() => documents.value.length >= MAX_DOCUMENTS)
+const uploadLimitReached = computed(() => documents.value.length >= maxDocuments.value)
 
 function handleFileChange(event) {
   successMessage.value = ''
@@ -94,7 +94,7 @@ function handleFileChange(event) {
 
   if (uploadLimitReached.value) {
     clearSelectedFile()
-    errorMessage.value = t('adminPages.knowledgeUpload.maxFiles', { max: MAX_DOCUMENTS })
+    errorMessage.value = t('adminPages.knowledgeUpload.maxFiles', { max: maxDocuments.value })
     return
   }
 
@@ -119,7 +119,7 @@ async function submitUpload() {
   if (!selectedFile.value) return
 
   if (uploadLimitReached.value) {
-    errorMessage.value = t('adminPages.knowledgeUpload.maxFiles', { max: MAX_DOCUMENTS })
+    errorMessage.value = t('adminPages.knowledgeUpload.maxFiles', { max: maxDocuments.value })
     return
   }
 
@@ -178,6 +178,7 @@ async function fetchDocuments() {
   try {
     const res = await api.get('/knowledge/documents')
     documents.value = res.data.data || []
+    maxDocuments.value = res.data.max_documents || 2
   } catch (error) {
     errorMessage.value = error.response?.data?.message || t('adminPages.knowledgeUpload.loadFailed')
   } finally {

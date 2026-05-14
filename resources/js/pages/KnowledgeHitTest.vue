@@ -77,7 +77,7 @@
       </div>
     </div>
 
-    <div class="card span-2" v-if="result">
+    <div class="card span-2" v-if="result && isSuperAdmin()">
       <h3>{{ $t('adminPages.knowledgeTest.raw') }}</h3>
       <div class="context-item">
         <pre>{{ prettyRaw }}</pre>
@@ -90,6 +90,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api'
+import { isSuperAdmin } from '../utils/auth'
 
 const { t } = useI18n()
 const message = ref('')

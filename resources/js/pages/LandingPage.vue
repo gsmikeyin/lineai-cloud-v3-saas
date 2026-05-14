@@ -28,19 +28,21 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-left">
-          <h1>{{ $t('landing.heroTitle1') }}<br />{{ $t('landing.heroTitle2') }}</h1>
-          <p class="hero-desc">{{ $t('landing.heroDesc') }}</p>
+          <h1>{{ landingCopy.heroTitle }}</h1>
+          <p class="hero-desc">{{ landingCopy.heroDesc }}</p>
 
           <div class="hero-actions">
-            <router-link to="/register" class="primary-btn">{{ $t('landing.startFree') }}</router-link>
-            <router-link to="/login" class="ghost-btn">{{ $t('landing.goLogin') }}</router-link>
+            <router-link to="/register" class="primary-btn">{{ landingCopy.primaryCta }}</router-link>
+            <a href="#contact" class="ghost-btn">{{ landingCopy.secondaryCta }}</a>
           </div>
 
           <div class="hero-points">
-            <div v-for="point in $tm('landing.points')" :key="point" class="point-item">
+            <div v-for="point in landingCopy.heroPoints" :key="point" class="point-item">
               {{ point }}
             </div>
           </div>
+
+          <p class="hero-proof">{{ landingCopy.heroProof }}</p>
         </div>
 
         <div class="hero-right">
@@ -57,7 +59,7 @@
                 <div class="side-item">{{ $t('landing.showcase.conversations') }}</div>
                 <div class="side-item">{{ $t('landing.showcase.customers') }}</div>
                 <div class="side-item">{{ $t('landing.showcase.lineBot') }}</div>
-                <div class="side-item">{{ $t('landing.showcase.knowledge') }}</div>
+                  <div class="side-item">{{ landingCopy.showcaseKnowledge }}</div>
               </aside>
 
               <div class="showcase-main">
@@ -77,10 +79,10 @@
                 </div>
 
                 <div class="chat-preview">
-                  <div class="bubble left">{{ $t('landing.showcase.customerQuestion1') }}</div>
-                  <div class="bubble right">{{ $t('landing.showcase.agentAnswer1') }}</div>
-                  <div class="bubble left">{{ $t('landing.showcase.customerQuestion2') }}</div>
-                  <div class="bubble right">{{ $t('landing.showcase.agentAnswer2') }}</div>
+                  <div class="bubble left">{{ landingCopy.previewQuestion1 }}</div>
+                  <div class="bubble right">{{ landingCopy.previewAnswer1 }}</div>
+                  <div class="bubble left">{{ landingCopy.previewQuestion2 }}</div>
+                  <div class="bubble right">{{ landingCopy.previewAnswer2 }}</div>
                 </div>
               </div>
             </div>
@@ -92,20 +94,63 @@
     <section class="trust-strip">
       <div class="container trust-grid">
         <div class="trust-item">
-          <strong>{{ $t('landing.trust.aiTitle') }}</strong>
-          <span>{{ $t('landing.trust.aiDesc') }}</span>
+          <strong>{{ landingCopy.trust[0][0] }}</strong>
+          <span>{{ landingCopy.trust[0][1] }}</span>
         </div>
         <div class="trust-item">
-          <strong>{{ $t('landing.trust.crmTitle') }}</strong>
-          <span>{{ $t('landing.trust.crmDesc') }}</span>
+          <strong>{{ landingCopy.trust[1][0] }}</strong>
+          <span>{{ landingCopy.trust[1][1] }}</span>
         </div>
         <div class="trust-item">
-          <strong>{{ $t('landing.trust.supportTitle') }}</strong>
-          <span>{{ $t('landing.trust.supportDesc') }}</span>
+          <strong>{{ landingCopy.trust[2][0] }}</strong>
+          <span>{{ landingCopy.trust[2][1] }}</span>
         </div>
         <div class="trust-item">
-          <strong>{{ $t('landing.trust.saasTitle') }}</strong>
-          <span>{{ $t('landing.trust.saasDesc') }}</span>
+          <strong>{{ landingCopy.trust[3][0] }}</strong>
+          <span>{{ landingCopy.trust[3][1] }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pain-section">
+      <div class="container">
+        <div class="section-head">
+          <h2>{{ landingCopy.painTitle }}</h2>
+          <p>{{ landingCopy.painDesc }}</p>
+        </div>
+
+        <div class="pain-grid">
+          <div class="pain-card">
+            <h3>{{ landingCopy.repeatedQuestionsTitle }}</h3>
+            <ul>
+              <li v-for="item in landingCopy.repeatedQuestions" :key="item">{{ item }}</li>
+            </ul>
+          </div>
+
+          <div class="pain-card alert">
+            <h3>{{ landingCopy.painResultTitle }}</h3>
+            <ul>
+              <li v-for="item in landingCopy.painResults" :key="item">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="pain-close">{{ landingCopy.painClose }}</p>
+      </div>
+    </section>
+
+    <section class="section flow-section">
+      <div class="container">
+        <div class="section-head">
+          <h2>{{ landingCopy.flowTitle }}</h2>
+          <p>{{ landingCopy.flowDesc }}</p>
+        </div>
+
+        <div class="flow-chain">
+          <div v-for="(step, index) in landingCopy.flowSteps" :key="step" class="flow-step">
+            <span>{{ index + 1 }}</span>
+            <strong>{{ step }}</strong>
+          </div>
         </div>
       </div>
     </section>
@@ -113,14 +158,29 @@
     <section id="features" class="section">
       <div class="container">
         <div class="section-head">
-          <h2>{{ $t('landing.featuresTitle') }}</h2>
-          <p>{{ $t('landing.featuresDesc') }}</p>
+          <h2>{{ landingCopy.featuresTitle }}</h2>
+          <p>{{ landingCopy.featuresDesc }}</p>
         </div>
 
         <div class="feature-grid">
-          <div v-for="feature in $tm('landing.features')" :key="feature[0]" class="feature-card">
+          <div v-for="feature in landingCopy.features" :key="feature[0]" class="feature-card">
             <h3>{{ feature[0] }}</h3>
             <p>{{ feature[1] }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section metrics-section">
+      <div class="container">
+        <div class="section-head">
+          <h2>{{ landingCopy.metricsTitle }}</h2>
+        </div>
+
+        <div class="metrics-grid">
+          <div v-for="metric in landingCopy.metrics" :key="metric[0]" class="metric-card">
+            <strong>{{ metric[0] }}</strong>
+            <span>{{ metric[1] }}</span>
           </div>
         </div>
       </div>
@@ -129,12 +189,12 @@
     <section id="use-cases" class="section alt">
       <div class="container">
         <div class="section-head">
-          <h2>{{ $t('landing.useCasesTitle') }}</h2>
-          <p>{{ $t('landing.useCasesDesc') }}</p>
+          <h2>{{ landingCopy.industriesTitle }}</h2>
+          <p>{{ landingCopy.industriesDesc }}</p>
         </div>
 
         <div class="usecase-grid">
-          <div v-for="useCase in $tm('landing.useCases')" :key="useCase[0]" class="usecase-card">
+          <div v-for="useCase in landingCopy.industries" :key="useCase[0]" class="usecase-card">
             <h3>{{ useCase[0] }}</h3>
             <p>{{ useCase[1] }}</p>
           </div>
@@ -142,18 +202,36 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section testimonials-section">
       <div class="container">
         <div class="section-head">
-          <h2>{{ $t('landing.processTitle') }}</h2>
-          <p>{{ $t('landing.processDesc') }}</p>
+          <h2>{{ landingCopy.testimonialsTitle }}</h2>
+          <p>{{ landingCopy.testimonialsDesc }}</p>
         </div>
 
-        <div class="steps-grid">
-          <div v-for="(step, index) in $tm('landing.steps')" :key="step[0]" class="step-card">
-            <div class="step-no">{{ index + 1 }}</div>
-            <h3>{{ step[0] }}</h3>
-            <p>{{ step[1] }}</p>
+        <div class="testimonial-grid">
+          <div v-for="item in landingCopy.testimonials" :key="item[0]" class="testimonial-card">
+            <h3>{{ item[0] }}</h3>
+            <p>{{ item[1] }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pricing-section">
+      <div class="container">
+        <div class="section-head">
+          <h2>{{ landingCopy.pricingTitle }}</h2>
+        </div>
+
+        <div class="pricing-grid">
+          <div v-for="plan in landingCopy.pricing" :key="plan.name" class="pricing-card">
+            <h3>{{ plan.name }}</h3>
+            <p>{{ plan.desc }}</p>
+            <ul>
+              <li v-for="feature in plan.features" :key="feature">{{ feature }}</li>
+            </ul>
+            <strong>{{ plan.price }}</strong>
           </div>
         </div>
       </div>
@@ -162,12 +240,12 @@
     <section id="faq" class="section faq-section">
       <div class="container">
         <div class="section-head">
-          <h2>{{ $t('landing.faqTitle') }}</h2>
-          <p>{{ $t('landing.faqDesc') }}</p>
+          <h2>{{ landingCopy.faqTitle }}</h2>
+          <p>{{ landingCopy.faqDesc }}</p>
         </div>
 
         <div class="faq-list">
-          <div v-for="faq in $tm('landing.faqs')" :key="faq[0]" class="faq-item">
+          <div v-for="faq in landingCopy.faqs" :key="faq[0]" class="faq-item">
             <h3>{{ faq[0] }}</h3>
             <p>{{ faq[1] }}</p>
           </div>
@@ -178,31 +256,35 @@
     <section id="contact" class="section contact-section">
       <div class="container">
         <div class="section-head">
-          <h2>{{ $t('landing.contactTitle') }}</h2>
-          <p>{{ $t('landing.contactDesc') }}</p>
+          <h2>{{ landingCopy.contactTitle }}</h2>
+          <p>{{ landingCopy.contactDesc }}</p>
         </div>
 
         <div class="contact-grid">
           <div class="contact-info-card">
-            <h3>{{ $t('landing.contactInfoTitle') }}</h3>
+            <h3>{{ landingCopy.contactInfoTitle }}</h3>
             <div class="contact-info-list">
               <div class="contact-info-item">
+                <label>{{ landingCopy.companyLabel }}</label>
+                <div>{{ landingCopy.companyName }}</div>
+              </div>
+              <div class="contact-info-item">
+                <label>{{ landingCopy.phoneLabel }}</label>
+                <div>{{ landingCopy.phone }}</div>
+              </div>
+              <div class="contact-info-item">
                 <label>Email</label>
-                <div>service@greatsoft.com.tw</div>
+                <div>{{ landingCopy.email }}</div>
               </div>
               <div class="contact-info-item">
-                <label>{{ $t('landing.serviceHours') }}</label>
-                <div>{{ $t('landing.serviceHoursValue') }}</div>
-              </div>
-              <div class="contact-info-item">
-                <label>{{ $t('landing.cooperation') }}</label>
-                <div>{{ $t('landing.cooperationValue') }}</div>
+                <label>LINE</label>
+                <div>{{ landingCopy.line }}</div>
               </div>
             </div>
           </div>
 
           <div class="contact-form-card">
-            <h3>{{ $t('landing.contactFormTitle') }}</h3>
+            <h3>{{ landingCopy.contactFormTitle }}</h3>
 
             <form @submit.prevent="submitContact">
               <div class="form-grid">
@@ -254,12 +336,12 @@
     <section class="cta-section">
       <div class="container">
         <div class="cta-card">
-          <h2>{{ $t('landing.ctaTitle') }}</h2>
-          <p>{{ $t('landing.ctaDesc') }}</p>
+          <h2>{{ landingCopy.ctaTitle }}</h2>
+          <p>{{ landingCopy.ctaDesc }}</p>
 
           <div class="hero-actions center">
-            <router-link to="/register" class="primary-btn">{{ $t('landing.startFree') }}</router-link>
-            <router-link to="/login" class="ghost-btn">{{ $t('landing.goLogin') }}</router-link>
+            <router-link to="/register" class="primary-btn">{{ landingCopy.primaryCta }}</router-link>
+            <a href="#contact" class="ghost-btn">{{ landingCopy.secondaryCta }}</a>
           </div>
         </div>
       </div>
@@ -268,7 +350,7 @@
     <footer class="footer">
       <div class="container footer-main">
         <div class="footer-col brand-col">
-          <div class="footer-brand">ServiceAI Cloud</div>
+          <div class="footer-brand">{{ landingCopy.companyName }}</div>
           <p class="footer-text">{{ $t('landing.footerText') }}</p>
           <p class="footer-desc">{{ $t('landing.footerDesc') }}</p>
         </div>
@@ -288,16 +370,19 @@
 
         <div class="footer-col">
           <h4>{{ $t('nav.contact') }}</h4>
-          <a href="mailto:service@greatsoft.com.tw">service@greatsoft.com.tw</a>
-          <a href="#contact">{{ $t('landing.contactFormTitle') }}</a>
+          <a :href="`tel:${landingCopy.phone}`">{{ landingCopy.phone }}</a>
+          <a :href="`mailto:${landingCopy.email}`">{{ landingCopy.email }}</a>
+          <a href="https://line.me/R/ti/p/@156ypxij" target="_blank" rel="noopener">{{ landingCopy.line }}</a>
+          <a href="#contact">{{ landingCopy.contactFormTitle }}</a>
         </div>
       </div>
 
       <div class="container footer-bottom">
-        <span>© 2026 Greatsoft. All rights reserved.</span>
+        <span>© 2026 {{ landingCopy.companyName }}. All rights reserved.</span>
         <div class="footer-bottom-links">
           <a href="#">{{ $t('common.privacy') }}</a>
           <a href="#">{{ $t('common.terms') }}</a>
+          <a href="/up">{{ landingCopy.systemStatus }}</a>
         </div>
       </div>
     </footer>
@@ -305,11 +390,177 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api'
 
 const { t, locale } = useI18n()
+
+const landingCopies = {
+  zh_TW: {
+    heroTitle: 'AI 客服幫你 24 小時回覆 LINE 客戶',
+    heroDesc: '整合 LINE 官方帳號、AI 智識庫、CRM 與真人接手，讓企業減少重複客服工作、加快回覆速度、提升成交率。',
+    primaryCta: '立即免費試用',
+    secondaryCta: '預約 Demo',
+    heroPoints: ['5 分鐘完成設定', 'AI 自動學習智識庫', '真人客服隨時接手', '多租戶 SaaS 架構'],
+    heroProof: '已有餐廳、教育、零售與服務業導入 AI 客服流程',
+    contactTitle: '聯絡我們',
+    contactDesc: '留下公司與需求資訊，我們會協助你評估適合的 AI 客服導入方式。',
+    contactInfoTitle: '聯絡資訊',
+    contactFormTitle: '聯絡表單',
+    companyLabel: '公司名稱',
+    companyName: '長城數位科技有限公司',
+    phoneLabel: '聯絡電話',
+    phone: '886-2-82269997',
+    email: 'service@greatsoft.com.tw',
+    line: 'LINE: @156ypxij',
+    systemStatus: '系統狀態',
+    showcaseKnowledge: '智識庫',
+    previewQuestion1: '請問今天營業到幾點？',
+    previewAnswer1: '您好，我們今天營業到 18:00，也可以直接協助您預約。',
+    previewQuestion2: '可以幫我查訂單進度嗎？',
+    previewAnswer2: '可以，請提供訂單編號，我會協助查詢出貨狀態。',
+    trust: [['AI 自動回覆', '依企業智識快速回答'], ['CRM', '完整保存客戶紀錄'], ['真人接手', 'AI 不確定時立即轉人工'], ['SaaS 架構', '支援多租戶與權限']],
+    painTitle: '客服訊息越來越多，但人力沒有增加？',
+    painDesc: '每天都在重複回答相同問題，回覆慢、訓練難，下班後也容易漏接商機。',
+    repeatedQuestionsTitle: '每天都在重複回答',
+    repeatedQuestions: ['營業時間是幾點？', '怎麼預約？', '價格多少？', '可以刷卡嗎？', '有停車位嗎？', '出貨到哪了？'],
+    painResultTitle: '結果通常是',
+    painResults: ['客服回覆慢', '新人訓練困難', '下班後沒人回覆', '重複問題浪費時間'],
+    painClose: 'ServiceAI Cloud 幫你把這些工作交給 AI。',
+    flowTitle: 'AI 如何運作',
+    flowDesc: '24 小時不中斷，自動學習企業知識。',
+    flowSteps: ['客戶 LINE 發問', 'AI 判斷問題內容', '智識庫搜尋答案', '自動產生回覆', '真人客服接手', 'CRM 紀錄保存'],
+    featuresTitle: '一套系統完成 AI 客服流程',
+    featuresDesc: '從 LINE 對話、AI 回覆、真人接手到 CRM 紀錄，集中在同一個後台完成。',
+    features: [
+      ['AI 自動回覆', '依照企業智識庫內容，自動回答客戶問題。'],
+      ['智識庫', '上傳 PDF、Word、FAQ，快速建立 AI 智識庫。'],
+      ['真人客服接手', 'AI 不確定時，自動轉真人處理。'],
+      ['CRM 客戶管理', '完整保存客戶對話與歷史紀錄。'],
+      ['多租戶 SaaS', '支援企業獨立空間與權限管理。'],
+    ],
+    metricsTitle: '導入後可改善',
+    metrics: [['70%', '重複客服問題自動化'], ['50%', '減少客服人力時間'], ['24hr', '全天候 AI 回覆'], ['5 秒內', '平均回應速度']],
+    industriesTitle: '適用產業',
+    industriesDesc: '不同產業都能用 AI 先回答高頻問題，再交由真人處理複雜情境。',
+    industries: [
+      ['餐廳', 'AI 回答訂位、菜單、停車、外送。'],
+      ['診所', 'AI 回答掛號、門診時間、疫苗資訊。'],
+      ['電商', 'AI 回答訂單查詢、出貨進度、商品問題。'],
+      ['教育', 'AI 回答課程、報名、上課資訊。'],
+    ],
+    pricingTitle: '價格方案',
+    pricing: [
+      { name: 'Free', desc: '免費開始體驗', features: ['1 LINE', 'CRM', '智識庫', '真人接手', '上傳一個 5 MB 檔案做訓練', '每日訊息數 500 則'], price: 'NT$0/月' },
+      { name: 'Starter', desc: '適合小型店家', features: ['1 LINE', 'CRM', '智識庫', '真人接手', '上傳 2 個 10 MB 檔案做訓練', '每日訊息數 5000 則'], price: 'NT$199/月' },
+      { name: 'Pro', desc: '適合成長企業', features: ['1 LINE', 'CRM', '智識庫', '真人接手', '上傳 5 個 10 MB 檔案做訓練', '每日訊息數 20000 則'], price: 'NT$399/月' },
+      { name: 'Enterprise', desc: '客製部署', features: ['多租戶架構', '進階權限', '客製流程', '智識庫訓練', '系統建置', 'AI MODEL'], price: '聯絡我們' },
+    ],
+    faqTitle: 'FAQ',
+    faqDesc: '導入 AI 客服前常見問題。',
+    faqs: [
+      ['AI 如何學習資料？', '上傳 PDF、Word、FAQ 即可建立智識庫。'],
+      ['可以接 LINE 官方帳號嗎？', '可以，系統支援 LINE Messaging API 串接。'],
+      ['AI 不知道答案怎麼辦？', '可以自動轉真人客服接手。'],
+      ['可以多人客服嗎？', '支援多人客服與權限管理。'],
+      ['支援多公司嗎？', '支援 SaaS 多租戶架構。'],
+    ],
+    ctaTitle: '開始建立你的 AI 客服流程',
+    ctaDesc: '從 LINE 串接、智識庫建立到客服後台，幾步就能開始。',
+  },
+  en: {
+    heroTitle: 'AI support that replies to LINE customers 24/7',
+    heroDesc: 'Connect LINE Official Account, AI knowledge base, CRM, and human handoff so your team can reduce repeated work, reply faster, and convert more leads.',
+    primaryCta: 'Start Free',
+    secondaryCta: 'Book a Demo',
+    heroPoints: ['Set up in 5 minutes', 'AI learns from your knowledge base', 'Human handoff anytime', 'Multi-tenant SaaS architecture'],
+    heroProof: 'Restaurants, education, retail, and service teams are adopting AI support workflows.',
+    contactTitle: 'Contact Us',
+    contactDesc: 'Leave your company and requirement details. We will help evaluate the right AI support setup.',
+    contactInfoTitle: 'Contact Information',
+    contactFormTitle: 'Contact Form',
+    companyLabel: 'Company',
+    companyName: 'Greatsoft Digital Technology Co., Ltd.',
+    phoneLabel: 'Phone',
+    phone: '886-2-82269997',
+    email: 'service@greatsoft.com.tw',
+    line: 'LINE: @156ypxij',
+    systemStatus: 'System Status',
+    showcaseKnowledge: 'Knowledge Base',
+    previewQuestion1: 'What time are you open today?',
+    previewAnswer1: 'We are open until 18:00 today. I can also help you book a time.',
+    previewQuestion2: 'Can you check my order status?',
+    previewAnswer2: 'Yes. Please provide your order number and I will check the shipment status.',
+    trust: [['AI Replies', 'Answer from business knowledge'], ['CRM', 'Keep customer history'], ['Human Handoff', 'Escalate when AI is unsure'], ['SaaS', 'Multi-tenant permissions']],
+    painTitle: 'More support messages, but no more staff?',
+    painDesc: 'Teams repeat the same answers every day, respond slowly, and miss leads after hours.',
+    repeatedQuestionsTitle: 'Repeated questions',
+    repeatedQuestions: ['Business hours?', 'How do I book?', 'How much is it?', 'Can I pay by card?', 'Is parking available?', 'Where is my shipment?'],
+    painResultTitle: 'The result',
+    painResults: ['Slow replies', 'Harder onboarding', 'No after-hours support', 'Time wasted on repeated questions'],
+    painClose: 'ServiceAI Cloud lets AI handle this workload.',
+    flowTitle: 'How AI Works',
+    flowDesc: 'Always-on support that learns from your business knowledge.',
+    flowSteps: ['Customer asks on LINE', 'AI classifies intent', 'Search knowledge base', 'Generate reply', 'Human handoff', 'Save CRM record'],
+    featuresTitle: 'One Platform for AI Customer Support',
+    featuresDesc: 'Manage LINE conversations, AI replies, human handoff, and CRM records from one console.',
+    features: [
+      ['AI Auto-Replies', 'Answer customer questions from your business knowledge base.'],
+      ['Knowledge Base', 'Upload PDF, Word, and FAQ files to build AI knowledge quickly.'],
+      ['Human Handoff', 'Escalate to a human agent when AI is uncertain.'],
+      ['CRM Customer Management', 'Keep customer conversations and history in one place.'],
+      ['Multi-Tenant SaaS', 'Support separate workspaces and permission management.'],
+    ],
+    metricsTitle: 'Expected Impact',
+    metrics: [['70%', 'Repeated questions automated'], ['50%', 'Less manual support time'], ['24hr', 'Always-on AI replies'], ['Under 5s', 'Average response speed']],
+    industriesTitle: 'Use Cases',
+    industriesDesc: 'AI answers frequent questions first, then hands complex cases to your team.',
+    industries: [
+      ['Restaurants', 'Bookings, menus, parking, delivery.'],
+      ['Clinics', 'Registration, opening hours, vaccine information.'],
+      ['E-commerce', 'Order lookup, shipping progress, product questions.'],
+      ['Education', 'Courses, registration, class information.'],
+    ],
+    pricingTitle: 'Pricing',
+    pricing: [
+      { name: 'Free', desc: 'Start for free', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload one 5 MB file for training', '500 messages per day'], price: 'NT$0/mo' },
+      { name: 'Starter', desc: 'For small shops', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload two 10 MB files for training', '5000 messages per day'], price: 'NT$199/mo' },
+      { name: 'Pro', desc: 'For growing teams', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload five 10 MB files for training', '20000 messages per day'], price: 'NT$399/mo' },
+      { name: 'Enterprise', desc: 'Custom deployment', features: ['Multi-tenant setup', 'Advanced permissions', 'Custom workflow', 'Knowledge base training', 'System implementation', 'AI MODEL'], price: 'Contact us' },
+    ],
+    faqTitle: 'FAQ',
+    faqDesc: 'Common questions before adopting AI customer support.',
+    faqs: [
+      ['How does AI learn?', 'Upload PDF, Word, and FAQ files to build the knowledge base.'],
+      ['Can it connect to LINE Official Account?', 'Yes, LINE Messaging API integration is supported.'],
+      ['What if AI does not know the answer?', 'It can hand off to a human support agent.'],
+      ['Can multiple agents use it?', 'Yes, multiple agents and permission management are supported.'],
+      ['Does it support multiple companies?', 'Yes, it supports SaaS multi-tenant architecture.'],
+    ],
+    ctaTitle: 'Start Building Your AI Support Workflow',
+    ctaDesc: 'Connect LINE, build the knowledge base, and start using the support console in a few steps.',
+  },
+}
+
+const testimonialDefaults = {
+  zh_TW: {
+    testimonialsTitle: '客戶見證',
+    testimonialsDesc: '測試案例可先作為導入效益參考。',
+    testimonials: [['某餐飲品牌', '導入後客服工作量下降 65%。'], ['某教育機構', 'AI 自動回答率達 78%。']],
+  },
+  en: {
+    testimonialsTitle: 'Customer Results',
+    testimonialsDesc: 'Pilot examples for implementation reference.',
+    testimonials: [['Restaurant brand', 'Support workload decreased by 65% after rollout.'], ['Education provider', 'AI auto-answer rate reached 78%.']],
+  },
+}
+
+const landingCopy = computed(() => {
+  const selected = landingCopies[locale.value] || landingCopies.zh_TW
+  const defaults = testimonialDefaults[locale.value] || testimonialDefaults.zh_TW
+  return { ...defaults, ...selected }
+})
 
 const contactSuccess = ref('')
 const contactError = ref('')
@@ -637,7 +888,11 @@ async function submitContact() {
 .trust-grid,
 .feature-grid,
 .usecase-grid,
-.steps-grid {
+.steps-grid,
+.pain-grid,
+.metrics-grid,
+.testimonial-grid,
+.pricing-grid {
   display: grid;
   gap: 18px;
 }
@@ -655,11 +910,25 @@ async function submitContact() {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.pain-grid,
+.testimonial-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metrics-grid,
+.pricing-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .trust-item,
 .feature-card,
 .usecase-card,
 .step-card,
 .faq-item,
+.pain-card,
+.metric-card,
+.testimonial-card,
+.pricing-card,
 .contact-info-card,
 .contact-form-card {
   background: #fff;
@@ -672,6 +941,76 @@ async function submitContact() {
 .trust-item strong {
   display: block;
   margin-bottom: 8px;
+}
+
+.pain-card ul,
+.pricing-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #4b5563;
+  line-height: 1.9;
+}
+
+.pain-card.alert {
+  border-color: #fecaca;
+  background: #fffafa;
+}
+
+.pain-close {
+  margin: 18px 0 0;
+  text-align: center;
+  font-weight: 700;
+  color: #111827;
+}
+
+.flow-chain {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.flow-step {
+  background: #111827;
+  color: #fff;
+  border-radius: 8px;
+  padding: 18px 14px;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.flow-step span {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 34px;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+
+.metric-card span,
+.testimonial-card p,
+.pricing-card p {
+  color: #4b5563;
+  line-height: 1.8;
+}
+
+.pricing-card strong {
+  display: block;
+  margin-top: 18px;
+  font-size: 22px;
+  color: #111827;
 }
 
 .trust-item span,
@@ -883,6 +1222,11 @@ async function submitContact() {
   .usecase-grid,
   .steps-grid,
   .trust-grid,
+  .pain-grid,
+  .flow-chain,
+  .metrics-grid,
+  .testimonial-grid,
+  .pricing-grid,
   .contact-grid,
   .footer-main {
     grid-template-columns: 1fr;

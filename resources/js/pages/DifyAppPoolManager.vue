@@ -12,7 +12,8 @@
     <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
 
     <div class="search-row">
-      <input v-model="searchKeyword" type="search" :placeholder="$t('adminPages.difyPool.searchPlaceholder')" />
+      <input v-model="searchKeyword" type="search" :placeholder="$t('adminPages.difyPool.searchPlaceholder')" @keyup.enter="search" />
+      <button class="ghost-btn" type="button" @click="search">{{ $t('common.search') }}</button>
     </div>
 
     <div class="table-wrap">
@@ -29,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in filteredPools" :key="item.id">
+          <tr v-for="item in pools" :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.app_name }}</td>
             <td><span class="badge" :class="badgeClass(item.status)">{{ item.status }}</span></td>
@@ -43,17 +44,41 @@
             </td>
           </tr>
 
-          <tr v-if="!filteredPools.length">
+          <tr v-if="!pools.length">
             <td colspan="7"><div class="empty-box">{{ $t('adminPages.difyPool.empty') }}</div></td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <div v-if="pagination.total > 0" class="pagination">
+      <div class="page-info">
+        第 {{ pagination.currentPage }} / {{ pagination.lastPage }} 頁，共 {{ pagination.total }} 筆
+      </div>
+
+      <div class="page-actions">
+        <label>
+          每頁
+          <select v-model.number="pagination.perPage" @change="goPage(1)">
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </label>
+
+        <button class="ghost-btn" type="button" :disabled="pagination.currentPage === 1" @click="goPage(pagination.currentPage - 1)">
+          上一頁
+        </button>
+        <button class="ghost-btn" type="button" :disabled="pagination.currentPage === pagination.lastPage" @click="goPage(pagination.currentPage + 1)">
+          下一頁
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { reactive, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import api from '../api'
@@ -67,15 +92,11 @@ const successMessage = ref('')
 const searchKeyword = ref('')
 const deletingId = ref(null)
 
-const filteredPools = computed(() => {
-  const keyword = searchKeyword.value.trim().toLowerCase()
-  if (!keyword) return pools.value
-
-  return pools.value.filter((item) => {
-    const name = assignedName(item).toLowerCase()
-    const email = assignedEmail(item).toLowerCase()
-    return name.includes(keyword) || email.includes(keyword)
-  })
+const pagination = reactive({
+  currentPage: 1,
+  lastPage: 1,
+  perPage: 20,
+  total: 0,
 })
 
 async function fetchPools() {
@@ -87,11 +108,32 @@ async function fetchPools() {
   errorMessage.value = ''
 
   try {
-    const res = await api.get('/dify-app-pools')
-    pools.value = res.data.data || res.data || []
+    const res = await api.get('/dify-app-pools', {
+      params: {
+        keyword: searchKeyword.value.trim() || undefined,
+        page: pagination.currentPage,
+        per_page: pagination.perPage,
+      },
+    })
+
+    pools.value = res.data.data || []
+    pagination.currentPage = res.data.current_page || 1
+    pagination.lastPage = res.data.last_page || 1
+    pagination.perPage = Number(res.data.per_page || pagination.perPage)
+    pagination.total = res.data.total || 0
   } catch (error) {
     errorMessage.value = error.response?.data?.message || t('adminPages.difyPool.loadFailed')
   }
+}
+
+function search() {
+  pagination.currentPage = 1
+  fetchPools()
+}
+
+function goPage(page) {
+  pagination.currentPage = Math.min(Math.max(page, 1), pagination.lastPage)
+  fetchPools()
 }
 
 async function confirmDelete(item) {
@@ -107,8 +149,8 @@ async function confirmDelete(item) {
 
   try {
     await api.delete(`/dify-app-pools/${item.id}`)
-    pools.value = pools.value.filter((pool) => pool.id !== item.id)
     successMessage.value = t('adminPages.difyPool.deleted')
+    await fetchPools()
   } catch (error) {
     errorMessage.value = error.response?.data?.message || t('adminPages.difyPool.deleteFailed')
   } finally {
@@ -144,8 +186,8 @@ onMounted(fetchPools)
 .page-head { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; }
 .page-head h2 { margin:0 0 6px; }
 .page-head p { margin:0; color:#6b7280; }
-.search-row { margin-bottom:14px; max-width:420px; }
-input { width:100%; box-sizing:border-box; border:1px solid #d7dce5; border-radius:8px; padding:12px 14px; }
+.search-row { margin-bottom:14px; max-width:540px; display:flex; gap:10px; }
+input,select { width:100%; box-sizing:border-box; border:1px solid #d7dce5; border-radius:8px; padding:12px 14px; background:#fff; }
 .ghost-btn,.danger-btn { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; white-space:nowrap; }
 .ghost-btn { background:#eef2f7; color:#111827; }
 .danger-btn { background:#fee2e2; color:#b91c1c; }
@@ -163,4 +205,10 @@ input { width:100%; box-sizing:border-box; border:1px solid #d7dce5; border-radi
 .status-warning { background:#fef3c7; color:#92400e; }
 .status-default { background:#eef2f7; color:#374151; }
 .empty-box { color:#6b7280; text-align:center; padding:24px; }
+.pagination { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:16px; color:#6b7280; font-size:14px; }
+.page-actions { display:flex; align-items:center; gap:10px; }
+.page-actions label { display:flex; align-items:center; gap:8px; }
+.page-actions select { min-width:78px; padding:8px 10px; }
+.page-actions .ghost-btn:disabled { opacity:.5; cursor:not-allowed; }
+@media (max-width:700px) { .search-row,.pagination,.page-actions { flex-direction:column; align-items:flex-start; } .search-row { max-width:none; } }
 </style>

@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\KnowledgeSource;
+use App\Models\User;
 use App\Services\AI\DifyKnowledgeService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 
 class KnowledgeUploadController extends Controller
 {
-    private const MAX_DOCUMENTS_PER_TENANT = 2;
+    private const DEFAULT_MAX_DOCUMENTS_PER_TENANT = 2;
+    private const ADMIN_MAX_DOCUMENTS_PER_TENANT = 5;
+    private const SUPER_ADMIN_MAX_DOCUMENTS_PER_TENANT = 10;
     private const MAX_FILE_SIZE_KB = 10240;
 
     public function __construct(
@@ -35,9 +37,11 @@ class KnowledgeUploadController extends Controller
             ], 422);
         }
 
-        if ($tenant->knowledgeSources()->count() >= self::MAX_DOCUMENTS_PER_TENANT) {
+        $maxDocuments = $this->maxDocumentsForUser($user);
+
+        if ($tenant->knowledgeSources()->count() >= $maxDocuments) {
             return response()->json([
-                'message' => 'Knowledge document limit reached. You can upload up to 2 files.',
+                'message' => "Knowledge document limit reached. You can upload up to {$maxDocuments} files.",
             ], 422);
         }
 
@@ -82,19 +86,24 @@ class KnowledgeUploadController extends Controller
 
         $tenant = $user->tenant;
 
-        Log::error("user = " . $user);
-        Log::error("tenant = " . $tenant);
-
-
         if (!$tenant) {
             return response()->json([
                 'message' => 'Tenant not found for current user.',
             ], 422);
         }
 
-        return response()->json(
-            $tenant->knowledgeSources()->latest('id')->paginate(self::MAX_DOCUMENTS_PER_TENANT)
-        );
+        $maxDocuments = $this->maxDocumentsForUser($user);
+
+        $documents = $tenant->knowledgeSources()
+            ->latest('id')
+            ->paginate($maxDocuments)
+            ->toArray();
+
+        return response()->json([
+            ...$documents,
+            'max_documents' => $maxDocuments,
+            'max_file_size_kb' => self::MAX_FILE_SIZE_KB,
+        ]);
     }
 
     public function destroy(Request $request, KnowledgeSource $knowledgeSource)
@@ -116,5 +125,14 @@ class KnowledgeUploadController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    private function maxDocumentsForUser(User $user): int
+    {
+        return match ($user->role) {
+            User::ROLE_SUPER_ADMIN => self::SUPER_ADMIN_MAX_DOCUMENTS_PER_TENANT,
+            User::ROLE_ADMIN => self::ADMIN_MAX_DOCUMENTS_PER_TENANT,
+            default => self::DEFAULT_MAX_DOCUMENTS_PER_TENANT,
+        };
     }
 }
