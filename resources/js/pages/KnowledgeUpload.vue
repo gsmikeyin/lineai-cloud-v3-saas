@@ -5,7 +5,10 @@
         <h2>{{ $t('adminPages.knowledgeUpload.title') }}</h2>
         <p>{{ $t('adminPages.knowledgeUpload.desc') }}</p>
       </div>
-      <button class="ghost-btn" type="button" @click="fetchDocuments">{{ $t('adminPages.knowledgeUpload.refresh') }}</button>
+      <div class="page-actions">
+        <a class="ghost-btn" href="/files/sample_sales.pdf" download>樣本檔案下載</a>
+        <button class="ghost-btn" type="button" @click="fetchDocuments">{{ $t('adminPages.knowledgeUpload.refresh') }}</button>
+      </div>
     </div>
 
     <div class="upload-card">
@@ -228,9 +231,10 @@ onMounted(fetchDocuments)
 .page-head { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; }
 .page-head h2 { margin:0 0 6px; }
 .page-head p { margin:0; color:#6b7280; }
+.page-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 .upload-card { background:#f8fafc; border-radius:8px; padding:18px; margin-bottom:20px; }
 .upload-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.primary-btn,.ghost-btn,.danger-btn { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; }
+.primary-btn,.ghost-btn,.danger-btn { border:0; border-radius:8px; padding:10px 14px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
 .primary-btn:disabled,.danger-btn:disabled { cursor:not-allowed; opacity:.55; }
 .primary-btn { background:#111827; color:#fff; }
 .ghost-btn { background:#eef2f7; color:#111827; }
