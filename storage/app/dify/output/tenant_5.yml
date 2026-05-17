@@ -1,0 +1,345 @@
+app:
+  description: Tenant CHATBOTGS-5 AI App
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: advanced-chat
+  name: CHATBOT_YIN-mikeyin23@gmail.com
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.3.4@3345b596ee5117d9304097feaee866f05ffaf0d76a790fb07acd8b99f6c87cb3
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      selected: false
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1776685017629-source-llm-target
+      selected: false
+      source: '1776685017629'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: template-transform
+      id: 1776685007566-source-1776685079079-target
+      selected: false
+      source: '1776685007566'
+      sourceHandle: source
+      target: '1776685079079'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: template-transform
+        targetType: knowledge-retrieval
+      id: 1776685079079-source-1776685017629-target
+      source: '1776685079079'
+      sourceHandle: source
+      target: '1776685017629'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: tenant_id
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: tenant_id
+        - default: ''
+          hint: ''
+          label: locale
+          max_length: 30
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: locale
+        - default: ''
+          hint: ''
+          label: brand_name
+          max_length: 50
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: brand_name
+        - default: ''
+          hint: ''
+          label: channel
+          max_length: 100
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: channel
+        - default: ''
+          hint: ''
+          label: dataset_id
+          max_length: 100
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: dataset_id
+      height: 212
+      id: '1776685007566'
+      position:
+        x: -693.7501187124004
+        y: -277.0641700316802
+      positionAbsolute:
+        x: -693.7501187124004
+        y: -277.0641700316802
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1776685079079'
+          - output
+        memory:
+          query_prompt_template: '客戶問題：
+
+            {{#sys.query#}}
+
+
+            知識庫內容：
+
+            {{#1776685017629.result#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gpt-5.4
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: d55bd572-69ff-4c73-b0f1-d61dcc87db24
+          role: system
+          text: '你是 {{ brand_name }} 的客服助理。
+
+            請使用 {{ locale }} 對應語言回答。
+
+            目前對話來源為 {{ channel }}。
+
+            回答要簡潔、友善、專業。
+
+            若知識庫沒有足夠資訊，請不要捏造答案。
+
+            若問題涉及退款例外、訂單異常、人工處理、客訴升級，請引導轉真人客服。'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: llm
+      position:
+        x: -70.91212051369851
+        y: -517.3267363647127
+      positionAbsolute:
+        x: -70.91212051369851
+        y: -517.3267363647127
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 102
+      id: answer
+      position:
+        x: 407.6784588002423
+        y: -517.3267363647127
+      positionAbsolute:
+        x: 407.6784588002423
+        y: -517.3267363647127
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        dataset_ids:
+        - 1cf1e84b-0a84-4ee2-8cad-17b384f6246e
+        metadata_filtering_mode: disabled
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: weighted_score
+          score_threshold: 0.3
+          top_k: 3
+          weights:
+            keyword_setting:
+              keyword_weight: 0
+            vector_setting:
+              embedding_model_name: text-embedding-3-large
+              embedding_provider_name: langgenius/openai/openai
+              vector_weight: 1
+            weight_type: customized
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1776685079079'
+        - output
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 89
+      id: '1776685017629'
+      position:
+        x: -506.7695878072738
+        y: -719.1959814029066
+      positionAbsolute:
+        x: -506.7695878072738
+        y: -719.1959814029066
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        selected: false
+        template: "[System Context]\r\n\r\nBrand: {{ brand_name }}\r\nTenant ID: {{\
+          \ tenant_id }}\r\nLanguage: {{ locale }}\r\nChannel: {{ channel }}\r\n\r\
+          \n[User Question]\r\n{{ query }}"
+        title: Template
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1776685007566'
+          - brand_name
+          value_type: string
+          variable: brand_name
+        - value_selector:
+          - '1776685007566'
+          - tenant_id
+          value_type: number
+          variable: tenant_id
+        - value_selector:
+          - '1776685007566'
+          - locale
+          value_type: string
+          variable: locale
+        - value_selector:
+          - '1776685007566'
+          - channel
+          value_type: string
+          variable: channel
+        - value_selector:
+          - sys
+          - query
+          value_type: string
+          variable: query
+      height: 51
+      id: '1776685079079'
+      position:
+        x: -610.4022250983296
+        y: -486.67541831248934
+      positionAbsolute:
+        x: -610.4022250983296
+        y: -486.67541831248934
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: 676.2688985124452
+      y: 696.7044658463608
+      zoom: 0.6597539553864488
+  rag_pipeline_variables: []

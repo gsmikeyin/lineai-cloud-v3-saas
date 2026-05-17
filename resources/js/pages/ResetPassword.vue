@@ -1,22 +1,22 @@
 <template>
   <div class="auth-page">
     <div class="auth-card">
-      <h1>重設密碼</h1>
-      <p class="subtitle">請輸入新密碼。</p>
+      <h1>{{ $t('auth.resetTitle') }}</h1>
+      <p class="subtitle">{{ $t('auth.resetSubtitle') }}</p>
 
       <form @submit.prevent="submit">
         <div class="form-group">
-          <label>Email</label>
+          <label>{{ $t('auth.email') }}</label>
           <input v-model="form.email" type="email" />
         </div>
 
         <div class="form-group">
-          <label>新密碼</label>
+          <label>{{ $t('auth.newPassword') }}</label>
           <input v-model="form.password" type="password" />
         </div>
 
         <div class="form-group">
-          <label>確認新密碼</label>
+          <label>{{ $t('auth.confirmNewPassword') }}</label>
           <input v-model="form.password_confirmation" type="password" />
         </div>
 
@@ -29,24 +29,26 @@
         </div>
 
         <button type="submit" :disabled="loading">
-          {{ loading ? '送出中...' : '重設密碼' }}
+          {{ loading ? $t('auth.resettingPassword') : $t('auth.resetPassword') }}
         </button>
       </form>
 
       <div class="bottom-link">
-        <router-link to="/login">返回登入</router-link>
+        <router-link to="/login">{{ $t('auth.backToLogin') }}</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
 
 const route = useRoute()
 const router = useRouter()
+const { t, locale } = useI18n()
 
 const loading = ref(false)
 const successMessage = ref('')
@@ -59,23 +61,62 @@ const form = reactive({
   password_confirmation: '',
 })
 
+onMounted(() => {
+  if (['zh_TW', 'en'].includes(route.query.locale)) {
+    locale.value = route.query.locale
+    localStorage.setItem('locale', route.query.locale)
+  }
+})
+
 async function submit() {
   loading.value = true
   successMessage.value = ''
   errorMessage.value = ''
 
   try {
-    const res = await api.post('/reset-password', form)
-    successMessage.value = res.data.message || '密碼已重設'
+    const validationMessage = validateForm()
+
+    if (validationMessage) {
+      errorMessage.value = validationMessage
+      return
+    }
+
+    const requestLocale = ['zh_TW', 'en'].includes(locale.value) ? locale.value : 'zh_TW'
+    const res = await api.post('/reset-password', {
+      ...form,
+      locale: requestLocale,
+    })
+    successMessage.value = res.data.message || t('auth.passwordReset')
 
     setTimeout(() => {
       router.push('/login')
     }, 1200)
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '重設失敗'
+    const data = error.response?.data
+
+    if (data?.errors) {
+      const firstKey = Object.keys(data.errors)[0]
+      errorMessage.value = data.errors[firstKey][0]
+    } else {
+      errorMessage.value = data?.message || t('auth.resetPasswordFailed')
+    }
   } finally {
     loading.value = false
   }
+}
+
+function validateForm() {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  if (!String(form.token || '').trim()) return t('auth.validation.resetTokenRequired')
+  if (!String(form.email || '').trim()) return t('auth.validation.emailRequired')
+  if (!emailPattern.test(String(form.email || '').trim())) return t('auth.validation.emailInvalid')
+  if (!form.password) return t('auth.validation.passwordRequired')
+  if (form.password.length < 8) return t('auth.validation.passwordMin')
+  if (!form.password_confirmation) return t('auth.validation.confirmPasswordRequired')
+  if (form.password !== form.password_confirmation) return t('auth.validation.passwordConfirmed')
+
+  return ''
 }
 </script>
 

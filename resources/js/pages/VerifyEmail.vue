@@ -75,6 +75,13 @@ const text = computed(() => {
   }
 })
 
+function syncLocaleFromQuery() {
+  if (['zh_TW', 'en'].includes(route.query.locale)) {
+    locale.value = route.query.locale
+    localStorage.setItem('locale', route.query.locale)
+  }
+}
+
 async function verifyEmail() {
   if (route.query.verified === '1') {
     successMessage.value = text.value.verified
@@ -142,7 +149,10 @@ async function resend() {
   }
 }
 
-onMounted(verifyEmail)
+onMounted(() => {
+  syncLocaleFromQuery()
+  verifyEmail()
+})
 </script>
 
 <style scoped>

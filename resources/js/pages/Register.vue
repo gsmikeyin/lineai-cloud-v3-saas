@@ -8,7 +8,7 @@
         </div>
 
         <select :value="locale" class="locale-select" @change="changeLocale($event.target.value)">
-          <option value="zh_TW">繁中</option>
+          <option value="zh_TW">繁體中文</option>
           <option value="en">English</option>
         </select>
       </div>
@@ -85,7 +85,18 @@ async function handleRegister() {
   errorMessage.value = ''
 
   try {
-    const res = await api.post('/register', form)
+    const registrationLocale = ['zh_TW', 'en'].includes(locale.value) ? locale.value : 'zh_TW'
+    const validationMessage = validateForm()
+
+    if (validationMessage) {
+      errorMessage.value = validationMessage
+      return
+    }
+
+    const res = await api.post('/register', {
+      ...form,
+      locale: registrationLocale,
+    })
 
     localStorage.removeItem('token')
     localStorage.removeItem('user')
@@ -106,6 +117,21 @@ async function handleRegister() {
   } finally {
     loading.value = false
   }
+}
+
+function validateForm() {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  if (!form.company_name.trim()) return t('auth.validation.companyNameRequired')
+  if (!form.name.trim()) return t('auth.validation.nameRequired')
+  if (!form.email.trim()) return t('auth.validation.emailRequired')
+  if (!emailPattern.test(form.email.trim())) return t('auth.validation.emailInvalid')
+  if (!form.password) return t('auth.validation.passwordRequired')
+  if (form.password.length < 8) return t('auth.validation.passwordMin')
+  if (!form.password_confirmation) return t('auth.validation.confirmPasswordRequired')
+  if (form.password !== form.password_confirmation) return t('auth.validation.passwordConfirmed')
+
+  return ''
 }
 </script>
 

@@ -10,9 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, HasLocalePreference
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -57,7 +58,8 @@ class User extends Authenticatable implements MustVerifyEmail
         ResetPassword::createUrlUsing(function ($user, string $token) {
              return config('app.frontend_url')
                . '/reset-password?token=' . $token
-               . '&email=' . urlencode($user->email);
+               . '&email=' . urlencode($user->email)
+               . '&locale=' . urlencode($user->preferredLocale());
        });
 
     }
@@ -72,6 +74,11 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'permissions' => 'array',
         ];
+    }
+
+    public function preferredLocale(): string
+    {
+        return $this->locale === 'en' ? 'en' : 'zh_TW';
     }
 
     

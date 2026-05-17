@@ -1,13 +1,13 @@
 <template>
   <div class="auth-page">
     <div class="auth-card">
-      <h1>忘記密碼</h1>
-      <p class="subtitle">輸入你的 Email，我們會寄送重設密碼連結。</p>
+      <h1>{{ $t('auth.forgotTitle') }}</h1>
+      <p class="subtitle">{{ $t('auth.forgotSubtitle') }}</p>
 
       <form @submit.prevent="submit">
         <div class="form-group">
-          <label>Email</label>
-          <input v-model="email" type="email" placeholder="請輸入 Email" />
+          <label>{{ $t('auth.email') }}</label>
+          <input v-model="email" type="email" :placeholder="$t('auth.emailPlaceholder')" />
         </div>
 
         <div v-if="successMessage" class="success-message">
@@ -19,12 +19,12 @@
         </div>
 
         <button type="submit" :disabled="loading">
-          {{ loading ? '寄送中...' : '寄送重設連結' }}
+          {{ loading ? $t('auth.sendingResetLink') : $t('auth.sendResetLink') }}
         </button>
       </form>
 
       <div class="bottom-link">
-        <router-link to="/login">返回登入</router-link>
+        <router-link to="/login">{{ $t('auth.backToLogin') }}</router-link>
       </div>
     </div>
   </div>
@@ -32,8 +32,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import api from '../api'
 
+const { t, locale } = useI18n()
 const email = ref('')
 const loading = ref(false)
 const successMessage = ref('')
@@ -45,13 +47,40 @@ async function submit() {
   errorMessage.value = ''
 
   try {
-    const res = await api.post('/forgot-password', { email: email.value })
-    successMessage.value = res.data.message || '已寄出重設密碼信件'
+    const validationMessage = validateEmail()
+
+    if (validationMessage) {
+      errorMessage.value = validationMessage
+      return
+    }
+
+    const requestLocale = ['zh_TW', 'en'].includes(locale.value) ? locale.value : 'zh_TW'
+    const res = await api.post('/forgot-password', {
+      email: email.value,
+      locale: requestLocale,
+    })
+    successMessage.value = res.data.message || t('auth.resetLinkSent')
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '寄送失敗'
+    const data = error.response?.data
+
+    if (data?.errors) {
+      const firstKey = Object.keys(data.errors)[0]
+      errorMessage.value = data.errors[firstKey][0]
+    } else {
+      errorMessage.value = data?.message || t('auth.forgotPasswordFailed')
+    }
   } finally {
     loading.value = false
   }
+}
+
+function validateEmail() {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  if (!email.value.trim()) return t('auth.validation.emailRequired')
+  if (!emailPattern.test(email.value.trim())) return t('auth.validation.emailInvalid')
+
+  return ''
 }
 </script>
 
