@@ -120,7 +120,7 @@ class LineAuthController extends Controller
                     'name' => $displayName ?: 'LINE User',
                     'email' => $email ?: ('line_' . Str::lower(Str::random(12)) . '@line.local'),
                     'password' => Str::random(32),
-                    'role' => User::ROLE_OWNER,
+                    'role' => User::ROLE_FREE,
                     'status' => User::STATUS_ACTIVE,
                     'line_user_id' => $lineUserId,
                     'avatar' => $picture,

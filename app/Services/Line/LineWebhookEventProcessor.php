@@ -7,6 +7,8 @@ use App\Models\Customer;
 use App\Models\Message;
 use App\Models\Tenant;
 use App\Services\AI\DifyChatService;
+use App\Services\Billing\UsageLimitService;
+use App\Support\AccountPlanLimits;
 use Illuminate\Support\Facades\Log;
 
 class LineWebhookEventProcessor
@@ -14,6 +16,7 @@ class LineWebhookEventProcessor
     public function __construct(
         protected DifyChatService $difyChatService,
         protected LineMessagingService $lineMessagingService,
+        protected UsageLimitService $usageLimitService,
     ) {}
 
     public function process(int $tenantId, array $event): void
@@ -22,7 +25,7 @@ class LineWebhookEventProcessor
             return;
         }
 
-        $tenant = Tenant::query()->with('lineChannel')->findOrFail($tenantId);
+        $tenant = Tenant::query()->with(['lineChannel', 'owner'])->findOrFail($tenantId);
         $lineUserId = data_get($event, 'source.userId');
         $userMessage = trim((string) data_get($event, 'message.text', ''));
 
@@ -104,6 +107,40 @@ class LineWebhookEventProcessor
 
             return;
         }
+
+        $dailyLimit = AccountPlanLimits::maxDailyMessages($tenant->owner?->role);
+        if (! $this->usageLimitService->withinDailyLimit($tenant, AccountPlanLimits::DAILY_MESSAGES_METRIC, $dailyLimit)) {
+            $limitText = '今日訊息數已達方案上限，請聯絡客服升級方案或明日再試。';
+
+            if ($replyToken) {
+                $this->lineMessagingService->reply($replyToken, $limitText, $channelAccessToken);
+            }
+
+            Message::create([
+                'tenant_id' => $tenant->id,
+                'conversation_id' => $conversation->id,
+                'customer_id' => $customer->id,
+                'direction' => Message::DIRECTION_OUTBOUND,
+                'sender_type' => Message::SENDER_SYSTEM,
+                'message_type' => Message::TYPE_TEXT,
+                'content' => $limitText,
+                'is_ai_generated' => false,
+                'meta' => [
+                    'reply_source' => 'daily_limit',
+                    'daily_limit' => $dailyLimit,
+                ],
+                'sent_at' => now(),
+            ]);
+
+            $conversation->update([
+                'last_message_at' => now(),
+                'last_agent_reply_at' => now(),
+            ]);
+
+            return;
+        }
+
+        $this->usageLimitService->incrementDaily($tenant, AccountPlanLimits::DAILY_MESSAGES_METRIC);
 
         try {
             $difyResult = $this->difyChatService->reply(

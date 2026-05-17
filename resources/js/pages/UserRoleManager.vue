@@ -3,7 +3,7 @@
     <div class="page-head">
       <div>
         <h2>使用者權限</h2>
-        <p>調整使用者角色為 super_admin、admin 或 owner。</p>
+        <p>調整使用者角色為 super_admin、admin、free、basic 或 pro。</p>
       </div>
       <button class="ghost-btn" type="button" @click="fetchUsers">重新整理</button>
     </div>
@@ -89,7 +89,7 @@ import { computed, onMounted, ref } from 'vue'
 import api from '../api'
 import { getAuthUser } from '../utils/auth'
 
-const roleOptions = ['super_admin', 'admin', 'owner']
+const roleOptions = ['super_admin', 'admin', 'free', 'basic', 'pro']
 const users = ref([])
 const draftRoles = ref({})
 const keyword = ref('')

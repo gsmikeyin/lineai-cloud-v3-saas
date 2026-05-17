@@ -46,7 +46,8 @@
 
         <div class="result-item">
           <label>{{ $t('adminPages.knowledgeTest.answer') }}</label>
-          <div class="answer-box">{{ result.answer || '-' }}</div>
+          <div v-if="result.answer" class="answer-box markdown-body" v-html="formattedAnswer"></div>
+          <div v-else class="answer-box">-</div>
         </div>
       </div>
     </div>
@@ -91,6 +92,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api'
 import { isSuperAdmin } from '../utils/auth'
+import { renderMarkdown } from '../utils/markdown'
 
 const { t } = useI18n()
 const message = ref('')
@@ -100,6 +102,8 @@ const errorMessage = ref('')
 const loadingLast = ref(false)
 
 const retrieverResources = computed(() => result.value?.raw?.metadata?.retriever_resources || [])
+
+const formattedAnswer = computed(() => renderMarkdown(result.value?.answer || ''))
 
 const prettyRaw = computed(() => {
   if (!result.value?.raw) return ''
@@ -161,6 +165,24 @@ onMounted(fetchLastTest)
 .result-box { display:grid; gap:14px; }
 .result-item label { display:block; margin-bottom:6px; font-size:12px; color:#6b7280; }
 .answer-box { background:#f8fafc; border-radius:8px; padding:14px; line-height:1.8; white-space:pre-wrap; }
+.markdown-body { white-space:normal; color:#111827; overflow-wrap:anywhere; }
+.markdown-body :deep(p) { margin:0 0 10px; }
+.markdown-body :deep(p:last-child) { margin-bottom:0; }
+.markdown-body :deep(h3),
+.markdown-body :deep(h4),
+.markdown-body :deep(h5) { margin:14px 0 8px; line-height:1.35; font-size:15px; color:#111827; }
+.markdown-body :deep(h3:first-child),
+.markdown-body :deep(h4:first-child),
+.markdown-body :deep(h5:first-child) { margin-top:0; }
+.markdown-body :deep(ul),
+.markdown-body :deep(ol) { margin:8px 0 12px; padding-left:20px; }
+.markdown-body :deep(li) { margin:4px 0; }
+.markdown-body :deep(strong) { font-weight:700; }
+.markdown-body :deep(em) { font-style:italic; }
+.markdown-body :deep(a) { color:#2563eb; text-decoration:underline; text-underline-offset:2px; }
+.markdown-body :deep(code) { border-radius:6px; background:#e5e7eb; padding:2px 5px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
+.markdown-body :deep(pre) { margin:10px 0; overflow:auto; border-radius:8px; background:#111827; color:#f9fafb; padding:12px; }
+.markdown-body :deep(pre code) { display:block; background:transparent; color:inherit; padding:0; white-space:pre; }
 .candidate-list { display:grid; gap:12px; }
 .candidate-item { border:1px solid #eef2f7; border-radius:8px; padding:14px; }
 .candidate-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; }

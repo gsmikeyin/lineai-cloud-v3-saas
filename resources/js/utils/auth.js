@@ -18,7 +18,7 @@ export function isAdmin() {
 }
 
 export function isOwner() {
-  return hasRole(['super_admin', 'admin', 'owner'])
+  return hasRole(['super_admin', 'admin', 'owner', 'free', 'basic', 'pro'])
 }
 
 export function isSuperAdmin() {

@@ -114,7 +114,8 @@
         <div v-for="msg in currentConversation.messages" :key="msg.id" class="message-row" :class="msg.direction">
           <div class="message-bubble" :class="msg.sender_type">
             <div class="message-role">{{ senderLabel(msg.sender_type) }}</div>
-            <div class="message-content">{{ msg.content }}</div>
+            <div v-if="shouldRenderMarkdown(msg)" class="message-content markdown-body" v-html="renderMarkdown(msg.content)"></div>
+            <div v-else class="message-content">{{ msg.content }}</div>
             <div class="message-time">{{ formatDate(msg.sent_at || msg.created_at, true) }}</div>
           </div>
         </div>
@@ -180,6 +181,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api'
+import { renderMarkdown } from '../utils/markdown'
 
 const { t } = useI18n()
 const conversations = ref([])
@@ -258,6 +260,10 @@ function senderLabel(type) {
   if (type === 'ai') return t('adminPages.conversations.senderAi')
   if (type === 'agent') return t('adminPages.conversations.senderAgent')
   return type || t('adminPages.conversations.senderSystem')
+}
+
+function shouldRenderMarkdown(message) {
+  return message?.direction === 'outbound' || ['ai', 'agent'].includes(message?.sender_type)
 }
 
 function formatDate(value, short = false) {
@@ -474,6 +480,22 @@ onBeforeUnmount(() => {
 .message-bubble.agent { background:#dcfce7; }
 .message-role { font-size:12px; font-weight:700; margin-bottom:6px; color:#374151; }
 .message-content { white-space:pre-wrap; line-height:1.6; color:#111827; }
+.message-content.markdown-body { white-space:normal; overflow-wrap:anywhere; }
+.markdown-body :deep(p) { margin:0 0 8px; }
+.markdown-body :deep(p:last-child) { margin-bottom:0; }
+.markdown-body :deep(h3),
+.markdown-body :deep(h4),
+.markdown-body :deep(h5) { margin:10px 0 6px; line-height:1.35; font-size:14px; color:#111827; }
+.markdown-body :deep(h3:first-child),
+.markdown-body :deep(h4:first-child),
+.markdown-body :deep(h5:first-child) { margin-top:0; }
+.markdown-body :deep(ul),
+.markdown-body :deep(ol) { margin:6px 0 10px; padding-left:18px; }
+.markdown-body :deep(li) { margin:3px 0; }
+.markdown-body :deep(a) { color:#2563eb; text-decoration:underline; text-underline-offset:2px; }
+.markdown-body :deep(code) { border-radius:6px; background:rgba(17,24,39,.08); padding:2px 5px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
+.markdown-body :deep(pre) { margin:8px 0; overflow:auto; border-radius:8px; background:#111827; color:#f9fafb; padding:10px; }
+.markdown-body :deep(pre code) { display:block; background:transparent; color:inherit; padding:0; white-space:pre; }
 .message-time { margin-top:8px; font-size:11px; color:#6b7280; }
 .reply-panel { flex-shrink:0; background:#fff; border-top:1px solid #e5e7eb; padding:18px 24px; }
 .reply-panel textarea { width:100%; resize:vertical; box-sizing:border-box; border:1px solid #d8dee9; border-radius:8px; padding:14px; font-size:14px; min-height:96px; }

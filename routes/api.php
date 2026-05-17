@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum', 'role:super_admin')->group(function () {
     Route::put('/admin/users/{user}/role', [UserRoleController::class, 'update']);
 });
 
-Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner,sta'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:super_admin,admin,owner,free,basic,pro,sta'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 

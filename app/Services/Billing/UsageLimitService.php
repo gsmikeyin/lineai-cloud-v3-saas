@@ -28,6 +28,47 @@ class UsageLimitService
         return $log;
     }
 
+    public function incrementDaily(Tenant $tenant, string $metric, float $value = 1): UsageLog
+    {
+        $periodDate = now()->toDateString();
+
+        $log = UsageLog::firstOrCreate(
+            [
+                'tenant_id' => $tenant->id,
+                'metric' => $metric,
+                'period_date' => $periodDate,
+                'period_type' => 'daily',
+            ],
+            ['value' => 0]
+        );
+
+        $log->value += $value;
+        $log->save();
+
+        return $log;
+    }
+
+    public function withinDailyLimit(Tenant $tenant, string $metric, ?int $limit): bool
+    {
+        if ($limit === null) {
+            return true;
+        }
+
+        return $this->dailyUsage($tenant, $metric) < $limit;
+    }
+
+    public function dailyUsage(Tenant $tenant, string $metric): float
+    {
+        $current = UsageLog::query()
+            ->where('tenant_id', $tenant->id)
+            ->where('metric', $metric)
+            ->where('period_date', now()->toDateString())
+            ->where('period_type', 'daily')
+            ->value('value');
+
+        return (float) ($current ?? 0);
+    }
+
     public function withinLimit(Tenant $tenant, string $metric): bool
     {
         $plan = $tenant->plan;

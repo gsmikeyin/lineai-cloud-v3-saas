@@ -40,7 +40,9 @@ class UserRoleController extends Controller
             'role' => ['required', 'string', Rule::in([
                 User::ROLE_SUPER_ADMIN,
                 User::ROLE_ADMIN,
-                User::ROLE_OWNER,
+                User::ROLE_FREE,
+                User::ROLE_BASIC,
+                User::ROLE_PRO,
             ])],
         ]);
 

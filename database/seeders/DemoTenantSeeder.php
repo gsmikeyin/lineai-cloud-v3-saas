@@ -39,7 +39,7 @@ class DemoTenantSeeder extends Seeder
                 'tenant_id' => $tenant->id,
                 'name' => 'Owner',
                 'password' => Hash::make('password'),
-                'role' => 'owner',
+                'role' => 'free',
                 'status' => 'active',
             ]
         );

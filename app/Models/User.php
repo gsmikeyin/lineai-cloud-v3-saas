@@ -19,6 +19,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
+    public const ROLE_FREE = 'free';
+    public const ROLE_BASIC = 'basic';
+    public const ROLE_PRO = 'pro';
     public const ROLE_OWNER = 'owner';
     public const ROLE_USER = 'user';
 
@@ -114,7 +117,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isOwner(): bool
     {
-        return $this->role === self::ROLE_SUPER_ADMIN;
+        return in_array($this->role, [
+            self::ROLE_FREE,
+            self::ROLE_BASIC,
+            self::ROLE_PRO,
+            self::ROLE_OWNER,
+        ], true);
     }
     
     
@@ -139,6 +147,9 @@ class User extends Authenticatable implements MustVerifyEmail
             self::ROLE_SUPER_ADMIN,
             self::ROLE_ADMIN,
             self::ROLE_OWNER,
+            self::ROLE_FREE,
+            self::ROLE_BASIC,
+            self::ROLE_PRO,
         ], true);
     }
 

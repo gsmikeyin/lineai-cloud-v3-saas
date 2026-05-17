@@ -13,6 +13,7 @@
         <nav class="topnav">
           <a href="#features">{{ $t('nav.features') }}</a>
           <a href="#use-cases">{{ $t('nav.useCases') }}</a>
+          <a href="#pricing">{{ landingCopy.pricingTitle }}</a>
           <a href="#faq">{{ $t('nav.faq') }}</a>
           <a href="#contact">{{ $t('nav.contact') }}</a>
           <router-link to="/login" class="login-link">{{ $t('nav.login') }}</router-link>
@@ -218,7 +219,7 @@
       </div>
     </section>
 
-    <section class="section pricing-section">
+    <section id="pricing" class="section pricing-section">
       <div class="container">
         <div class="section-head">
           <h2>{{ landingCopy.pricingTitle }}</h2>
@@ -399,10 +400,10 @@ const { t, locale } = useI18n()
 const landingCopies = {
   zh_TW: {
     heroTitle: 'AI 客服幫你 24 小時回覆 LINE 客戶',
-    heroDesc: '整合 LINE 官方帳號、AI 智識庫、CRM 與真人接手，讓企業減少重複客服工作、加快回覆速度、提升成交率。',
+    heroDesc: '整合 LINE 官方帳號、AI 知識庫、CRM 與真人接手，讓企業減少重複客服工作、加快回覆速度、提升成交率。',
     primaryCta: '立即免費試用',
     secondaryCta: '預約 Demo',
-    heroPoints: ['5 分鐘完成設定', 'AI 自動學習智識庫', '真人客服隨時接手', '多租戶 SaaS 架構'],
+    heroPoints: ['5 分鐘完成設定', 'AI 自動學習知識庫', '真人客服隨時接手', '多租戶 SaaS 架構'],
     heroProof: '已有餐廳、教育、零售與服務業導入 AI 客服流程',
     contactTitle: '聯絡我們',
     contactDesc: '留下公司與需求資訊，我們會協助你評估適合的 AI 客服導入方式。',
@@ -415,12 +416,12 @@ const landingCopies = {
     email: 'service@greatsoft.com.tw',
     line: 'LINE: @156ypxij',
     systemStatus: '系統狀態',
-    showcaseKnowledge: '智識庫',
+    showcaseKnowledge: '知識庫',
     previewQuestion1: '請問今天營業到幾點？',
     previewAnswer1: '您好，我們今天營業到 18:00，也可以直接協助您預約。',
     previewQuestion2: '可以幫我查訂單進度嗎？',
     previewAnswer2: '可以，請提供訂單編號，我會協助查詢出貨狀態。',
-    trust: [['AI 自動回覆', '依企業智識快速回答'], ['CRM', '完整保存客戶紀錄'], ['真人接手', 'AI 不確定時立即轉人工'], ['SaaS 架構', '支援多租戶與權限']],
+    trust: [['AI 自動回覆', '依企業知識快速回答'], ['CRM', '完整保存客戶紀錄'], ['真人接手', 'AI 不確定時立即轉人工'], ['SaaS 架構', '支援多租戶與權限']],
     painTitle: '客服訊息越來越多，但人力沒有增加？',
     painDesc: '每天都在重複回答相同問題，回覆慢、訓練難，下班後也容易漏接商機。',
     repeatedQuestionsTitle: '每天都在重複回答',
@@ -430,12 +431,12 @@ const landingCopies = {
     painClose: 'ServiceAI Cloud 幫你把這些工作交給 AI。',
     flowTitle: 'AI 如何運作',
     flowDesc: '24 小時不中斷，自動學習企業知識。',
-    flowSteps: ['客戶 LINE 發問', 'AI 判斷問題內容', '智識庫搜尋答案', '自動產生回覆', '真人客服接手', 'CRM 紀錄保存'],
+    flowSteps: ['客戶 LINE 發問', 'AI 判斷問題內容', '知識庫搜尋答案', '自動產生回覆', '真人客服接手', 'CRM 紀錄保存'],
     featuresTitle: '一套系統完成 AI 客服流程',
     featuresDesc: '從 LINE 對話、AI 回覆、真人接手到 CRM 紀錄，集中在同一個後台完成。',
     features: [
-      ['AI 自動回覆', '依照企業智識庫內容，自動回答客戶問題。'],
-      ['智識庫', '上傳 PDF、Word、FAQ，快速建立 AI 智識庫。'],
+      ['AI 自動回覆', '依照企業知識庫內容，自動回答客戶問題。'],
+      ['知識庫', '上傳 PDF、Word、FAQ，快速建立 AI 知識庫。'],
       ['真人客服接手', 'AI 不確定時，自動轉真人處理。'],
       ['CRM 客戶管理', '完整保存客戶對話與歷史紀錄。'],
       ['多租戶 SaaS', '支援企業獨立空間與權限管理。'],
@@ -445,29 +446,29 @@ const landingCopies = {
     industriesTitle: '適用產業',
     industriesDesc: '不同產業都能用 AI 先回答高頻問題，再交由真人處理複雜情境。',
     industries: [
-      ['餐廳', 'AI 回答訂位、菜單、停車、外送。'],
-      ['診所', 'AI 回答掛號、門診時間、疫苗資訊。'],
-      ['電商', 'AI 回答訂單查詢、出貨進度、商品問題。'],
-      ['教育', 'AI 回答課程、報名、上課資訊。'],
+      ['餐廳', 'AI 回答：訂位、菜單、停車、外送。'],
+      ['診所', 'AI 回答：掛號、門診時間、疫苗資訊。'],
+      ['電商', 'AI 回答：訂單查詢、出貨進度、商品問題。'],
+      ['教育', 'AI 回答：課程、報名、上課資訊。'],
     ],
     pricingTitle: '價格方案',
     pricing: [
-      { name: 'Free', desc: '免費開始體驗', features: ['1 LINE', 'CRM', '智識庫', '真人接手', '上傳一個 5 MB 檔案做訓練', '每日訊息數 500 則'], price: 'NT$0/月' },
-      { name: 'Starter', desc: '適合小型店家', features: ['1 LINE', 'CRM', '智識庫', '真人接手', '上傳 2 個 10 MB 檔案做訓練', '每日訊息數 5000 則'], price: 'NT$199/月' },
-      { name: 'Pro', desc: '適合成長企業', features: ['1 LINE', 'CRM', '智識庫', '真人接手', '上傳 5 個 10 MB 檔案做訓練', '每日訊息數 20000 則'], price: 'NT$399/月' },
-      { name: 'Enterprise', desc: '客製部署', features: ['多租戶架構', '進階權限', '客製流程', '智識庫訓練', '系統建置', 'AI MODEL'], price: '聯絡我們' },
+      { name: '免費', desc: '免費開始體驗', features: ['1 LINE', 'CRM', '知識庫', '真人接手', '上傳一個 5 MB 檔案做訓練', '每日訊息數 250 則'], price: 'NT$0/月' },
+      { name: '基礎', desc: '適合小型店家', features: ['1 LINE', 'CRM', '知識庫', '真人接手', '上傳 2 個 10 MB 檔案做訓練', '每日訊息數 1000 則'], price: 'NT$199/月' },
+      { name: '專業', desc: '適合成長企業', features: ['1 LINE', 'CRM', '知識庫', '真人接手', '上傳 5 個 10 MB 檔案做訓練', '每日訊息數 5000 則'], price: 'NT$399/月' },
+      { name: '企業版', desc: '客製部署', features: ['多租戶架構', '進階權限', '客製流程', '知識庫訓練', '系統建置', 'AI MODEL'], price: '聯絡我們' },
     ],
     faqTitle: 'FAQ',
     faqDesc: '導入 AI 客服前常見問題。',
     faqs: [
-      ['AI 如何學習資料？', '上傳 PDF、Word、FAQ 即可建立智識庫。'],
-      ['可以接 LINE 官方帳號嗎？', '可以，系統支援 LINE Messaging API 串接。'],
-      ['AI 不知道答案怎麼辦？', '可以自動轉真人客服接手。'],
-      ['可以多人客服嗎？', '支援多人客服與權限管理。'],
-      ['支援多公司嗎？', '支援 SaaS 多租戶架構。'],
+      ['AI 如何學習資料？', '上傳 PDF、Word、FAQ 即可建立知識庫。'],
+      ['可以接 LINE 官方帳號嗎？', '可以。'],
+      ['AI 不知道答案怎麼辦？', '自動轉真人。'],
+      ['可以多人客服嗎？', '支援。'],
+      ['支援多公司嗎？', '支援 SaaS 多租戶。'],
     ],
     ctaTitle: '開始建立你的 AI 客服流程',
-    ctaDesc: '從 LINE 串接、智識庫建立到客服後台，幾步就能開始。',
+    ctaDesc: '從 LINE 串接、知識庫建立到客服後台，幾步就能開始。',
   },
   en: {
     heroTitle: 'AI support that replies to LINE customers 24/7',
@@ -525,7 +526,7 @@ const landingCopies = {
     pricingTitle: 'Pricing',
     pricing: [
       { name: 'Free', desc: 'Start for free', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload one 5 MB file for training', '500 messages per day'], price: 'NT$0/mo' },
-      { name: 'Starter', desc: 'For small shops', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload two 10 MB files for training', '5000 messages per day'], price: 'NT$199/mo' },
+      { name: 'Basic', desc: 'For small shops', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload two 10 MB files for training', '5000 messages per day'], price: 'NT$199/mo' },
       { name: 'Pro', desc: 'For growing teams', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload five 10 MB files for training', '20000 messages per day'], price: 'NT$399/mo' },
       { name: 'Enterprise', desc: 'Custom deployment', features: ['Multi-tenant setup', 'Advanced permissions', 'Custom workflow', 'Knowledge base training', 'System implementation', 'AI MODEL'], price: 'Contact us' },
     ],
@@ -546,7 +547,7 @@ const landingCopies = {
 const testimonialDefaults = {
   zh_TW: {
     testimonialsTitle: '客戶見證',
-    testimonialsDesc: '測試案例可先作為導入效益參考。',
+    testimonialsDesc: '測試案例可先作為導入效益參考，避免頁面空白。',
     testimonials: [['某餐飲品牌', '導入後客服工作量下降 65%。'], ['某教育機構', 'AI 自動回答率達 78%。']],
   },
   en: {

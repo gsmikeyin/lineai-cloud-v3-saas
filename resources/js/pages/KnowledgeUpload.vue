@@ -22,7 +22,7 @@
         </div>
 
         <div class="limit-info" :class="{ reached: uploadLimitReached }">
-          {{ t('adminPages.knowledgeUpload.limitInfo', { count: documents.length, max: maxDocuments, size: formatSize(MAX_FILE_SIZE_BYTES) }) }}
+          {{ t('adminPages.knowledgeUpload.limitInfo', { count: documents.length, max: maxDocuments, size: formatSize(maxFileSizeBytes) }) }}
         </div>
 
         <div v-if="selectedFile" class="file-info">
@@ -80,7 +80,7 @@ import api from '../api'
 
 const { t } = useI18n()
 const maxDocuments = ref(2)
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
+const maxFileSizeBytes = ref(10 * 1024 * 1024)
 const loading = ref(false)
 const uploading = ref(false)
 const deletingId = ref(null)
@@ -182,6 +182,7 @@ async function fetchDocuments() {
     const res = await api.get('/knowledge/documents')
     documents.value = res.data.data || []
     maxDocuments.value = res.data.max_documents || 2
+    maxFileSizeBytes.value = (res.data.max_file_size_kb || 10240) * 1024
   } catch (error) {
     errorMessage.value = error.response?.data?.message || t('adminPages.knowledgeUpload.loadFailed')
   } finally {
@@ -220,7 +221,7 @@ function isDuplicateFile(file) {
 }
 
 function isFileTooLarge(file) {
-  return file.size > MAX_FILE_SIZE_BYTES
+  return file.size > maxFileSizeBytes.value
 }
 
 onMounted(fetchDocuments)

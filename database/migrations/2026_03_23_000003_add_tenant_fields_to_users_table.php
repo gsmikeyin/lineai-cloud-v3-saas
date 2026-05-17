@@ -7,7 +7,7 @@ return new class extends Migration {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('tenant_id')->nullable()->after('id')->constrained('tenants')->nullOnDelete();
             $table->string('phone', 50)->nullable()->after('email');
-            $table->string('role')->default('owner')->after('password');
+            $table->string('role')->default('free')->after('password');
             $table->string('status')->default('active')->after('role');
             $table->timestamp('last_login_at')->nullable()->after('remember_token');
             $table->json('permissions')->nullable()->after('last_login_at');

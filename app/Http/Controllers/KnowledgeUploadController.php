@@ -5,16 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\KnowledgeSource;
 use App\Models\User;
 use App\Services\AI\DifyKnowledgeService;
+use App\Support\AccountPlanLimits;
 use Illuminate\Http\Request;
 
 
 class KnowledgeUploadController extends Controller
 {
-    private const DEFAULT_MAX_DOCUMENTS_PER_TENANT = 2;
-    private const ADMIN_MAX_DOCUMENTS_PER_TENANT = 5;
-    private const SUPER_ADMIN_MAX_DOCUMENTS_PER_TENANT = 10;
-    private const MAX_FILE_SIZE_KB = 10240;
-
     public function __construct(
         protected DifyKnowledgeService $difyKnowledgeService
     ) {}
@@ -38,6 +34,7 @@ class KnowledgeUploadController extends Controller
         }
 
         $maxDocuments = $this->maxDocumentsForUser($user);
+        $maxFileSizeKb = $this->maxFileSizeKbForUser($user);
 
         if ($tenant->knowledgeSources()->count() >= $maxDocuments) {
             return response()->json([
@@ -46,9 +43,9 @@ class KnowledgeUploadController extends Controller
         }
 
         $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md', 'max:' . self::MAX_FILE_SIZE_KB],
+            'file' => ['required', 'file', 'mimes:pdf,txt,doc,docx,md', 'max:' . $maxFileSizeKb],
         ], [
-            'file.max' => 'Each knowledge document must not be larger than 10MB.',
+            'file.max' => 'Each knowledge document must not be larger than ' . $this->formatMb($maxFileSizeKb) . '.',
         ]);
 
         $file = $request->file('file');
@@ -102,7 +99,7 @@ class KnowledgeUploadController extends Controller
         return response()->json([
             ...$documents,
             'max_documents' => $maxDocuments,
-            'max_file_size_kb' => self::MAX_FILE_SIZE_KB,
+            'max_file_size_kb' => $this->maxFileSizeKbForUser($user),
         ]);
     }
 
@@ -129,10 +126,16 @@ class KnowledgeUploadController extends Controller
 
     private function maxDocumentsForUser(User $user): int
     {
-        return match ($user->role) {
-            User::ROLE_SUPER_ADMIN => self::SUPER_ADMIN_MAX_DOCUMENTS_PER_TENANT,
-            User::ROLE_ADMIN => self::ADMIN_MAX_DOCUMENTS_PER_TENANT,
-            default => self::DEFAULT_MAX_DOCUMENTS_PER_TENANT,
-        };
+        return AccountPlanLimits::maxKnowledgeDocuments($user->role);
+    }
+
+    private function maxFileSizeKbForUser(User $user): int
+    {
+        return AccountPlanLimits::maxUploadFileSizeKb($user->role);
+    }
+
+    private function formatMb(int $kilobytes): string
+    {
+        return rtrim(rtrim(number_format($kilobytes / 1024, 1), '0'), '.') . 'MB';
     }
 }
