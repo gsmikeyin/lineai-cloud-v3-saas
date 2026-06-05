@@ -381,17 +381,37 @@
       <div class="container footer-bottom">
         <span>© 2026 {{ landingCopy.companyName }}. All rights reserved.</span>
         <div class="footer-bottom-links">
-          <a href="#">{{ $t('common.privacy') }}</a>
-          <a href="#">{{ $t('common.terms') }}</a>
+          <a href="/privacy.txt" @click.prevent="openPrivacyModal">隱私權政策</a>
+          <a href="/team.txt" @click.prevent="openTermsModal">服務條款</a>
           <a href="/up">{{ landingCopy.systemStatus }}</a>
         </div>
       </div>
     </footer>
+
+    <div
+      v-if="legalModalOpen"
+      class="privacy-overlay"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="legalModalTitle"
+      @click.self="closeLegalModal"
+    >
+      <div class="privacy-modal">
+        <div class="privacy-modal-head">
+          <h2>{{ legalModalTitle }}</h2>
+          <button type="button" class="privacy-close" aria-label="Close" @click="closeLegalModal">x</button>
+        </div>
+
+        <div v-if="legalModalLoading" class="privacy-state">Loading...</div>
+        <div v-else-if="legalModalError" class="privacy-state error">{{ legalModalError }}</div>
+        <pre v-else class="privacy-content">{{ legalModalText }}</pre>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '../api'
 
@@ -453,9 +473,9 @@ const landingCopies = {
     ],
     pricingTitle: '價格方案',
     pricing: [
-      { name: '免費', desc: '免費開始體驗', features: ['1 LINE', 'CRM', '知識庫', '真人接手', '上傳一個 5 MB 檔案做訓練', '每日訊息數 250 則'], price: 'NT$0/月' },
-      { name: '基礎', desc: '適合小型店家', features: ['1 LINE', 'CRM', '知識庫', '真人接手', '上傳 2 個 10 MB 檔案做訓練', '每日訊息數 1000 則'], price: 'NT$199/月' },
-      { name: '專業', desc: '適合成長企業', features: ['1 LINE', 'CRM', '知識庫', '真人接手', '上傳 5 個 10 MB 檔案做訓練', '每日訊息數 5000 則'], price: 'NT$399/月' },
+      { name: '免費', desc: '免費開始體驗', features: ['1 AI客服', 'CRM', '知識庫', '真人接手', '上傳一個 5 MB 檔案做訓練', '每日訊息數 250 則'], price: 'NT$0/月' },
+      { name: '基礎', desc: '適合小型店家', features: ['1 AI客服', 'CRM', '知識庫', '真人接手', '上傳 2 個 10 MB 檔案做訓練', '每日訊息數 1000 則'], price: 'NT$199/月' },
+      { name: '專業', desc: '適合成長企業', features: ['1 AI客服', 'CRM', '知識庫', '真人接手', '上傳 5 個 10 MB 檔案做訓練', '每日訊息數 5000 則'], price: 'NT$399/月' },
       { name: '企業版', desc: '客製部署', features: ['多租戶架構', '進階權限', '客製流程', '知識庫訓練', '系統建置', 'AI MODEL'], price: '聯絡我們' },
     ],
     faqTitle: 'FAQ',
@@ -525,9 +545,9 @@ const landingCopies = {
     ],
     pricingTitle: 'Pricing',
     pricing: [
-      { name: 'Free', desc: 'Start for free', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload one 5 MB file for training', '500 messages per day'], price: 'NT$0/mo' },
-      { name: 'Basic', desc: 'For small shops', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload two 10 MB files for training', '5000 messages per day'], price: 'NT$199/mo' },
-      { name: 'Pro', desc: 'For growing teams', features: ['1 LINE', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload five 10 MB files for training', '20000 messages per day'], price: 'NT$399/mo' },
+      { name: 'Free', desc: 'Start for free', features: ['1 AI support agent', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload one 5 MB file for training', '500 messages per day'], price: 'NT$0/mo' },
+      { name: 'Basic', desc: 'For small shops', features: ['1 AI support agent', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload two 10 MB files for training', '5000 messages per day'], price: 'NT$199/mo' },
+      { name: 'Pro', desc: 'For growing teams', features: ['1 AI support agent', 'CRM', 'Knowledge Base', 'Human handoff', 'Upload five 10 MB files for training', '20000 messages per day'], price: 'NT$399/mo' },
       { name: 'Enterprise', desc: 'Custom deployment', features: ['Multi-tenant setup', 'Advanced permissions', 'Custom workflow', 'Knowledge base training', 'System implementation', 'AI MODEL'], price: 'Contact us' },
     ],
     faqTitle: 'FAQ',
@@ -566,6 +586,12 @@ const landingCopy = computed(() => {
 const contactSuccess = ref('')
 const contactError = ref('')
 const contactLoading = ref(false)
+const legalModalOpen = ref(false)
+const legalModalTitle = ref('')
+const legalModalText = ref('')
+const legalModalLoading = ref(false)
+const legalModalError = ref('')
+const legalContentCache = reactive({})
 
 const contactForm = reactive({
   name: '',
@@ -584,6 +610,59 @@ async function changeLocale(value) {
     try {
       await api.put('/me/locale', { locale: value })
     } catch (e) {}
+  }
+}
+
+function closeLegalModal() {
+  legalModalOpen.value = false
+  window.removeEventListener('keydown', handleLegalKeydown)
+}
+
+function handleLegalKeydown(event) {
+  if (event.key === 'Escape') {
+    closeLegalModal()
+  }
+}
+
+function openPrivacyModal() {
+  openLegalModal('隱私權政策', '/privacy.txt')
+}
+
+function openTermsModal() {
+  openLegalModal('服務條款', '/team.txt')
+}
+
+async function openLegalModal(title, path) {
+  legalModalOpen.value = true
+  legalModalTitle.value = title
+  legalModalError.value = ''
+  window.addEventListener('keydown', handleLegalKeydown)
+
+  if (legalContentCache[path]) {
+    legalModalText.value = legalContentCache[path]
+    return
+  }
+
+  legalModalText.value = ''
+  legalModalLoading.value = true
+
+  try {
+    const response = await fetch(path, {
+      headers: {
+        Accept: 'text/plain',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    legalContentCache[path] = await response.text()
+    legalModalText.value = legalContentCache[path]
+  } catch (error) {
+    legalModalError.value = 'Unable to load content.'
+  } finally {
+    legalModalLoading.value = false
   }
 }
 
@@ -617,6 +696,10 @@ async function submitContact() {
     contactLoading.value = false
   }
 }
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleLegalKeydown)
+})
 </script>
 
 <style scoped>
@@ -1215,6 +1298,74 @@ async function submitContact() {
 .footer-bottom-links a {
   text-decoration: none;
   color: #6b7280;
+}
+
+.privacy-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(17, 24, 39, 0.58);
+}
+
+.privacy-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(780px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.26);
+}
+
+.privacy-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.privacy-modal-head h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.privacy-close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d7dce5;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.privacy-content,
+.privacy-state {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 22px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #374151;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.privacy-state.error {
+  color: #dc2626;
 }
 
 @media (max-width: 1100px) {
