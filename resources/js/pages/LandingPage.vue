@@ -381,8 +381,8 @@
       <div class="container footer-bottom">
         <span>© 2026 {{ landingCopy.companyName }}. All rights reserved.</span>
         <div class="footer-bottom-links">
-          <a href="/privacy.txt" @click.prevent="openPrivacyModal">隱私權政策</a>
-          <a href="/team.txt" @click.prevent="openTermsModal">服務條款</a>
+          <a :href="legalCopy.privacyPath" @click.prevent="openPrivacyModal">{{ legalCopy.privacyTitle }}</a>
+          <a :href="legalCopy.termsPath" @click.prevent="openTermsModal">{{ legalCopy.termsTitle }}</a>
           <a href="/up">{{ landingCopy.systemStatus }}</a>
         </div>
       </div>
@@ -583,6 +583,24 @@ const landingCopy = computed(() => {
   return { ...defaults, ...selected }
 })
 
+const legalCopy = computed(() => {
+  if (locale.value === 'en') {
+    return {
+      privacyTitle: 'Privacy Policy',
+      privacyPath: '/privacy.en.txt',
+      termsTitle: 'Terms of Service',
+      termsPath: '/team.en.txt',
+    }
+  }
+
+  return {
+    privacyTitle: '隱私權政策',
+    privacyPath: '/privacy.txt',
+    termsTitle: '服務條款',
+    termsPath: '/team.txt',
+  }
+})
+
 const contactSuccess = ref('')
 const contactError = ref('')
 const contactLoading = ref(false)
@@ -625,11 +643,11 @@ function handleLegalKeydown(event) {
 }
 
 function openPrivacyModal() {
-  openLegalModal('隱私權政策', '/privacy.txt')
+  openLegalModal(legalCopy.value.privacyTitle, legalCopy.value.privacyPath)
 }
 
 function openTermsModal() {
-  openLegalModal('服務條款', '/team.txt')
+  openLegalModal(legalCopy.value.termsTitle, legalCopy.value.termsPath)
 }
 
 async function openLegalModal(title, path) {

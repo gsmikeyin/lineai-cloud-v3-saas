@@ -1,0 +1,64 @@
+Privacy Policy
+
+Last updated: June 5, 2026
+
+Welcome to this website/service (the "Service"). We value the protection of your personal data and privacy. This Privacy Policy explains how the Service collects, uses, and protects your information.
+
+1. Information We Collect
+When you use the Service, we may collect the following information:
+Basic member information, such as name, email address, and phone number
+Account login information
+Usage records and activity logs
+Public information provided through LINE, Google, or other third-party login services
+Documents, images, messages, and other content you voluntarily provide
+
+2. Purposes of Use
+The information we collect will be used for:
+Providing and maintaining Service functions
+Identity verification and account management
+Customer service and technical support
+System security and abnormal activity monitoring
+Improving service quality and user experience
+Purposes required by applicable laws and regulations
+
+3. Third-Party Services
+The Service may integrate third-party services, including but not limited to:
+LINE Messaging API
+OpenAI
+Dify
+Cloud hosting and data storage services
+
+When you use related functions, some of your information may be processed according to the privacy policies of those third-party services.
+
+4. Data Protection
+We adopt reasonable technical and administrative measures to protect your personal data and prevent unauthorized access, modification, disclosure, or destruction.
+
+5. Data Retention
+Your information will be retained during the period in which the Service is provided and for the period required by law. When the information is no longer needed, we will delete or anonymize it in accordance with applicable laws.
+
+6. Data Sharing
+Except in the following circumstances, we will not sell, exchange, or rent your personal data:
+With your consent
+As required by law
+To cooperate with investigations by courts, prosecutors, police, or competent authorities
+To protect the lawful rights and interests of the Service
+
+7. Cookies
+The Service may use cookies or similar technologies to improve website functionality and user experience. You may disable cookies through your browser settings, but some functions may be affected.
+
+8. Your Rights
+You may request the following in accordance with applicable laws:
+Inquiry or access to your personal data
+Supplementation or correction of your data
+Cessation of collection, processing, or use
+Deletion of your personal data
+
+9. Policy Updates
+This Privacy Policy may be updated from time to time due to legal or service requirements. Updates will be published on this website without separate individual notice.
+
+10. Contact
+If you have any questions about this Privacy Policy, please contact us:
+
+Company: Greatsoft Digital Technology Co., Ltd.
+Email: service@greatsoft.com.tw
+Phone: (02) 8226-9997

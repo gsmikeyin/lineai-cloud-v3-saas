@@ -1,0 +1,78 @@
+Terms of Service
+
+Last updated: June 3, 2026
+
+Welcome to this website and related services (the "Service"). By registering an account, browsing the website, or using the Service, you indicate that you have read, understood, and agreed to comply with these Terms of Service.
+
+1. Service Content
+
+The Service provides website, cloud platform, AI customer service, knowledge base management, and related functions. The actual service content is subject to system announcements.
+
+We reserve the right to add, modify, suspend, or terminate part of the Service at any time.
+
+2. Account Management
+
+Users shall properly safeguard their accounts and passwords and shall be responsible for all activities under their accounts.
+
+If you discover any unauthorized use of your account, you must notify us immediately.
+
+Users may not:
+
+Register under another person's identity
+Provide false information
+Transfer, rent, or lend an account
+Engage in any illegal activity
+
+3. Usage Rules
+
+When using the Service, you may not:
+
+Distribute content that is illegal, fraudulent, defamatory, or infringes the rights of others
+Upload viruses, malware, or attack the system
+Access another person's data without authorization
+Interfere with the normal operation of the system
+Use the Service for activities that violate laws
+
+If any violation occurs, we have the right to suspend or terminate your account access.
+
+4. Intellectual Property Rights
+
+The programs, designs, trademarks, text, images, and related content of this website are protected by intellectual property laws unless otherwise stated.
+
+Without authorization, you may not reproduce, modify, distribute, or use them for other commercial purposes.
+
+5. User Data and Content
+
+Users are fully responsible for content they upload, create, or enter.
+
+You warrant that the content you provide does not infringe any third-party rights.
+
+To provide the Service, we may process, store, and transmit the data you provide within a reasonable scope.
+
+6. Service Interruption
+
+We are not liable for compensation for service interruptions or abnormalities caused by:
+
+System maintenance or upgrades
+Network or telecommunications equipment failures
+Third-party service abnormalities
+Natural disasters, power outages, or force majeure events
+User device or network issues
+
+7. Limitation of Liability
+The Service includes artificial intelligence (AI) generated content functions. All responses are for reference only and may be incorrect, incomplete, or unsuitable for specific circumstances.
+The Service is provided on an "AS IS" basis. The company does not guarantee the accuracy, completeness, timeliness, or suitability of AI responses. Users shall make their own judgments and assume the risks and responsibilities arising from the use of related content.
+
+8. Termination of Service
+
+If a user violates these Terms or applicable laws, we may suspend or terminate the user's access at any time without prior notice.
+
+9. Changes to Terms
+
+We reserve the right to modify these Terms at any time. The revised Terms will be announced on the website and will take effect from the date of announcement.
+
+10. Governing Law and Jurisdiction
+
+The interpretation and application of these Terms shall be governed by the laws of the Republic of China (Taiwan).
+
+For disputes arising from the Service, both parties agree that the Taiwan New Taipei District Court shall be the court of first instance.
